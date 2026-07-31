@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Marketing Campaign & Multi-Channel ROI Analytics Platform</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --background: #0B0F19;
+      --card: rgba(19, 26, 46, 0.6);
+      --card-border: rgba(148, 163, 184, 0.08);
+      --primary: #3B82F6;
+      --primary-hover: #2563EB;
+      --accent: #8B5CF6;
+      --text: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --error-bg: rgba(239, 68, 68, 0.1);
+      --error-border: rgba(239, 68, 68, 0.2);
+      --error-text: #F87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    .glow-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .glow-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.15;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+
+    .glow-1 {
+      width: 400px;
+      height: 400px;
+      background: var(--primary);
+      top: -10%;
+      right: 15%;
+    }
+
+    .glow-2 {
+      width: 500px;
+      height: 500px;
+      background: var(--accent);
+      bottom: -15%;
+      left: 10%;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(60px, 40px) scale(1.15); }
+    }
+
+    /* Card Wrapper */
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      z-index: 2;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Logo Styling */
+    .logo-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .logo-svg {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 12px;
+    }
+
+    .logo-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .logo-title span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-tagline {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      opacity: 0.6;
+      display: flex;
+      align-items: center;
+      transition: opacity 0.2s;
+    }
+
+    .password-toggle:hover {
+      opacity: 1;
+    }
+
+    /* Error Alert */
+    .error-alert {
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--error-text);
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(92, 107, 242, 0.2);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(92, 107, 242, 0.35);
+      filter: brightness(1.1);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success Overlayer */
+    .success-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--background);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .success-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 2px solid #10B981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #10B981;
+      margin-bottom: 20px;
+      transform: scale(0.5);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .success-overlay.active .success-icon {
+      transform: scale(1);
+    }
+
+    .success-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .success-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Footer Creds info block */
+    .creds-tip {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    .creds-tip code {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glow Backgrounds -->
+  <div class="glow-container">
+    <div class="glow-circle glow-1"></div>
+    <div class="glow-circle glow-2"></div>
+  </div>
+
+  <div class="login-container">
+    <div class="card">
+      
+      <!-- Success Screen Overlay -->
+      <div id="successOverlay" class="success-overlay">
+        <div class="success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <h3 class="success-title">Access Granted</h3>
+        <p class="success-subtitle">Redirecting to executive dashboard...</p>
+      </div>
+
+      <!-- Header / Logo -->
+      <div class="logo-wrapper">
+        <!-- Inline SVGs matching Insight Innovators branding -->
+        <svg class="logo-svg" viewBox="0 0 512 512" width="100%" height="100%">
+          <defs>
+            <linearGradient id="logoPrimaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2563EB" />
+              <stop offset="100%" stop-color="#7C3AED" />
+            </linearGradient>
+            <linearGradient id="logoCircleGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#F8FAFC" />
+              <stop offset="50%" stop-color="#2563EB" />
+              <stop offset="100%" stop-color="#7C3AED" />
+            </linearGradient>
+          </defs>
+          <!-- Circular Ring -->
+          <path d="M 370,140 A 160,160 0 1,0 345,305" fill="none" stroke="url(#logoCircleGrad)" stroke-width="16" stroke-linecap="round" />
+          <!-- Connected Data Nodes -->
+          <path d="M 185,185 L 205,150 L 225,160 L 245,125" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" />
+          <circle cx="185" cy="185" r="7" fill="#F8FAFC" />
+          <circle cx="205" cy="150" r="7" fill="#2563EB" />
+          <circle cx="225" cy="160" r="7" fill="#2563EB" />
+          <circle cx="245" cy="125" r="7" fill="#7C3AED" />
+          <!-- Pillars -->
+          <polygon points="215,200 235,190 235,340 215,340" fill="#94A3B8" />
+          <polygon points="235,190 255,180 255,340 235,340" fill="#F8FAFC" />
+          <polygon points="270,150 290,140 290,340 270,340" fill="#94A3B8" />
+          <polygon points="290,140 310,130 310,340 290,340" fill="#F8FAFC" />
+          <!-- Arrow -->
+          <path d="M 215,270 L 260,220 L 285,240 L 380,145" fill="none" stroke="url(#logoPrimaryGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
+          <polygon points="360,135 395,130 390,165" fill="url(#logoPrimaryGrad)" />
+        </svg>
+        <h2 class="logo-title">Insight <span>Innovators</span></h2>
+        <p class="logo-tagline">Data • Insight • Impact</p>
+      </div>
+
+      <!-- Error Alert Alert -->
+      <div id="errorAlert" class="error-alert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span id="errorMessage">Invalid Username or Password</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        
+        <!-- Username input -->
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <div class="input-wrapper">
+            <div class="input-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <input 
+              class="form-input" 
+              type="text" 
+              id="username" 
+              placeholder="Enter your username" 
+              required 
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <!-- Password input -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrapper">
+            <div class="input-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <input 
+              class="form-input" 
+              type="password" 
+              id="password" 
+              placeholder="Enter your password" 
+              required 
+              autocomplete="current-password"
+            />
+            <button class="password-toggle" type="button" id="passwordToggle">
+              <!-- Eye open icon -->
+              <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <!-- Eye closed icon -->
+              <svg id="eyeClosed" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit btn -->
+        <button class="btn-submit" type="submit" id="btnSubmit">
+          <span id="btnText">Sign In</span>
+          <div id="btnSpinner" class="spinner"></div>
+        </button>
+      </form>
+
+      <!-- Tip info box -->
+      <div class="creds-tip">
+        Default Credentials:<br>
+        Username: <code>admin</code> • Password: <code>admin123</code>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const passwordInput = document.getElementById('password');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeClosed = document.getElementById('eyeClosed');
+    
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const successOverlay = document.getElementById('successOverlay');
+
+    // Toggle Password Visibility
+    passwordToggle.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeOpen.style.display = 'none';
+        eyeClosed.style.display = 'block';
+      } else {
+        passwordInput.type = 'password';
+        eyeOpen.style.display = 'block';
+        eyeClosed.style.display = 'none';
+      }
+    });
+
+    // Form Submit Handler
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = passwordInput.value;
+
+      // Reset error state
+      errorAlert.style.display = 'none';
+      
+      // Loading state
+      btnSubmit.disabled = true;
+      btnSpinner.style.display = 'block';
+      btnText.textContent = 'Connecting...';
+
+      // Call API
+      const result = await authenticate(username, password);
+
+      if (result.success) {
+        // Success flow
+        btnSpinner.style.display = 'none';
+        btnText.textContent = 'Success';
+        
+        // Show success splash
+        successOverlay.classList.add('active');
+        
+        // Redirect to index.html (the vite main application page)
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1200);
+      } else {
+        // Failure flow
+        btnSubmit.disabled = false;
+        btnSpinner.style.display = 'none';
+        btnText.textContent = 'Sign In';
+        
+        errorMessage.textContent = result.message || 'Invalid credentials';
+        errorAlert.style.display = 'flex';
+      }
+    });
+
+    // Authentication Helper (Axios-free fetch with direct fallback logic)
+    async function authenticate(username, password) {
+      const payload = { username, password };
+      
+      // Try local server route first (proxied under /api/login)
+      // Fallback directly to port 5000 if running statically or as file://
+      let endpoints = ['/api/login', 'http://127.0.0.1:5000/api/login'];
+      
+      if (window.location.protocol === 'file:') {
+        // If opened directly from file explorer, reverse precedence
+        endpoints = ['http://127.0.0.1:5000/api/login', '/api/login'];
+      }
+
+      for (const url of endpoints) {
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            return { success: true, data };
+          } else {
+            // Received response but not 2xx (e.g. 401 Unauthorized)
+            const errText = await response.text();
+            let msg = 'Invalid credentials';
+            try {
+              const errJson = JSON.parse(errText);
+              msg = errJson.message || msg;
+            } catch(e) {}
+            return { success: false, message: msg };
+          }
+        } catch (error) {
+          console.warn(`Connection to ${url} failed, trying next...`);
+        }
+      }
+
+      // Local browser fallback in case Flask API is offline/unavailable
+      console.info("Using local browser verification fallback...");
+      if (username === 'admin' && password === 'admin123') {
+        return { success: true, message: "Login successful (local fallback)" };
+      }
+      return { success: false, message: "Invalid username or password" };
+    }
+  </script>
+</body>
+</html>

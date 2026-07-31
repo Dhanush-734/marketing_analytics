@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FFFFFF;
+  --card: #FFFFFF;
+  --primary: #2563EB;
+  --accent: #7C3AED;
+  --sidebar: #FFFFFF;
+  --navbar: #FFFFFF;
+  --text: #0F172A;
+  --text-secondary: #64748B;
+  --border: #F1F5F9;
+  --hover: #F0F6FF;
+  --card-shadow: 0 12px 40px rgba(15, 23, 42, 0.04);
+  --logo-white: #0F172A;
+  --logo-gray: #1E293B;
+}
+
+.dark {
+  --background: #0B0F19;
+  --card: #131A2E;
+  --sidebar: #0D1120;
+  --navbar: #131A2E;
+  --primary: #3B82F6;
+  --accent: #8B5CF6;
+  --text: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border: rgba(148, 163, 184, 0.1);
+  --hover: rgba(59, 130, 246, 0.08);
+  --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  --logo-white: #F8FAFC;
+  --logo-gray: #94A3B8;
+}
+
+/* Custom premium scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Base custom styles */
+body {
+  margin: 0;
+  background-color: var(--background);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom chart tooltip styles */
+.custom-tooltip {
+  background-color: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  box-shadow: var(--card-shadow) !important;
+  color: var(--text) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Native select & option styling fix for readable dropdown text */
+select {
+  background-color: var(--card);
+  color: var(--text);
+}
+
+select option {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+.dark select {
+  background-color: #131A2E !important;
+  color: #F8FAFC !important;
+}
+
+.dark select option {
+  background-color: #131A2E !important;
+  color: #F8FAFC !important;
+}
+

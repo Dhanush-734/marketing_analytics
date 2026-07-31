@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: marketing-analytics-platform
+    runtime: python
+    buildCommand: "npm --prefix frontend install && npm --prefix frontend run build && pip install -r backend/requirements.txt"
+    startCommand: "gunicorn --chdir backend app:app --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SNOWFLAKE_USER
+        sync: false
+      - key: SNOWFLAKE_PASSWORD
+        sync: false
+      - key: SNOWFLAKE_ACCOUNT
+        sync: false
+      - key: SNOWFLAKE_WAREHOUSE
+        value: MARKETING_WH
+      - key: SNOWFLAKE_DATABASE
+        value: MARKETING_ANALYTICS
+      - key: SNOWFLAKE_SCHEMA
+        value: MARKETING_SCHEMA
+      - key: SNOWFLAKE_ROLE
+        value: ACCOUNTADMIN

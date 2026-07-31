@@ -1,0 +1,53 @@
+import pandas as pd
+import random
+from faker import Faker
+
+# Initialize Faker
+fake = Faker("en_IN")
+
+# Load campaigns dataset
+campaigns = pd.read_csv("../generated/campaigns.csv")
+
+email_campaigns = []
+
+email_id = 1
+
+# Generate email campaign data
+for _, campaign in campaigns.iterrows():
+
+    # Generate email metrics
+    emails_sent = random.randint(1000, 50000)
+
+    open_rate = random.uniform(0.15, 0.45)
+    emails_opened = int(emails_sent * open_rate)
+
+    click_rate = random.uniform(0.05, 0.30)
+    emails_clicked = int(emails_opened * click_rate)
+
+    unsubscribe_rate = random.uniform(0.005, 0.03)
+    unsubscribes = int(emails_sent * unsubscribe_rate)
+
+    email_campaigns.append({
+        "email_id": email_id,
+        "campaign_id": campaign["campaign_id"],
+        "emails_sent": emails_sent,
+        "emails_opened": emails_opened,
+        "emails_clicked": emails_clicked,
+        "unsubscribes": unsubscribes
+    })
+
+    email_id += 1
+
+# Create DataFrame
+df = pd.DataFrame(email_campaigns)
+
+# Save CSV
+df.to_csv("../generated/email_campaigns.csv", index=False)
+
+print("=" * 60)
+print("Email Campaign Dataset Generated Successfully")
+print(f"Total Rows : {len(df):,}")
+print("=" * 60)
+
+# Preview
+print(df.head())
