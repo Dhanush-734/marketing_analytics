@@ -91,14 +91,16 @@ class KPIResource(Resource):
 
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback KPI data: {e}")
-            return success_response(
-                {
+            return {
+                "status": "snowflake_error",
+                "snowflake_error": str(e),
+                "data": {
                     "Total Revenue": 1450280.50,
                     "Total Spend": 482150.00,
                     "Average ROI": 3.01,
                     "Average CTR": 4.12,
                 }
-            )
+            }
 
 
 @api.route("/channels")
