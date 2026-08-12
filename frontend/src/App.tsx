@@ -22,6 +22,7 @@ import {
 } from './components/PerformanceCharts';
 import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Settings as SettingsIcon, Info, Terminal, Cpu, Layers, GitBranch, ArrowRight, Check } from 'lucide-react';
 import { Logo } from './components/Logo';
+import { BackgroundWatermark } from './components/BackgroundWatermark';
 import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
 import type { Variants } from 'framer-motion';
@@ -118,7 +119,10 @@ export default function App() {
   const totalCustomersCount = customers.reduce((acc, c) => acc + c.total_customers, 0);
 
   return (
-    <div className="flex min-h-screen bg-background bg-grid-pattern text-foreground transition-colors duration-200 pb-16 md:pb-0 font-sans">
+    <div className="flex min-h-screen bg-background bg-grid-pattern text-foreground transition-colors duration-200 pb-16 md:pb-0 font-sans relative">
+
+      {/* Subtle Logo Watermark in Background */}
+      <BackgroundWatermark />
 
       {/* Navigation panel */}
       <Sidebar
