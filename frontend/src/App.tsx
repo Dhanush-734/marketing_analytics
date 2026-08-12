@@ -118,7 +118,7 @@ export default function App() {
   const totalCustomersCount = customers.reduce((acc, c) => acc + c.total_customers, 0);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground transition-colors duration-200 pb-14 md:pb-0 font-sans">
+    <div className="flex min-h-screen bg-background bg-grid-pattern text-foreground transition-colors duration-200 pb-16 md:pb-0 font-sans">
 
       {/* Navigation panel */}
       <Sidebar
@@ -141,7 +141,7 @@ export default function App() {
           setMobileOpen={setMobileOpen}
         />
 
-        <main className="p-4 md:p-6 lg:p-8 w-full space-y-6 md:space-y-8 overflow-hidden flex-1">
+        <main className="p-3.5 sm:p-5 md:p-6 lg:p-8 w-full space-y-6 md:space-y-8 overflow-hidden flex-1">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -171,7 +171,7 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[340px] lg:col-span-3 border border-transparent"
+                      className="glass-panel p-5 rounded-3xl flex flex-col h-[340px] lg:col-span-3 border border-border/60"
                     >
                       <div className="mb-3">
                         <h3 className="text-xs font-bold text-foreground">Revenue Earnings Area</h3>

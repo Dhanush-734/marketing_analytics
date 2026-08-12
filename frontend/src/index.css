@@ -1,35 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FFFFFF;
-  --card: #FFFFFF;
+  --background: #F8FAFC;
+  --card: rgba(255, 255, 255, 0.85);
   --primary: #2563EB;
   --accent: #7C3AED;
-  --sidebar: #FFFFFF;
-  --navbar: #FFFFFF;
+  --sidebar: rgba(255, 255, 255, 0.9);
+  --navbar: rgba(255, 255, 255, 0.8);
   --text: #0F172A;
   --text-secondary: #64748B;
-  --border: #F1F5F9;
-  --hover: #F0F6FF;
-  --card-shadow: 0 12px 40px rgba(15, 23, 42, 0.04);
+  --border: #E2E8F0;
+  --hover: #F1F5F9;
+  --card-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.06);
   --logo-white: #0F172A;
   --logo-gray: #1E293B;
+  --mesh-1: rgba(37, 99, 235, 0.08);
+  --mesh-2: rgba(124, 58, 237, 0.06);
+  --mesh-3: rgba(236, 72, 153, 0.05);
 }
 
 .dark {
-  --background: #0B0F19;
-  --card: #131A2E;
-  --sidebar: #0D1120;
-  --navbar: #131A2E;
+  --background: #080C14;
+  --card: rgba(15, 23, 42, 0.75);
+  --sidebar: rgba(11, 15, 25, 0.85);
+  --navbar: rgba(15, 23, 42, 0.75);
   --primary: #3B82F6;
   --accent: #8B5CF6;
   --text: #F8FAFC;
   --text-secondary: #94A3B8;
-  --border: rgba(148, 163, 184, 0.1);
-  --hover: rgba(59, 130, 246, 0.08);
-  --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  --border: rgba(255, 255, 255, 0.08);
+  --hover: rgba(59, 130, 246, 0.12);
+  --card-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
   --logo-white: #F8FAFC;
   --logo-gray: #94A3B8;
+  --mesh-1: rgba(59, 130, 246, 0.12);
+  --mesh-2: rgba(139, 92, 246, 0.10);
+  --mesh-3: rgba(236, 72, 153, 0.08);
 }
 
 /* Custom premium scrollbar styling */
@@ -44,14 +50,14 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
 
-/* Base custom styles */
+/* Base custom styles with ambient background gradient mesh */
 body {
   margin: 0;
   background-color: var(--background);
@@ -59,10 +65,76 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Stunning Ambient Background Glow Effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--mesh-1) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(80px);
+  z-index: -2;
+  pointer-events: none;
+  animation: floatOrb 18s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -10%;
+  right: -5%;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--mesh-2) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(90px);
+  z-index: -2;
+  pointer-events: none;
+  animation: floatOrb 22s ease-in-out infinite alternate-reverse;
+}
+
+/* Tech dot grid overlay */
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .bg-grid-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes floatOrb {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4%, 6%) scale(1.08);
+  }
+  100% {
+    transform: translate(-3%, -4%) scale(0.95);
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
+}
+
+/* Glassmorphism utility card class */
+.glass-panel {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
 }
 
 /* Custom chart tooltip styles */
@@ -73,7 +145,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 10px 14px !important;
   box-shadow: var(--card-shadow) !important;
   color: var(--text) !important;
-  backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(16px) !important;
 }
 
 /* Native select & option styling fix for readable dropdown text */
@@ -88,12 +160,24 @@ select option {
 }
 
 .dark select {
-  background-color: #131A2E !important;
+  background-color: #0F172A !important;
   color: #F8FAFC !important;
 }
 
 .dark select option {
-  background-color: #131A2E !important;
+  background-color: #0F172A !important;
   color: #F8FAFC !important;
 }
 
+/* Mobile Touch Optimization & Responsive Utilities */
+@media (max-width: 768px) {
+  /* Touch friendly targets */
+  button, input, select, a {
+    min-height: 38px;
+  }
+  
+  /* Smooth horizontal table touch scrolling */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+}

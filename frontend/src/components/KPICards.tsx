@@ -180,12 +180,12 @@ export function KPICards({
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5 mb-8 select-none">
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3.5 sm:gap-4 md:gap-5 mb-6 md:mb-8 select-none">
       {cards.map((card, idx) => (
         <div
           key={idx}
           title={card.rawValue}
-          className="bg-card rounded-2xl p-4 shadow-[var(--card-shadow)] hover:shadow-md hover:scale-[1.02] border border-transparent transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+          className="glass-panel rounded-2xl p-3.5 sm:p-4 hover:shadow-lg hover:scale-[1.02] border border-border/60 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
         >
           {/* Header segment with different visual gradients */}
           <div className="flex justify-between items-start mb-2">
