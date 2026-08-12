@@ -16,12 +16,16 @@ class SnowflakeService:
     def get_connection(self):
         import snowflake.connector
 
-        conn = snowflake.connector.connect(
-            user=Config.SNOWFLAKE_USER,
-            password=Config.SNOWFLAKE_PASSWORD,
-            account=Config.SNOWFLAKE_ACCOUNT,
-            warehouse=Config.SNOWFLAKE_WAREHOUSE,
-            database=Config.SNOWFLAKE_DATABASE,
-            schema=Config.SNOWFLAKE_SCHEMA,
-        )
+        conn_params = {
+            "user": Config.SNOWFLAKE_USER,
+            "password": Config.SNOWFLAKE_PASSWORD,
+            "account": Config.SNOWFLAKE_ACCOUNT,
+            "warehouse": Config.SNOWFLAKE_WAREHOUSE,
+            "database": Config.SNOWFLAKE_DATABASE,
+            "schema": Config.SNOWFLAKE_SCHEMA,
+        }
+        if getattr(Config, "SNOWFLAKE_ROLE", None):
+            conn_params["role"] = Config.SNOWFLAKE_ROLE
+
+        conn = snowflake.connector.connect(**conn_params)
         return conn

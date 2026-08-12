@@ -15,7 +15,7 @@ services:
       - key: SNOWFLAKE_ACCOUNT
         sync: false
       - key: SNOWFLAKE_WAREHOUSE
-        value: MARKETING_WH
+        value: COMPUTE_WH
       - key: SNOWFLAKE_DATABASE
         value: MARKETING_ANALYTICS
       - key: SNOWFLAKE_SCHEMA
