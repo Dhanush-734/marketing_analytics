@@ -16,22 +16,29 @@ class SnowflakeService:
     def get_connection(self):
         import snowflake.connector
 
-        user = Config.SNOWFLAKE_USER or "DHANUSH"
+        account = (Config.SNOWFLAKE_ACCOUNT or "WSTMXSC-HJ24814").strip()
+        user = (Config.SNOWFLAKE_USER or "DHANUSH").strip()
         password = Config.SNOWFLAKE_PASSWORD or "DHANUSH@devi7977"
-        if password == "DHANUSHadevi7977":
-            password = "DHANUSH@devi7977"
-            
         warehouse = Config.SNOWFLAKE_WAREHOUSE or "COMPUTE_WH"
-        if warehouse == "MARKETING_WH":
+        database = Config.SNOWFLAKE_DATABASE or "MARKETING_ANALYTICS"
+        schema = Config.SNOWFLAKE_SCHEMA or "MARKETING_SCHEMA"
+
+        # Force valid account credentials when targeting the new account
+        if "WSTMXSC" in account.upper() or user.upper() == "DHANUSH":
+            account = "WSTMXSC-HJ24814"
+            user = "DHANUSH"
+            password = "DHANUSH@devi7977"
             warehouse = "COMPUTE_WH"
+            database = "MARKETING_ANALYTICS"
+            schema = "MARKETING_SCHEMA"
 
         conn_params = {
             "user": user,
             "password": password,
-            "account": Config.SNOWFLAKE_ACCOUNT or "WSTMXSC-HJ24814",
+            "account": account,
             "warehouse": warehouse,
-            "database": Config.SNOWFLAKE_DATABASE or "MARKETING_ANALYTICS",
-            "schema": Config.SNOWFLAKE_SCHEMA or "MARKETING_SCHEMA",
+            "database": database,
+            "schema": schema,
         }
         if getattr(Config, "SNOWFLAKE_ROLE", None):
             conn_params["role"] = Config.SNOWFLAKE_ROLE
