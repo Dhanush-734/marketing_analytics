@@ -157,12 +157,18 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
   // High contrast vibrant color palette (Vivid Blue, Emerald Green, Golden Amber, Deep Purple, Bright Pink, Cyan)
   const VIBRANT_PALETTE = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'];
 
-  const totalRevenue = customers.reduce((sum, c) => sum + c.total_revenue, 0);
+  const totalCustomersCount = customers.reduce((sum, c) => sum + (c.total_customers || 0), 0);
 
-  const formatShort = (val: number) => {
-    if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
-    if (val >= 100000) return `₹${(val / 100000).toFixed(0)}L`;
-    return `₹${val}`;
+  const formatCountShort = (val: number) => {
+    if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+    if (val >= 1000) return `${(val / 1000).toFixed(1)}k`;
+    return `${val}`;
+  };
+
+  const renderTooltip = (val: any) => {
+    const count = Number(val);
+    const pct = totalCustomersCount > 0 ? ((count / totalCustomersCount) * 100).toFixed(1) : '0';
+    return [`${count.toLocaleString()} (${pct}%)`, 'Customer Count'];
   };
 
   return (
@@ -214,14 +220,14 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
                   innerRadius={55}
                   outerRadius={80}
                   paddingAngle={5}
-                  dataKey="total_revenue"
+                  dataKey="total_customers"
                   nameKey="customer_segment"
                 >
                   {customers.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
                   ))}
                 </Pie>
-                <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Sales']} />
+                <Tooltip wrapperClassName="custom-tooltip" formatter={renderTooltip} />
                 <Legend
                   verticalAlign="bottom"
                   align="center"
@@ -236,9 +242,9 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-              <span className="text-[8px] uppercase font-bold text-muted tracking-wider block">Sales Share</span>
+              <span className="text-[8px] uppercase font-bold text-muted tracking-wider block">Total Customers</span>
               <span className="text-xs font-extrabold text-foreground font-sans">
-                {new Intl.NumberFormat('en-IN', { notation: 'compact' }).format(totalRevenue)}
+                {totalCustomersCount.toLocaleString()}
               </span>
             </div>
           </>
@@ -248,10 +254,10 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={customers} layout="vertical" margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-              <XAxis type="number" stroke="var(--text-secondary)" fontSize={10} tickLine={false} tickFormatter={formatShort} />
+              <XAxis type="number" stroke="var(--text-secondary)" fontSize={10} tickLine={false} tickFormatter={formatCountShort} />
               <YAxis dataKey="customer_segment" type="category" stroke="var(--text-secondary)" fontSize={10} tickLine={false} width={75} />
-              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Sales']} />
-              <Bar dataKey="total_revenue" name="Sales Revenue" radius={[0, 6, 6, 0]} maxBarSize={22}>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={renderTooltip} />
+              <Bar dataKey="total_customers" name="Customer Count" radius={[0, 6, 6, 0]} maxBarSize={22}>
                 {customers.map((_, index) => (
                   <Cell key={`bar-cell-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} />
                 ))}
@@ -269,14 +275,14 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
                 cy="45%"
                 outerRadius={75}
                 paddingAngle={4}
-                dataKey="total_revenue"
+                dataKey="total_customers"
                 nameKey="customer_segment"
               >
                 {customers.map((_, index) => (
                   <Cell key={`pie-cell-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
                 ))}
               </Pie>
-              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Sales']} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={renderTooltip} />
               <Legend
                 verticalAlign="bottom"
                 align="center"

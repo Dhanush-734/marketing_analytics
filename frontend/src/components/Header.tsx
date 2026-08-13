@@ -24,7 +24,7 @@ export function Header({
       case 'campaigns': return 'Campaign Breakdown';
       case 'customers': return 'Customer Segmentation';
       case 'email': return 'Email Analytics';
-      case 'copilot': return 'Gemini AI Copilot & Agent';
+      case 'copilot': return 'INSIGHTS AI';
       case 'sql': return 'SQL Analytics Workspace';
       case 'apistatus': return 'API Status Monitor';
       case 'about': return 'About & Team';
@@ -34,7 +34,7 @@ export function Header({
   };
 
   return (
-    <header 
+    <header
       className="h-16 px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 border-b border-border/45 transition-colors duration-200 select-none"
       style={{
         backgroundColor: darkMode ? 'rgba(11, 15, 25, 0.75)' : 'rgba(255, 255, 255, 0.75)',
@@ -42,7 +42,7 @@ export function Header({
         WebkitBackdropFilter: 'blur(12px)'
       }}
     >
-      
+
       {/* Left segment: Mobile menu & Page Title */}
       <div className="flex items-center gap-3">
         <button

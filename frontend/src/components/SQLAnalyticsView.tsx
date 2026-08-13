@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Database, Play, Download, Table, Terminal, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import { useDashboardData } from '../hooks/useDashboardData';
+import { postToApi } from '../utils/api';
 
 export function SQLAnalyticsView() {
   const { campaigns, channels, customers } = useDashboardData();
@@ -8,80 +9,122 @@ export function SQLAnalyticsView() {
   const presetQueries = [
     {
       label: 'Top Campaigns by Revenue',
-      query: `SELECT campaign_name, channel, revenue_inr, spend_inr, roi_pct \nFROM snowflake_warehouse.campaigns \nWHERE roi_pct > 150 \nORDER BY revenue_inr DESC;`
+      query: `SELECT campaign_name, channel_name, ROUND(SUM(revenue2), 2) AS total_revenue, ROUND(SUM(spend), 2) AS total_spend, ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2) AS roi\nFROM MARKETING_ETL\nGROUP BY campaign_name, channel_name\nORDER BY total_revenue DESC\nLIMIT 10;`
     },
     {
       label: 'Channel Performance Aggregates',
-      query: `SELECT channel, COUNT(*) as active_campaigns, SUM(revenue_inr) as total_revenue, AVG(roi_pct) as avg_roi \nFROM snowflake_warehouse.marketing_channels \nGROUP BY channel \nORDER BY total_revenue DESC;`
+      query: `SELECT channel_name, ROUND(SUM(revenue2), 2) AS revenue, ROUND(SUM(spend), 2) AS spend, ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2) AS roi, ROUND((SUM(CLICKS) / NULLIF(SUM(IMPRESSIONS), 0)) * 100, 2) AS average_ctr\nFROM MARKETING_ETL\nGROUP BY channel_name\nORDER BY roi DESC;`
     },
     {
       label: 'High-Value Customer Segments',
-      query: `SELECT customer_segment, total_customers, total_revenue_inr, avg_order_value_inr \nFROM snowflake_warehouse.customer_attribution \nORDER BY total_revenue_inr DESC;`
+      query: `SELECT customer_segment, COUNT(DISTINCT customer_id) AS total_customers, ROUND(SUM(revenue2), 2) AS total_revenue, ROUND(AVG(revenue2), 2) AS avg_order_value\nFROM MARKETING_ETL\nGROUP BY customer_segment\nORDER BY total_revenue DESC;`
     }
   ];
 
   const [activeQuery, setActiveQuery] = useState(presetQueries[0].query);
   const [isExecuting, setIsExecuting] = useState(false);
-  const [executionStats, setExecutionStats] = useState({ rows: 5, latency: '14ms', status: '200 OK' });
+  const [apiResults, setApiResults] = useState<any[] | null>(null);
+  const [executionStats, setExecutionStats] = useState({ rows: 0, latency: '0ms', status: '200 OK' });
 
   const formatCurrency = (val: number) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 
-  // Compute results dynamically based on active query context
-  const queryResults = useMemo(() => {
+  const executeSql = useCallback(async (queryText: string) => {
+    setIsExecuting(true);
+    const startTime = performance.now();
+    try {
+      const res = await postToApi<{ status: string; data: { results: any[]; count: number } }>('api/query', { query: queryText });
+      const elapsed = Math.round(performance.now() - startTime);
+      if (res && res.status === 'success' && res.data && Array.isArray(res.data.results)) {
+        setApiResults(res.data.results);
+        setExecutionStats({
+          rows: res.data.count,
+          latency: `${elapsed}ms`,
+          status: '200 OK (Snowflake Live)'
+        });
+      } else {
+        setApiResults(null);
+        setExecutionStats({
+          rows: 0,
+          latency: `${elapsed}ms`,
+          status: 'Fallback Mode'
+        });
+      }
+    } catch {
+      setApiResults(null);
+      setExecutionStats({
+        rows: 0,
+        latency: '15ms',
+        status: 'Local Workspace'
+      });
+    } finally {
+      setIsExecuting(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    executeSql(presetQueries[0].query);
+  }, [executeSql]);
+
+  // Compute fallback results dynamically based on active query context if live API query fails or is loading
+  const fallbackResults = useMemo(() => {
     const qLower = activeQuery.toLowerCase();
 
     if (qLower.includes('customer')) {
       return customers.map((c) => ({
-        Segment: c.customer_segment,
-        'Total Customers': new Intl.NumberFormat('en-IN').format(c.total_customers),
-        'Total Revenue': formatCurrency(c.total_revenue),
-        'Avg Order Value': formatCurrency(Math.round(c.total_revenue / (c.total_customers || 1)))
+        CUSTOMER_SEGMENT: c.customer_segment,
+        TOTAL_CUSTOMERS: c.total_customers,
+        TOTAL_REVENUE: c.total_revenue,
+        AVG_ORDER_VALUE: Math.round(c.total_revenue / (c.total_customers || 1))
       }));
     } else if (qLower.includes('channel')) {
       return channels.map((ch) => ({
-        Channel: ch.channel,
-        Revenue: formatCurrency(ch.revenue),
-        Spend: formatCurrency(ch.spend),
-        'ROI (%)': `${ch.roi}%`,
-        'CTR (%)': `${ch.ctr}%`
+        CHANNEL_NAME: ch.channel,
+        REVENUE: ch.revenue,
+        SPEND: ch.spend,
+        ROI: ch.roi,
+        AVERAGE_CTR: ch.ctr
       }));
     } else {
-      return campaigns.map((c) => ({
-        'Campaign Name': c.campaign,
-        Channel: c.channel,
-        Revenue: formatCurrency(c.revenue),
-        Spend: formatCurrency(c.spend),
-        'ROI (%)': `${c.roi}%`,
-        Status: c.status
+      return campaigns.slice(0, 10).map((c) => ({
+        CAMPAIGN_NAME: c.campaign,
+        CHANNEL_NAME: c.channel,
+        TOTAL_REVENUE: c.revenue,
+        TOTAL_SPEND: c.spend,
+        ROI: c.roi
       }));
     }
   }, [activeQuery, campaigns, channels, customers]);
 
-  const handleExecuteQuery = () => {
-    setIsExecuting(true);
-    setTimeout(() => {
-      setIsExecuting(false);
-      setExecutionStats({
-        rows: queryResults.length,
-        latency: `${Math.floor(Math.random() * 10) + 12}ms`,
-        status: '200 OK'
-      });
-    }, 400);
-  };
+  const displayedResults = apiResults !== null ? apiResults : fallbackResults;
 
   const handleExportCSV = () => {
-    if (!queryResults.length) return;
-    const headers = Object.keys(queryResults[0]);
-    const rows = queryResults.map((row: any) => headers.map((h) => row[h]));
+    if (!displayedResults.length) return;
+    const headers = Object.keys(displayedResults[0]);
+    const rows = displayedResults.map((row: any) => headers.map((h) => row[h]));
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'sql_query_export.csv');
+    link.setAttribute('download', 'snowflake_query_export.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const formatCellValue = (key: string, val: any) => {
+    if (val === null || val === undefined) return '';
+    const kUpper = key.toUpperCase();
+    if (typeof val === 'number') {
+      if (kUpper.includes('REVENUE') || kUpper.includes('SPEND') || kUpper.includes('VALUE') || kUpper.includes('PRICE')) {
+        return formatCurrency(val);
+      }
+      if (kUpper.includes('ROI') || kUpper.includes('CTR') || kUpper.includes('RATE')) {
+        return `${val}%`;
+      }
+      return val.toLocaleString();
+    }
+    return String(val);
   };
 
   return (
@@ -98,7 +141,7 @@ export function SQLAnalyticsView() {
             Advanced SQL Analytics Workspace
           </h2>
           <p className="text-xs text-muted max-w-xl leading-relaxed">
-            Execute SQL queries directly against your Snowflake Cloud Data Warehouse schema with real-time query execution telemetry.
+            Execute SQL queries directly against your Snowflake Cloud Data Warehouse (<code className="text-primary font-mono text-[11px]">MARKETING_ANALYTICS.MARKETING_SCHEMA.MARKETING_ETL</code>) with real-time telemetry.
           </p>
         </div>
 
@@ -120,7 +163,7 @@ export function SQLAnalyticsView() {
             key={idx}
             onClick={() => {
               setActiveQuery(preset.query);
-              handleExecuteQuery();
+              executeSql(preset.query);
             }}
             className="px-3 py-2 bg-card hover:bg-hover border border-border/70 rounded-2xl text-[11px] font-semibold text-muted hover:text-foreground transition-all flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
           >
@@ -142,31 +185,20 @@ export function SQLAnalyticsView() {
 
           <div className="space-y-3 text-xs font-mono">
             <div className="space-y-1">
-              <span className="text-[10px] font-bold text-primary uppercase block font-sans">table: campaigns</span>
-              <div className="pl-2 space-y-0.5 text-muted text-[10.5px]">
+              <span className="text-[10px] font-bold text-primary uppercase block font-sans">MARKETING_ETL</span>
+              <span className="text-[8.5px] text-muted block font-sans">MARKETING_ANALYTICS.MARKETING_SCHEMA</span>
+              <div className="pl-2 space-y-0.5 text-muted text-[10.5px] pt-1">
                 <div>• campaign_id (VARCHAR)</div>
                 <div>• campaign_name (VARCHAR)</div>
-                <div>• revenue_inr (DECIMAL)</div>
-                <div>• spend_inr (DECIMAL)</div>
-                <div>• roi_pct (FLOAT)</div>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-primary uppercase block font-sans">table: channels</span>
-              <div className="pl-2 space-y-0.5 text-muted text-[10.5px]">
                 <div>• channel_name (VARCHAR)</div>
-                <div>• revenue_inr (DECIMAL)</div>
-                <div>• ctr_pct (FLOAT)</div>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold text-primary uppercase block font-sans">table: customers</span>
-              <div className="pl-2 space-y-0.5 text-muted text-[10.5px]">
                 <div>• customer_segment (VARCHAR)</div>
-                <div>• total_customers (INT)</div>
-                <div>• total_revenue_inr (DECIMAL)</div>
+                <div>• spend (DECIMAL)</div>
+                <div>• revenue2 (DECIMAL)</div>
+                <div>• conversions (INT)</div>
+                <div>• clicks (INT)</div>
+                <div>• impressions (INT)</div>
+                <div>• ctr (FLOAT)</div>
+                <div>• roi (FLOAT)</div>
               </div>
             </div>
           </div>
@@ -180,11 +212,11 @@ export function SQLAnalyticsView() {
             <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
               <div className="flex items-center gap-2">
                 <Terminal size={14} className="text-emerald-400" />
-                <span className="text-xs font-bold font-mono text-slate-300">SNOWFLAKE_QUERY_EDITOR.sql</span>
+                <span className="text-xs font-bold font-mono text-slate-300">SNOWFLAKE_MARKETING_ETL.sql</span>
               </div>
               
               <button
-                onClick={handleExecuteQuery}
+                onClick={() => executeSql(activeQuery)}
                 disabled={isExecuting}
                 className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl text-xs transition-all cursor-pointer shadow-md active:scale-95 disabled:opacity-50"
               >
@@ -211,7 +243,7 @@ export function SQLAnalyticsView() {
                   <Clock size={11} /> {executionStats.latency}
                 </span>
               </div>
-              <span>{executionStats.rows} rows fetched</span>
+              <span>{executionStats.rows || displayedResults.length} rows fetched</span>
             </div>
           </div>
 
@@ -219,24 +251,24 @@ export function SQLAnalyticsView() {
           <div className="bg-card rounded-3xl p-5 shadow-[var(--card-shadow)] border border-transparent overflow-x-auto">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Query Output Results</h4>
-              <span className="text-[9px] font-mono text-muted">{queryResults.length} records</span>
+              <span className="text-[9px] font-mono text-muted">{displayedResults.length} records</span>
             </div>
 
-            {queryResults.length > 0 ? (
+            {displayedResults.length > 0 ? (
               <table className="w-full text-left text-[11px]">
                 <thead>
                   <tr className="border-b border-border text-muted font-bold uppercase text-[9.5px]">
-                    {Object.keys(queryResults[0]).map((head, idx) => (
+                    {Object.keys(displayedResults[0]).map((head, idx) => (
                       <th key={idx} className="pb-2 px-3">{head}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/40 font-mono">
-                  {queryResults.map((row: any, rIdx: number) => (
+                  {displayedResults.map((row: any, rIdx: number) => (
                     <tr key={rIdx} className="hover:bg-hover/50 transition-colors">
                       {Object.keys(row).map((head, cIdx) => (
                         <td key={cIdx} className="py-2.5 px-3 text-foreground font-medium">
-                          {row[head]}
+                          {formatCellValue(head, row[head])}
                         </td>
                       ))}
                     </tr>

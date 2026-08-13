@@ -20,9 +20,8 @@ import {
   TrafficSourcesTreemap,
   MarketingChannelsStackedBarChart
 } from './components/PerformanceCharts';
-import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Settings as SettingsIcon, Info, Terminal, Cpu, Layers, GitBranch, ArrowRight, Check } from 'lucide-react';
+import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Settings as SettingsIcon, Info, Terminal, Cpu, Layers, GitBranch, ArrowRight, Check, ShieldCheck } from 'lucide-react';
 import { Logo } from './components/Logo';
-import { BackgroundWatermark } from './components/BackgroundWatermark';
 import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
 import type { Variants } from 'framer-motion';
@@ -40,6 +39,13 @@ const cardHoverVariants: Variants = {
     boxShadow: '0 20px 40px rgba(0, 0, 0, 0.04)',
     transition: { duration: 0.25, ease: 'easeOut' }
   }
+};
+
+const formatVolumeCount = (val: number) => {
+  if (val >= 1e9) return `${(val / 1e9).toFixed(2)}B`;
+  if (val >= 1e6) return `${(val / 1e6).toFixed(2)}M`;
+  if (val >= 1e3) return `${(val / 1e3).toFixed(1)}K`;
+  return val.toLocaleString();
 };
 
 export default function App() {
@@ -119,10 +125,7 @@ export default function App() {
   const totalCustomersCount = customers.reduce((acc, c) => acc + c.total_customers, 0);
 
   return (
-    <div className="flex min-h-screen bg-background bg-grid-pattern text-foreground transition-colors duration-200 pb-16 md:pb-0 font-sans relative">
-
-      {/* Subtle Logo Watermark in Background */}
-      <BackgroundWatermark />
+    <div className="flex min-h-screen bg-background text-foreground transition-colors duration-200 pb-14 md:pb-0 font-sans">
 
       {/* Navigation panel */}
       <Sidebar
@@ -145,7 +148,7 @@ export default function App() {
           setMobileOpen={setMobileOpen}
         />
 
-        <main className="p-3.5 sm:p-5 md:p-6 lg:p-8 w-full space-y-6 md:space-y-8 overflow-hidden flex-1">
+        <main className="p-4 md:p-6 lg:p-8 w-full space-y-6 md:space-y-8 overflow-hidden flex-1">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -175,7 +178,7 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="glass-panel p-5 rounded-3xl flex flex-col h-[340px] lg:col-span-3 border border-border/60"
+                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[340px] lg:col-span-3 border border-transparent"
                     >
                       <div className="mb-3">
                         <h3 className="text-xs font-bold text-foreground">Revenue Earnings Area</h3>
@@ -227,7 +230,7 @@ export default function App() {
                     >
                       <div className="mb-3">
                         <h3 className="text-xs font-bold text-foreground">ROI Trend Analysis</h3>
-                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Average ROI growth multiplier</span>
+                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">MONTHLY ROI TREND</span>
                       </div>
                       <div className="flex-1 min-h-0">
                         <RoiSmoothLineChart monthlyData={monthlyData} />
@@ -384,9 +387,9 @@ export default function App() {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-foreground leading-none mb-1">
-                          {new Intl.NumberFormat('en-IN', { notation: 'compact' }).format(email.emails_sent)}
+                          {formatVolumeCount(email.emails_sent)}
                         </h3>
-                        <span className="text-[8px] text-muted">Delivery volumes</span>
+                        <span className="text-[8px] text-muted">Delivery volumes ({email.emails_sent.toLocaleString()} total)</span>
                       </div>
                     </div>
 
@@ -399,9 +402,9 @@ export default function App() {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-foreground leading-none mb-1">
-                          {email.average_open_rate < 1 ? (email.average_open_rate * 100).toFixed(1) : email.average_open_rate.toFixed(1)}%
+                          {email.average_open_rate < 1 ? (email.average_open_rate * 100).toFixed(2) : email.average_open_rate.toFixed(2)}%
                         </h3>
-                        <span className="text-[8px] text-muted">Total read counts</span>
+                        <span className="text-[8px] text-muted">Total read counts ({email.emails_opened.toLocaleString()})</span>
                       </div>
                     </div>
 
@@ -414,9 +417,9 @@ export default function App() {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-foreground leading-none mb-1">
-                          {email.average_click_rate < 1 ? (email.average_click_rate * 100).toFixed(1) : email.average_click_rate.toFixed(1)}%
+                          {email.average_click_rate < 1 ? (email.average_click_rate * 100).toFixed(2) : email.average_click_rate.toFixed(2)}%
                         </h3>
-                        <span className="text-[8px] text-muted">Click-through conversion</span>
+                        <span className="text-[8px] text-muted">Click-through conversion ({email.emails_clicked.toLocaleString()})</span>
                       </div>
                     </div>
                   </div>
@@ -657,106 +660,135 @@ export default function App() {
                         <GitBranch size={16} className="text-primary animate-pulse" />
                         Project Data Pipeline & Workflow
                       </h3>
-                      <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">End-to-end data orchestration lifecycle</span>
+                      <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">END-TO-END DATA ORCHESTRATION & GOVERNANCE LIFECYCLE</span>
                     </div>
 
                     {/* Responsive Pipeline Flowchart */}
-                    <div className="flex flex-col xl:flex-row gap-4 items-center justify-between relative py-2">
+                    <div className="flex flex-col xl:flex-row gap-3 items-center justify-between relative py-2">
 
-                      {/* Step 1 */}
-                      <div className="w-full xl:w-44 bg-background/50 border border-border p-4 rounded-2xl text-center shadow-sm">
+                      {/* Box 1 */}
+                      <div className="w-full xl:w-36 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-2">
                           <Terminal size={16} />
                         </div>
-                        <h4 className="text-[10px] font-bold text-foreground">Marketing Dataset</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Google, Meta, Email CSVs</span>
+                        <h4 className="text-[10px] font-bold text-foreground">Marketing Source Data</h4>
+                        <span className="text-[8px] text-muted block mt-1">Google • Meta • Email CSVs</span>
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-1">
-                        <ArrowRight size={16} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
+                        <ArrowRight size={15} className="text-primary" />
                       </div>
 
-                      {/* Step 2 */}
-                      <div className="w-full xl:w-44 bg-background/50 border border-border p-4 rounded-2xl text-center shadow-sm">
+                      {/* Box 2 */}
+                      <div className="w-full xl:w-36 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-2">
                           <Database size={16} />
                         </div>
-                        <h4 className="text-[10px] font-bold text-foreground">MySQL Database</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Operational Store</span>
+                        <h4 className="text-[10px] font-bold text-foreground">MySQL Operational Database</h4>
+                        <span className="text-[8px] text-muted block mt-1">Structured data storage</span>
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-1">
-                        <ArrowRight size={16} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
+                        <ArrowRight size={15} className="text-primary" />
                       </div>
 
-                      {/* Step 3 */}
-                      <div className="w-full xl:w-44 bg-background/50 border border-border p-4 rounded-2xl text-center shadow-sm">
+                      {/* Box 3 */}
+                      <div className="w-full xl:w-36 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-cyan-50 dark:bg-cyan-950/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-2">
                           <Cpu size={16} />
                         </div>
-                        <h4 className="text-[10px] font-bold text-foreground">Alteryx ETL Pipeline</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Clean & prep workflow</span>
+                        <h4 className="text-[10px] font-bold text-foreground">Alteryx ETL & Data Preparation</h4>
+                        <span className="text-[8px] text-muted block mt-1">Clean • Transform • Validate</span>
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-1">
-                        <ArrowRight size={16} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
+                        <ArrowRight size={15} className="text-primary" />
                       </div>
 
-                      {/* Step 4 */}
-                      <div className="w-full xl:w-44 bg-background/50 border border-border p-4 rounded-2xl text-center shadow-sm">
+                      {/* Box 4 */}
+                      <div className="w-full xl:w-36 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-2">
                           <Layers size={16} />
                         </div>
                         <h4 className="text-[10px] font-bold text-foreground">Snowflake Data Warehouse</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Cloud warehousing</span>
+                        <span className="text-[8px] text-muted block mt-1">Cloud analytics warehouse</span>
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-1">
-                        <ArrowRight size={16} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
+                        <ArrowRight size={15} className="text-primary" />
                       </div>
 
-                      {/* Step 5 */}
-                      <div className="w-full xl:w-44 bg-background/50 border border-border p-4 rounded-2xl text-center shadow-sm">
+                      {/* Box 5 */}
+                      <div className="w-full xl:w-36 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
+                        <div className="mx-auto w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
+                          <ShieldCheck size={16} />
+                        </div>
+                        <h4 className="text-[10px] font-bold text-foreground">Data Governance & Quality</h4>
+                        <span className="text-[8px] text-muted block mt-1">Validation • Consistency • Security • Lineage</span>
+                      </div>
+
+                      {/* Arrow */}
+                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
+                        <ArrowRight size={15} className="text-primary" />
+                      </div>
+
+                      {/* Box 6 */}
+                      <div className="w-full xl:w-36 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-2">
                           <Code size={16} />
                         </div>
-                        <h4 className="text-[10px] font-bold text-foreground">Flask REST APIs</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Analytics endpoints</span>
+                        <h4 className="text-[10px] font-bold text-foreground">Flask REST API Layer</h4>
+                        <span className="text-[8px] text-muted block mt-1">Analytics endpoints</span>
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-1">
-                        <ArrowRight size={16} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
+                        <ArrowRight size={15} className="text-primary" />
                       </div>
 
-                      {/* Step 6 (Final Web Portal with side features) */}
-                      <div className="w-full xl:w-64 bg-primary/5 border-2 border-primary/20 p-5 rounded-3xl text-center shadow-md relative">
+                      {/* Box 7 (Final Web Portal with side features) */}
+                      <div className="w-full xl:w-64 bg-primary/5 border-2 border-primary/20 p-4 rounded-3xl text-center shadow-md relative">
                         <div className="absolute top-3 right-3 flex h-2 w-2">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                         </div>
-                        <div className="mx-auto w-10 h-10 rounded-2xl bg-primary text-white flex items-center justify-center mb-2 shadow-sm shadow-primary/20">
-                          <Logo size={24} />
+                        <div className="mx-auto w-9 h-9 rounded-2xl bg-primary text-white flex items-center justify-center mb-1.5 shadow-sm shadow-primary/20">
+                          <Logo size={22} />
                         </div>
-                        <h4 className="text-xs font-extrabold text-foreground">Interactive React Dashboard</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Insight Innovators UI Portal</span>
+                        <h4 className="text-xs font-extrabold text-foreground">React Analytics Platform</h4>
+                        <span className="text-[8px] text-muted block mt-0.5 font-semibold">Insight Innovators UI Portal</span>
 
-                        <div className="mt-4 pt-3 border-t border-border space-y-2 text-left">
-                          <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-foreground/80">
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                            Swagger API Documentation
+                        <div className="mt-3 pt-2.5 border-t border-border space-y-2 text-left">
+                          <div className="text-[8.5px] font-bold text-primary uppercase tracking-wider block">
+                            Platform Capabilities
                           </div>
-                          <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-muted/80">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                            Power BI (Future Dev)
+                          <div className="grid grid-cols-2 gap-x-1.5 gap-y-0.5 text-[8px] font-semibold text-foreground/80">
+                            <div>• Executive Dashboard</div>
+                            <div>• Multi-Channel ROI</div>
+                            <div>• Campaign Analysis</div>
+                            <div>• Customer Segments</div>
+                            <div>• Email Analytics</div>
+                            <div>• SQL Analytics</div>
+                            <div className="col-span-2 text-primary font-extrabold">• INSIGHTS AI</div>
                           </div>
-                          <div className="flex items-center gap-1.5 text-[8.5px] font-bold text-muted/80">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                            Power Automate (Future Dev)
+
+                          <div className="mt-2.5 pt-2 border-t border-border/60 space-y-1">
+                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-foreground/80">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                              Swagger API Documentation
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-muted/80">
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                              Power BI (Future Dev)
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-muted/80">
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                              Power Automate (Future Dev)
+                            </div>
                           </div>
                         </div>
                       </div>

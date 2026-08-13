@@ -22,3 +22,18 @@ export async function fetchFromApi<T>(endpoint: string): Promise<T> {
     return fallbackResponse.data;
   }
 }
+
+export async function postToApi<T>(endpoint: string, data: any): Promise<T> {
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+  const url = `${BASE_URL}/${cleanEndpoint}`;
+  
+  try {
+    const response = await axios.post<T>(url, data);
+    return response.data;
+  } catch (error) {
+    console.warn(`Axios POST to ${url} failed, attempting backend fallback...`, error);
+    const fallbackUrl = `http://127.0.0.1:5000/${cleanEndpoint}`;
+    const fallbackResponse = await axios.post<T>(fallbackUrl, data);
+    return fallbackResponse.data;
+  }
+}

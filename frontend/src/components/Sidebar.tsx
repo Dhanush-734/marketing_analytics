@@ -38,7 +38,7 @@ export function Sidebar({
     { id: 'campaigns', label: 'Campaign Breakdown', icon: <BarChart3 size={18} /> },
     { id: 'customers', label: 'Customer Segmentation', icon: <Users size={18} /> },
     { id: 'email', label: 'Email Analytics', icon: <Mail size={18} /> },
-    { id: 'copilot', label: 'Gemini AI Copilot', icon: <Sparkles size={18} /> },
+    { id: 'copilot', label: 'INSIGHTS AI', icon: <Sparkles size={18} /> },
     { id: 'sql', label: 'SQL Analytics', icon: <Database size={18} /> },
     { id: 'apistatus', label: 'API Status', icon: <Activity size={18} /> },
     { id: 'about', label: 'About & Team', icon: <Info size={18} /> },

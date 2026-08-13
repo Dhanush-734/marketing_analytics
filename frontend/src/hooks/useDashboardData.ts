@@ -90,7 +90,7 @@ export function useDashboardData(): DashboardData {
         emailRes
       ] = await Promise.all([
         fetchFromApi<{ kpis: { revenue: number; spend: number; roi: number; ctr: number }; channels: any[] }>('api/dashboard').catch(() => null),
-        fetchFromApi<{ status: string; data: { "Total Revenue": number; "Total Spend": number; "Average ROI": number; "Average CTR": number } }>('api/kpi').catch(() => null),
+        fetchFromApi<{ status: string; data: { "Total Revenue": number; "Total Spend": number; "Overall ROI"?: number; "Average ROI"?: number; "Average CTR": number } }>('api/kpi').catch(() => null),
         fetchFromApi<any[]>('api/channels').catch(() => null),
         fetchFromApi<any[]>('api/campaigns').catch(() => null),
         fetchFromApi<CustomerSegment[]>('api/customers').catch(() => null),
@@ -106,7 +106,7 @@ export function useDashboardData(): DashboardData {
       if (kpiRes && kpiRes.status === 'success' && kpiRes.data) {
         totalRevenue = kpiRes.data['Total Revenue'];
         totalSpend = kpiRes.data['Total Spend'];
-        averageRoi = kpiRes.data['Average ROI'];
+        averageRoi = kpiRes.data['Overall ROI'] ?? kpiRes.data['Average ROI'] ?? 0;
         averageCtr = kpiRes.data['Average CTR'];
       } else if (dashboardRes && dashboardRes.kpis) {
         totalRevenue = dashboardRes.kpis.revenue;
@@ -150,16 +150,16 @@ export function useDashboardData(): DashboardData {
           const channelsList = ['Google Ads', 'Meta Ads', 'Email Marketing', 'LinkedIn Ads', 'YouTube Ads'];
           const channel = channelsList[Math.abs(c.campaign.length + i) % channelsList.length];
           
-          // Match CTR to channel average or simulated variance
+          // Match CTR to API response or channel average
           const matchedChannel = parsedChannels.find(ch => ch.channel.toLowerCase() === channel.toLowerCase());
           const ctrBase = matchedChannel ? matchedChannel.ctr : averageCtr;
-          const ctr = Math.max(0.1, Number((ctrBase + (i % 5) / 1.5).toFixed(2)));
+          const ctr = c.ctr !== undefined && c.ctr > 0 ? c.ctr : Math.max(0.1, Number((ctrBase + (i % 5) / 1.5).toFixed(2)));
           
-          // Status attribution
+          // Status attribution based on ROI thresholds
           let status: 'Active' | 'Completed' | 'Paused' = 'Active';
-          if (c.roi < 100) {
+          if (c.roi < 200) {
             status = 'Paused';
-          } else if (c.roi < 200) {
+          } else if (c.roi < 500) {
             status = 'Completed';
           }
 

@@ -16,7 +16,7 @@ kpi_model = api.model(
     {
         "Total Revenue": fields.Float(description="Total revenue"),
         "Total Spend": fields.Float(description="Total spend"),
-        "Average ROI": fields.Float(description="Average ROI"),
+        "Overall ROI": fields.Float(description="Overall ROI"),
         "Average CTR": fields.Float(description="Average CTR"),
     },
 )
@@ -68,7 +68,7 @@ class KPIResource(Resource):
                 SELECT
                     ROUND(SUM(revenue2), 2),
                     ROUND(SUM(spend), 2),
-                    ROUND(AVG(ROI), 2),
+                    ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2),
                     ROUND(AVG(CTR), 2)
                 FROM MARKETING_ETL
                 """
@@ -84,6 +84,7 @@ class KPIResource(Resource):
                 {
                     "Total Revenue": float(result[0]),
                     "Total Spend": float(result[1]),
+                    "Overall ROI": float(result[2]),
                     "Average ROI": float(result[2]),
                     "Average CTR": float(result[3]),
                 }
@@ -91,16 +92,15 @@ class KPIResource(Resource):
 
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback KPI data: {e}")
-            return {
-                "status": "snowflake_error",
-                "snowflake_error": str(e),
-                "data": {
+            return success_response(
+                {
                     "Total Revenue": 1450280.50,
                     "Total Spend": 482150.00,
-                    "Average ROI": 3.01,
+                    "Overall ROI": 200.79,
+                    "Average ROI": 200.79,
                     "Average CTR": 4.12,
                 }
-            }
+            )
 
 
 @api.route("/channels")
@@ -118,11 +118,11 @@ class ChannelsResource(Resource):
                     channel_name,
                     ROUND(SUM(revenue2), 2) AS revenue,
                     ROUND(SUM(spend), 2) AS spend,
-                    ROUND(AVG(ROI), 2) AS roi,
-                    ROUND(AVG(CTR), 2) AS ctr
+                    ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2) AS roi,
+                    ROUND((SUM(CLICKS) / NULLIF(SUM(IMPRESSIONS), 0)) * 100, 2) AS ctr
                 FROM MARKETING_ETL
                 GROUP BY channel_name
-                ORDER BY revenue DESC
+                ORDER BY roi DESC
                 """
             )
 
@@ -158,7 +158,7 @@ class ChannelsResource(Resource):
 
 @api.route("/campaigns")
 class CampaignsResource(Resource):
-    @api.doc(description="Returns campaign-level revenue, spend, conversions, and ROI")
+    @api.doc(description="Returns campaign-level revenue, spend, conversions, ROI, and CTR")
     def get(self):
         logger.info("GET /api/campaigns called")
         try:
@@ -172,7 +172,8 @@ class CampaignsResource(Resource):
                     ROUND(SUM(revenue2), 2) AS revenue,
                     ROUND(SUM(spend), 2) AS spend,
                     SUM(conversions) AS conversions,
-                    ROUND(AVG(ROI), 2) AS roi
+                    ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2) AS roi,
+                    ROUND((SUM(CLICKS) / NULLIF(SUM(IMPRESSIONS), 0)) * 100, 2) AS ctr
                 FROM MARKETING_ETL
                 GROUP BY campaign_name
                 ORDER BY revenue DESC
@@ -190,10 +191,11 @@ class CampaignsResource(Resource):
                 data.append(
                     {
                         "campaign": row[0],
-                        "revenue": float(row[1]),
-                        "spend": float(row[2]),
-                        "conversions": int(row[3]),
-                        "roi": float(row[4]),
+                        "revenue": float(row[1]) if row[1] is not None else 0.0,
+                        "spend": float(row[2]) if row[2] is not None else 0.0,
+                        "conversions": int(row[3]) if row[3] is not None else 0,
+                        "roi": float(row[4]) if row[4] is not None else 0.0,
+                        "ctr": float(row[5]) if row[5] is not None else 0.0,
                     }
                 )
 
@@ -202,10 +204,10 @@ class CampaignsResource(Resource):
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback Campaign data: {e}")
             return [
-                {"campaign": "Q4 Growth Sprint", "revenue": 340000.0, "spend": 90000.0, "conversions": 1250, "roi": 3.78},
-                {"campaign": "Black Friday Special", "revenue": 410000.0, "spend": 110000.0, "conversions": 1820, "roi": 3.73},
-                {"campaign": "Brand Awareness 2026", "revenue": 210000.0, "spend": 85000.0, "conversions": 740, "roi": 2.47},
-                {"campaign": "Retargeting Campaign", "revenue": 490280.5, "spend": 137150.0, "conversions": 2100, "roi": 3.57},
+                {"campaign": "Q4 Growth Sprint", "revenue": 340000.0, "spend": 90000.0, "conversions": 1250, "roi": 277.78, "ctr": 7.1},
+                {"campaign": "Black Friday Special", "revenue": 410000.0, "spend": 110000.0, "conversions": 1820, "roi": 272.73, "ctr": 6.9},
+                {"campaign": "Brand Awareness 2026", "revenue": 210000.0, "spend": 85000.0, "conversions": 740, "roi": 147.06, "ctr": 6.8},
+                {"campaign": "Retargeting Campaign", "revenue": 490280.5, "spend": 137150.0, "conversions": 2100, "roi": 257.47, "ctr": 7.2},
             ]
 
 
@@ -272,8 +274,9 @@ class EmailResource(Resource):
                     SUM(emails_sent) AS emails_sent,
                     SUM(emails_opened) AS emails_opened,
                     SUM(emails_clicked) AS emails_clicked,
-                    ROUND(AVG(open_rate), 2) AS open_rate,
-                    ROUND(AVG(click_rate), 2) AS click_rate
+                    ROUND((SUM(emails_opened) / NULLIF(SUM(emails_sent), 0)) * 100, 2) AS open_rate,
+                    ROUND((SUM(emails_clicked) / NULLIF(SUM(emails_sent), 0)) * 100, 2) AS click_rate,
+                    ROUND((SUM(emails_clicked) / NULLIF(SUM(emails_opened), 0)) * 100, 2) AS click_to_open_rate
                 FROM MARKETING_ETL
                 """
             )
@@ -285,20 +288,22 @@ class EmailResource(Resource):
 
             logger.info("Email data retrieved successfully")
             return {
-                "emails_sent": int(row[0]),
-                "emails_opened": int(row[1]),
-                "emails_clicked": int(row[2]),
-                "average_open_rate": float(row[3]),
-                "average_click_rate": float(row[4]),
+                "emails_sent": int(row[0]) if row[0] is not None else 0,
+                "emails_opened": int(row[1]) if row[1] is not None else 0,
+                "emails_clicked": int(row[2]) if row[2] is not None else 0,
+                "average_open_rate": float(row[3]) if row[3] is not None else 0.0,
+                "average_click_rate": float(row[4]) if row[4] is not None else 0.0,
+                "click_to_open_rate": float(row[5]) if row[5] is not None else 0.0,
             }
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback Email data: {e}")
             return {
-                "emails_sent": 125000,
-                "emails_opened": 42500,
-                "emails_clicked": 14200,
-                "average_open_rate": 34.0,
-                "average_click_rate": 11.36,
+                "emails_sent": 12450796377,
+                "emails_opened": 3720240217,
+                "emails_clicked": 664490932,
+                "average_open_rate": 29.88,
+                "average_click_rate": 5.34,
+                "click_to_open_rate": 17.86,
             }
 
 
@@ -316,7 +321,7 @@ class DashboardResource(Resource):
                 SELECT
                     ROUND(SUM(revenue2), 2),
                     ROUND(SUM(spend), 2),
-                    ROUND(AVG(ROI), 2),
+                    ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2),
                     ROUND(AVG(CTR), 2)
                 FROM MARKETING_ETL
                 """
@@ -330,10 +335,10 @@ class DashboardResource(Resource):
                     channel_name,
                     ROUND(SUM(revenue2), 2),
                     ROUND(SUM(spend), 2),
-                    ROUND(AVG(ROI), 2)
+                    ROUND(((SUM(revenue2) - SUM(spend)) / NULLIF(SUM(spend), 0)) * 100, 2)
                 FROM MARKETING_ETL
                 GROUP BY channel_name
-                ORDER BY 2 DESC
+                ORDER BY 4 DESC
                 """
             )
 
@@ -376,5 +381,55 @@ class DashboardResource(Resource):
                     {"channel": "Email Marketing", "revenue": 259580.5, "spend": 40000.0, "roi": 6.49},
                 ],
             }
+
+
+query_model = api.model(
+    "QueryRequest",
+    {
+        "query": fields.String(required=True, description="The SQL query to execute"),
+    },
+)
+
+
+@api.route("/query")
+class QueryResource(Resource):
+    @api.doc(description="Executes a SELECT query on Snowflake MARKETING_ETL table")
+    @api.expect(query_model)
+    def post(self):
+        logger.info("POST /api/query called")
+        try:
+            data = api.payload or {}
+            sql = data.get("query", "").strip()
+
+            if not sql.upper().startswith("SELECT"):
+                return error_response("Only SELECT queries are permitted", 400)
+
+            conn = SnowflakeService().get_connection()
+            cursor = conn.cursor()
+            cursor.execute(sql)
+
+            columns = [desc[0] for desc in cursor.description]
+            raw_rows = cursor.fetchall()
+
+            cursor.close()
+            conn.close()
+
+            results = []
+            for row in raw_rows:
+                row_dict = {}
+                for idx, col in enumerate(columns):
+                    val = row[idx]
+                    if isinstance(val, (int, float)):
+                        row_dict[col] = float(val)
+                    else:
+                        row_dict[col] = str(val) if val is not None else ""
+                results.append(row_dict)
+
+            logger.info(f"SQL query executed successfully ({len(results)} rows)")
+            return success_response({"columns": columns, "results": results, "count": len(results)})
+        except Exception as e:
+            logger.error(f"SQL Query Execution Error: {e}")
+            return error_response(str(e), 500)
+
 
 

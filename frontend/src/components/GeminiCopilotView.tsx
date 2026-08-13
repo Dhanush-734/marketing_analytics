@@ -11,7 +11,7 @@ export function GeminiCopilotView() {
   const [messages, setMessages] = useState<Array<{ sender: 'ai' | 'user'; text: string; timestamp: string; metrics?: any }>>([
     {
       sender: 'ai',
-      text: 'Hello! I am your Gemini AI Marketing Agent & Analytics Copilot. I analyze your Snowflake data warehouse, live campaign performance, and multi-channel attribution metrics in real time. Ask me anything about your analytics!',
+      text: 'Hello! I am INSIGHTS AI, your Marketing Analytics Copilot. I analyze your Snowflake data warehouse, live campaign performance, and multi-channel attribution metrics. Ask me anything about your analytics!',
       timestamp: '15:00'
     }
   ]);
@@ -112,12 +112,12 @@ export function GeminiCopilotView() {
           ]
         };
       } else {
-        aiResponseText = `Live System Performance Summary:\n• Total Revenue: ${formatCurrency(kpis.revenue)}\n• Total Spend: ${formatCurrency(kpis.spend)}\n• Average ROI: ${kpis.roi.toFixed(2)}%\n• Average CTR: ${kpis.ctr.toFixed(2)}%\n• Active Campaigns: ${campaigns.length}\n• Attributed Channels: ${channels.length}`;
+        aiResponseText = `Live System Performance Summary:\n• Total Revenue: ${formatCurrency(kpis.revenue)}\n• Total Spend: ${formatCurrency(kpis.spend)}\n• Overall ROI: ${kpis.roi.toFixed(2)}%\n• Average CTR: ${kpis.ctr.toFixed(2)}%\n• Active Campaigns: ${campaigns.length}\n• Attributed Channels: ${channels.length}`;
         metricsBadge = {
           title: 'Executive Summary',
           items: [
             { label: 'Total Revenue', val: formatCurrency(kpis.revenue) },
-            { label: 'Average ROI', val: `${kpis.roi.toFixed(2)}%` },
+            { label: 'Overall ROI', val: `${kpis.roi.toFixed(2)}%` },
             { label: 'Active Campaigns', val: `${campaigns.length}` }
           ]
         };
@@ -143,11 +143,14 @@ export function GeminiCopilotView() {
         <div className="space-y-2 text-center md:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/15 border border-primary/20 rounded-full text-primary text-[10px] font-bold uppercase tracking-wider">
             <Sparkles size={13} className="animate-pulse" />
-            Gemini AI Agent & Copilot
+            INSIGHTS AI
           </div>
           <h2 className="text-xl font-extrabold text-foreground tracking-tight">
-            Accurate Real-Time Marketing Intelligence
+            INSIGHTS AI
           </h2>
+          <span className="text-[10px] font-bold text-muted uppercase tracking-wider block">
+            AI MARKETING ANALYTICS COPILOT
+          </span>
           <p className="text-xs text-muted max-w-xl leading-relaxed">
             Connected directly to Snowflake Data Warehouse ({campaigns.length} campaigns, {channels.length} channels, {formatCurrency(kpis.revenue)} sales).
           </p>
@@ -253,7 +256,7 @@ export function GeminiCopilotView() {
             type="text"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
-            placeholder="Ask Gemini AI Agent about live Snowflake metrics..."
+            placeholder="Ask INSIGHTS AI about live Snowflake metrics..."
             className="flex-1 px-4 py-2.5 bg-background border border-border rounded-2xl text-xs text-foreground placeholder-muted focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <button
