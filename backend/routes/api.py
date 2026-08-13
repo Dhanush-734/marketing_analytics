@@ -94,11 +94,11 @@ class KPIResource(Resource):
             logger.warning(f"Snowflake unreachable, returning fallback KPI data: {e}")
             return success_response(
                 {
-                    "Total Revenue": 1450280.50,
-                    "Total Spend": 482150.00,
-                    "Overall ROI": 200.79,
-                    "Average ROI": 200.79,
-                    "Average CTR": 4.12,
+                    "Total Revenue": 205981967467.00,
+                    "Total Spend": 24320196730.04,
+                    "Overall ROI": 746.96,
+                    "Average ROI": 746.96,
+                    "Average CTR": 7.00,
                 }
             )
 
@@ -149,10 +149,11 @@ class ChannelsResource(Resource):
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback Channel data: {e}")
             return [
-                {"channel": "Google Search", "revenue": 520400.0, "spend": 140000.0, "roi": 3.72, "ctr": 5.4},
-                {"channel": "Facebook Ads", "revenue": 380200.0, "spend": 120000.0, "roi": 3.17, "ctr": 4.2},
-                {"channel": "LinkedIn Ads", "revenue": 290100.0, "spend": 110000.0, "roi": 2.64, "ctr": 3.1},
-                {"channel": "Email Marketing", "revenue": 259580.5, "spend": 40000.0, "roi": 6.49, "ctr": 6.8},
+                {"channel": "LinkedIn Ads", "revenue": 42024466431.00, "spend": 4946703417.76, "roi": 749.54, "ctr": 6.99},
+                {"channel": "Google Ads", "revenue": 41860116998.00, "spend": 4933084728.77, "roi": 748.56, "ctr": 7.03},
+                {"channel": "Meta Ads", "revenue": 39072097459.00, "spend": 4620283120.27, "roi": 745.66, "ctr": 6.99},
+                {"channel": "Email Marketing", "revenue": 40979391192.00, "spend": 4846427310.69, "roi": 745.56, "ctr": 7.00},
+                {"channel": "Organic Search", "revenue": 42045895387.00, "spend": 4973698152.55, "roi": 745.36, "ctr": 7.01},
             ]
 
 
@@ -203,11 +204,44 @@ class CampaignsResource(Resource):
             return data
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback Campaign data: {e}")
+            try:
+                import pandas as pd
+                csv_path = os.path.join(os.path.dirname(__file__), "../../datasets/generated/daily_performance.csv")
+                camp_path = os.path.join(os.path.dirname(__file__), "../../datasets/generated/campaigns.csv")
+                if os.path.exists(csv_path) and os.path.exists(camp_path):
+                    df_perf = pd.read_csv(csv_path)
+                    df_camp = pd.read_csv(camp_path)
+                    merged = df_perf.groupby("campaign_id").agg({
+                        "revenue": "sum",
+                        "spend": "sum",
+                        "conversions": "sum",
+                        "clicks": "sum",
+                        "impressions": "sum"
+                    }).reset_index()
+                    merged = merged.merge(df_camp, on="campaign_id")
+                    res = []
+                    for _, r in merged.iterrows():
+                        sp = float(r["spend"])
+                        rev = float(r["revenue"])
+                        roi = round(((rev - sp) / sp) * 100, 2) if sp > 0 else 0.0
+                        ctr = round((r["clicks"] / r["impressions"]) * 100, 2) if r["impressions"] > 0 else 0.0
+                        res.append({
+                            "campaign": str(r["campaign_name"]),
+                            "revenue": rev,
+                            "spend": sp,
+                            "conversions": int(r["conversions"]),
+                            "roi": roi,
+                            "ctr": ctr
+                        })
+                    return sorted(res, key=lambda x: x["revenue"], reverse=True)
+            except Exception as ex:
+                logger.error(f"Campaign CSV Fallback Error: {ex}")
             return [
-                {"campaign": "Q4 Growth Sprint", "revenue": 340000.0, "spend": 90000.0, "conversions": 1250, "roi": 277.78, "ctr": 7.1},
-                {"campaign": "Black Friday Special", "revenue": 410000.0, "spend": 110000.0, "conversions": 1820, "roi": 272.73, "ctr": 6.9},
-                {"campaign": "Brand Awareness 2026", "revenue": 210000.0, "spend": 85000.0, "conversions": 740, "roi": 147.06, "ctr": 6.8},
-                {"campaign": "Retargeting Campaign", "revenue": 490280.5, "spend": 137150.0, "conversions": 2100, "roi": 257.47, "ctr": 7.2},
+                {"campaign": "Monitored leadingedge access", "revenue": 245309596.0, "spend": 29727293.89, "conversions": 90944, "roi": 725.20, "ctr": 7.36},
+                {"campaign": "Robust 24/7 structure", "revenue": 225071215.0, "spend": 26753881.00, "conversions": 84120, "roi": 741.27, "ctr": 7.15},
+                {"campaign": "Multi-layered well-modulated leverage", "revenue": 201096036.0, "spend": 19483497.18, "conversions": 76500, "roi": 932.14, "ctr": 7.42},
+                {"campaign": "Synergized mission-critical benchmark", "revenue": 195878868.0, "spend": 22976617.96, "conversions": 71200, "roi": 752.51, "ctr": 7.08},
+                {"campaign": "Switchable uniform attitude", "revenue": 195563746.0, "spend": 23631278.23, "conversions": 69800, "roi": 727.56, "ctr": 6.95},
             ]
 
 
@@ -253,9 +287,9 @@ class CustomersResource(Resource):
         except Exception as e:
             logger.warning(f"Snowflake unreachable, returning fallback Customer data: {e}")
             return [
-                {"customer_segment": "Enterprise", "total_customers": 450, "total_revenue": 680400.0},
-                {"customer_segment": "Mid-Market", "total_customers": 1280, "total_revenue": 490200.0},
-                {"customer_segment": "SMB", "total_customers": 3420, "total_revenue": 279680.5},
+                {"customer_segment": "Premium", "total_customers": 4401, "total_revenue": 70467171758.00},
+                {"customer_segment": "Returning", "total_customers": 4383, "total_revenue": 68774606218.00},
+                {"customer_segment": "New", "total_customers": 4288, "total_revenue": 66740189491.00},
             ]
 
 
@@ -369,16 +403,17 @@ class DashboardResource(Resource):
             logger.warning(f"Snowflake unreachable, returning fallback Dashboard data: {e}")
             return {
                 "kpis": {
-                    "revenue": 1450280.50,
-                    "spend": 482150.00,
-                    "roi": 3.01,
-                    "ctr": 4.12,
+                    "revenue": 205981967467.00,
+                    "spend": 24320196730.04,
+                    "roi": 746.96,
+                    "ctr": 7.00,
                 },
                 "channels": [
-                    {"channel": "Google Search", "revenue": 520400.0, "spend": 140000.0, "roi": 3.72},
-                    {"channel": "Facebook Ads", "revenue": 380200.0, "spend": 120000.0, "roi": 3.17},
-                    {"channel": "LinkedIn Ads", "revenue": 290100.0, "spend": 110000.0, "roi": 2.64},
-                    {"channel": "Email Marketing", "revenue": 259580.5, "spend": 40000.0, "roi": 6.49},
+                    {"channel": "LinkedIn Ads", "revenue": 42024466431.00, "spend": 4946703417.76, "roi": 749.54},
+                    {"channel": "Google Ads", "revenue": 41860116998.00, "spend": 4933084728.77, "roi": 748.56},
+                    {"channel": "Meta Ads", "revenue": 39072097459.00, "spend": 4620283120.27, "roi": 745.66},
+                    {"channel": "Email Marketing", "revenue": 40979391192.00, "spend": 4846427310.69, "roi": 745.56},
+                    {"channel": "Organic Search", "revenue": 42045895387.00, "spend": 4973698152.55, "roi": 745.36},
                 ],
             }
 
