@@ -11,66 +11,99 @@ export function Logo({ className = '', size = 40, showText = false }: LogoProps)
         viewBox="0 0 512 512"
         width={size}
         height={size}
-        className="shrink-0 select-none"
+        className="shrink-0 select-none drop-shadow-md"
       >
         <defs>
-          {/* Primary Blue-to-Purple Gradient */}
-          <linearGradient id="logoPrimaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#2563EB" />
-            <stop offset="100%" stopColor="#7C3AED" />
+          {/* Rich Royal Blue to Electric Purple Background Gradient */}
+          <linearGradient id="logoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1E52F4" />
+            <stop offset="45%" stopColor="#4F38F3" />
+            <stop offset="100%" stopColor="#9322E7" />
           </linearGradient>
 
-          {/* Circular Ring Gradient */}
-          <linearGradient id="logoCircleGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="var(--logo-white)" />
-            <stop offset="50%" stopColor="#2563EB" />
-            <stop offset="100%" stopColor="#7C3AED" />
+          {/* Crisp White/Silver Icon Fill Gradient */}
+          <linearGradient id="logoIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="100%" stopColor="#F1F5F9" />
           </linearGradient>
+
+          {/* Subtle Outer Drop Shadow */}
+          <filter id="logoShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#000000" floodOpacity="0.3" />
+          </filter>
         </defs>
 
-        {/* 1. Circular Emblem Outline */}
-        <path
-          d="M 370,140 A 160,160 0 1,0 345,305"
+        {/* 1. Rounded Square Gradient Container (Matching User's Logo Image) */}
+        <rect
+          x="16"
+          y="16"
+          width="480"
+          height="480"
+          rx="105"
+          fill="url(#logoBgGrad)"
+          filter="url(#logoShadow)"
+        />
+
+        {/* Inner Highlight Border */}
+        <rect
+          x="18"
+          y="18"
+          width="476"
+          height="476"
+          rx="103"
           fill="none"
-          stroke="url(#logoCircleGrad)"
-          strokeWidth="16"
+          stroke="#FFFFFF"
+          strokeOpacity="0.3"
+          strokeWidth="2.5"
+        />
+
+        {/* 2. Main Upper Surrounding Circular Arc */}
+        <path
+          d="M 130 335 A 160 160 0 1 1 370 175"
+          fill="none"
+          stroke="url(#logoIconGrad)"
+          strokeWidth="18"
           strokeLinecap="round"
         />
 
-        {/* 2. Data Nodes and Connected Analytics Lines (Upper Left) */}
+        {/* 3. Bottom Complementary Arc Curve */}
         <path
-          d="M 185,185 L 205,150 L 225,160 L 245,125"
+          d="M 140 375 A 155 155 0 0 0 350 375"
           fill="none"
-          stroke="#2563EB"
-          strokeWidth="4"
+          stroke="url(#logoIconGrad)"
+          strokeWidth="18"
+          strokeLinecap="round"
+        />
+
+        {/* 4. Three Ascending Bar Chart Pillars */}
+        {/* Left Bar (Short) */}
+        <rect x="175" y="295" width="40" height="75" rx="8" fill="url(#logoIconGrad)" />
+
+        {/* Middle Bar (Medium) */}
+        <rect x="236" y="235" width="40" height="135" rx="8" fill="url(#logoIconGrad)" />
+
+        {/* Right Bar (Tall) */}
+        <rect x="297" y="185" width="40" height="185" rx="8" fill="url(#logoIconGrad)" />
+
+        {/* 5. Upward Growth Arrow Line Across Chart */}
+        <path
+          d="M 138 340 L 222 245 L 262 275 L 365 168"
+          fill="none"
+          stroke="url(#logoIconGrad)"
+          strokeWidth="20"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.8"
         />
-        <circle cx="185" cy="185" r="7" fill="var(--logo-white)" />
-        <circle cx="205" cy="150" r="7" fill="#2563EB" />
-        <circle cx="225" cy="160" r="7" fill="#2563EB" />
-        <circle cx="245" cy="125" r="7" fill="#7C3AED" />
 
-        {/* 3. Stylized "I" Pillars (Insight Innovators) */}
-        {/* Left "I" Pillar (with 3D bevel effect) */}
-        <polygon points="215,200 235,190 235,340 215,340" fill="var(--logo-gray)" />
-        <polygon points="235,190 255,180 255,340 235,340" fill="var(--logo-white)" />
-
-        {/* Right "I" Pillar (with 3D bevel effect) */}
-        <polygon points="270,150 290,140 290,340 270,340" fill="var(--logo-gray)" />
-        <polygon points="290,140 310,130 310,340 290,340" fill="var(--logo-white)" />
-
-        {/* 4. Upward Growth Arrow (Winding through and shooting up) */}
+        {/* Arrow Head at Top-Right */}
         <path
-          d="M 215,270 L 260,220 L 285,240 L 380,145"
+          d="M 318 164 L 372 155 L 362 208"
           fill="none"
-          stroke="url(#logoPrimaryGrad)"
-          strokeWidth="16"
+          stroke="url(#logoIconGrad)"
+          strokeWidth="20"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <polygon points="360,135 395,130 390,165" fill="url(#logoPrimaryGrad)" />
       </svg>
 
       {showText && (
