@@ -1,0 +1,21 @@
+{
+  "model_name": "RandomForestRegressor",
+  "n_estimators": 100,
+  "mae": 1165486.8968508597,
+  "rmse": 1610975.3042216108,
+  "r2_score": 0.9770033532488953,
+  "features": [
+    "channel",
+    "spend",
+    "impressions",
+    "clicks",
+    "ctr",
+    "leads",
+    "qualified_leads",
+    "conversions",
+    "duration_days"
+  ],
+  "target": "revenue",
+  "train_samples": 8000,
+  "test_samples": 2000
+}
