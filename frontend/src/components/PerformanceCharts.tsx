@@ -386,7 +386,7 @@ export function EmailFunnelChart({ email }: { email: EmailPerformance }) {
   );
 }
 
-// Custom Recharts Treemap Node Renderer for zero-overflow text rendering
+// Custom Recharts Treemap Node Renderer for zero-overflow crisp text rendering
 const CustomTreemapNode = (props: any) => {
   const { x, y, width, height, index, name } = props;
   if (width <= 0 || height <= 0) return null;
@@ -407,29 +407,28 @@ const CustomTreemapNode = (props: any) => {
         height={height - 2}
         style={{
           fill,
-          rx: 6,
-          ry: 6,
+          rx: 8,
+          ry: 8,
           stroke: '#ffffff',
-          strokeWidth: 1.5,
+          strokeWidth: 2,
         }}
       />
-      {width > 25 && height > 20 && (
+      {width > 30 && height > 22 && (
         <text
           x={x + width / 2}
           y={y + height / 2}
           textAnchor="middle"
           dominantBaseline="central"
           fill="#FFFFFF"
-          fontSize={width < 65 ? 10 : 12}
-          fontWeight={900}
-          fontFamily="system-ui, -apple-system, sans-serif"
+          fontSize={width < 70 ? 10 : 12}
+          fontWeight={700}
+          fontFamily="Inter, system-ui, -apple-system, sans-serif"
           className="select-none pointer-events-none"
-          style={{ filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' }}
         >
           {line2 ? (
             <>
-              <tspan x={x + width / 2} dy="-0.5em">{line1}</tspan>
-              <tspan x={x + width / 2} dy="1.1em">{line2}</tspan>
+              <tspan x={x + width / 2} dy="-0.6em">{line1}</tspan>
+              <tspan x={x + width / 2} dy="1.2em">{line2}</tspan>
             </>
           ) : (
             line1
@@ -450,14 +449,21 @@ export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerforma
       }));
     }
     return [
-      { name: 'Google Ads', size: 52300 },
-      { name: 'Meta Ads', fontName: 'Meta Ads', size: 48150 },
-      { name: 'LinkedIn Ads', size: 45210 },
-      { name: 'YouTube Ads', size: 38400 },
-      { name: 'Email Marketing', size: 21920 },
-      { name: 'Direct Traffic', size: 18500 },
+      { name: 'Google Ads', size: 52300000000 },
+      { name: 'Meta Ads', size: 48150000000 },
+      { name: 'LinkedIn Ads', size: 45210000000 },
+      { name: 'YouTube Ads', size: 38400000000 },
+      { name: 'Email Marketing', size: 21921967467 },
+      { name: 'Direct Traffic', size: 18500000000 },
     ];
   }, [channels]);
+
+  const formatTooltipVal = (val: number) => {
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹${(val / 100000).toFixed(2)} L`;
+    if (val >= 1000) return `${val.toLocaleString()} Visits`;
+    return `${val}`;
+  };
 
   return (
     <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
@@ -471,7 +477,7 @@ export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerforma
         >
           <Tooltip
             wrapperClassName="custom-tooltip"
-            formatter={(val: any) => [`Revenue Yield : ₹${(Number(val) / 1000).toFixed(1)}k Cr`, 'Channel']}
+            formatter={(val: any) => [formatTooltipVal(Number(val)), 'Revenue Yield']}
           />
         </Treemap>
       </ResponsiveContainer>
