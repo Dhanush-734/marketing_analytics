@@ -11,96 +11,97 @@ export function Logo({ className = '', size = 40, showText = false }: LogoProps)
         viewBox="0 0 512 512"
         width={size}
         height={size}
-        className="shrink-0 select-none drop-shadow-md"
+        className="shrink-0 select-none drop-shadow-lg"
       >
         <defs>
-          {/* Rich Royal Blue to Electric Purple Background Gradient */}
+          {/* Royal Blue to Electric Violet Gradient matching exact brand image */}
           <linearGradient id="logoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#1E52F4" />
-            <stop offset="45%" stopColor="#4F38F3" />
-            <stop offset="100%" stopColor="#9322E7" />
+            <stop offset="0%" stopColor="#1752F3" />
+            <stop offset="45%" stopColor="#4A37EE" />
+            <stop offset="100%" stopColor="#9C17EC" />
           </linearGradient>
 
-          {/* Crisp White/Silver Icon Fill Gradient */}
+          {/* Crisp Pure White Icon Fill */}
           <linearGradient id="logoIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="100%" stopColor="#F1F5F9" />
+            <stop offset="100%" stopColor="#F8FAFC" />
           </linearGradient>
 
-          {/* Subtle Outer Drop Shadow */}
+          {/* Soft Outer Shadow */}
           <filter id="logoShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#000000" floodOpacity="0.3" />
+            <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#000000" floodOpacity="0.35" />
           </filter>
         </defs>
 
-        {/* 1. Rounded Square Gradient Container (Matching User's Logo Image) */}
+        {/* 1. Rounded Square Background App Icon Tile */}
         <rect
           x="16"
           y="16"
           width="480"
           height="480"
-          rx="105"
+          rx="108"
           fill="url(#logoBgGrad)"
           filter="url(#logoShadow)"
         />
 
-        {/* Inner Highlight Border */}
+        {/* Inner Highlight Ring Border */}
         <rect
           x="18"
           y="18"
           width="476"
           height="476"
-          rx="103"
+          rx="106"
           fill="none"
           stroke="#FFFFFF"
-          strokeOpacity="0.3"
+          strokeOpacity="0.32"
           strokeWidth="2.5"
         />
 
-        {/* 2. Main Upper Surrounding Circular Arc */}
+        {/* 2. Main Sweeping Circular Ring Arc */}
         <path
-          d="M 130 335 A 160 160 0 1 1 370 175"
+          d="M 330 365 A 160 160 0 1 1 370 175"
           fill="none"
           stroke="url(#logoIconGrad)"
-          strokeWidth="18"
+          strokeWidth="19"
           strokeLinecap="round"
         />
 
-        {/* 3. Bottom Complementary Arc Curve */}
+        {/* Bottom Arc Arrow Tail Tip */}
         <path
-          d="M 140 375 A 155 155 0 0 0 350 375"
+          d="M 315 352 L 350 372 L 340 348"
           fill="none"
           stroke="url(#logoIconGrad)"
-          strokeWidth="18"
-          strokeLinecap="round"
-        />
-
-        {/* 4. Three Ascending Bar Chart Pillars */}
-        {/* Left Bar (Short) */}
-        <rect x="175" y="295" width="40" height="75" rx="8" fill="url(#logoIconGrad)" />
-
-        {/* Middle Bar (Medium) */}
-        <rect x="236" y="235" width="40" height="135" rx="8" fill="url(#logoIconGrad)" />
-
-        {/* Right Bar (Tall) */}
-        <rect x="297" y="185" width="40" height="185" rx="8" fill="url(#logoIconGrad)" />
-
-        {/* 5. Upward Growth Arrow Line Across Chart */}
-        <path
-          d="M 138 340 L 222 245 L 262 275 L 365 168"
-          fill="none"
-          stroke="url(#logoIconGrad)"
-          strokeWidth="20"
+          strokeWidth="17"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Arrow Head at Top-Right */}
+        {/* 3. Ascending Bar Chart Pillars */}
+        {/* Bar 1 (Short) */}
+        <rect x="165" y="295" width="42" height="70" rx="7" fill="url(#logoIconGrad)" />
+
+        {/* Bar 2 (Medium) */}
+        <rect x="227" y="235" width="42" height="130" rx="7" fill="url(#logoIconGrad)" />
+
+        {/* Bar 3 (Tall) */}
+        <rect x="289" y="180" width="42" height="185" rx="7" fill="url(#logoIconGrad)" />
+
+        {/* 4. Trending Line Across Chart */}
         <path
-          d="M 318 164 L 372 155 L 362 208"
+          d="M 135 340 L 210 260 L 252 290 L 365 170"
           fill="none"
           stroke="url(#logoIconGrad)"
-          strokeWidth="20"
+          strokeWidth="21"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Upward Arrowhead at Top-Right */}
+        <path
+          d="M 315 160 L 372 155 L 362 212"
+          fill="none"
+          stroke="url(#logoIconGrad)"
+          strokeWidth="21"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
