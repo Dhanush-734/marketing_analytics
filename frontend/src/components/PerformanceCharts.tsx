@@ -212,14 +212,14 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         {chartType === 'donut' && (
           <>
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                 <Pie
                   data={customers}
                   cx="50%"
-                  cy="45%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  paddingAngle={5}
+                  cy="42%"
+                  innerRadius={42}
+                  outerRadius={68}
+                  paddingAngle={4}
                   dataKey="total_customers"
                   nameKey="customer_segment"
                 >
@@ -232,17 +232,18 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
                   verticalAlign="bottom"
                   align="center"
                   iconType="circle"
-                  iconSize={8}
+                  iconSize={7}
                   layout="horizontal"
+                  wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', paddingTop: '4px' }}
                   formatter={(value, _, index) => {
                     const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
-                    return <span style={{ color, fontWeight: 700, fontSize: '11px', margin: '0 4px' }}>{value}</span>;
+                    return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-              <span className="text-[8px] uppercase font-bold text-muted tracking-wider block">Total Customers</span>
+            <div className="absolute top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+              <span className="text-[7px] uppercase font-bold text-muted tracking-wider block">Total Customers</span>
               <span className="text-xs font-extrabold text-foreground font-sans">
                 {totalCustomersCount.toLocaleString()}
               </span>

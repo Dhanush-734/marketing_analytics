@@ -193,18 +193,18 @@ export default function App() {
                   />
 
                   {/* Middle Row (Asymmetrical layout) */}
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
                     {/* Middle Left: Large Revenue Area Chart (col-span-3) */}
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[340px] lg:col-span-3 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[340px] lg:col-span-3 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Revenue Earnings Area</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Snowflake sales telemetry</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <RevenueAreaChart monthlyData={monthlyData} />
                       </div>
                     </motion.div>
@@ -213,31 +213,31 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[340px] lg:col-span-2 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[340px] lg:col-span-2 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Customer loyalty share</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Purchases attribution ratios</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <CustomerSegmentsDonutChart customers={customers} />
                       </div>
                     </motion.div>
                   </div>
 
                   {/* Bottom Row (Asymmetrical layout) */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
                     {/* Bottom Left: Campaign Performance Horizontal Bars (col-span-2) */}
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[320px] lg:col-span-2 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[320px] lg:col-span-2 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Campaigns Revenue Yield</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Top campaigns returns</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <CampaignPerformanceHorizontalBarChart campaigns={campaigns} />
                       </div>
                     </motion.div>
@@ -246,13 +246,13 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[320px] lg:col-span-2 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[320px] lg:col-span-2 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">ROI Trend Analysis</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">MONTHLY ROI TREND</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <RoiSmoothLineChart monthlyData={monthlyData} />
                       </div>
                     </motion.div>
@@ -261,13 +261,13 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col justify-between h-[320px] lg:col-span-1 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col justify-between h-[240px] sm:h-[320px] lg:col-span-1 border border-transparent w-full max-w-full overflow-hidden"
                     >
                       <div className="mb-1">
                         <h3 className="text-xs font-bold text-foreground">Average CTR Gauge</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Click-through rate gauge</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <CtrRadialProgressChart ctr={kpis.ctr} />
                       </div>
                     </motion.div>
@@ -281,18 +281,18 @@ export default function App() {
               {/* VIEW: MULTI-CHANNEL ROI */}
               {activeTab === 'channels' && (
                 <>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     {/* Spend: Vertical Bar Chart (Blue) */}
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[350px] border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Spend Distribution</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Advertising cost by channel</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <SpendBarChart channels={channels} />
                       </div>
                     </motion.div>
@@ -301,13 +301,13 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[350px] border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Platform Stacked Revenue Performance</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Stacked cost vs income returns</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <MarketingChannelsStackedBarChart channels={channels} />
                       </div>
                     </motion.div>
@@ -319,24 +319,24 @@ export default function App() {
 
               {/* VIEW: CAMPAIGN BREAKDOWN */}
               {activeTab === 'campaigns' && (
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
                   {/* Campaign Performance: Horizontal Bars (Pink) */}
-                  <div className="lg:col-span-2 space-y-6">
+                  <div className="lg:col-span-2 space-y-6 w-full max-w-full overflow-hidden">
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[350px] border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Top Campaigns Revenue Yield</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Campaigns sales yield breakdown</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <CampaignPerformanceHorizontalBarChart campaigns={campaigns} />
                       </div>
                     </motion.div>
                   </div>
-                  <div className="lg:col-span-3">
+                  <div className="lg:col-span-3 w-full max-w-full overflow-hidden">
                     <DataTable campaigns={campaigns} />
                   </div>
                 </div>
@@ -349,25 +349,25 @@ export default function App() {
                   <IndiaMap stateData={stateDistribution} />
 
                   {/* Bottom Section: Traffic Sources & Segment Breakdown */}
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
                     {/* Traffic Sources: Treemap (Cyan/Multicolor) */}
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[360px] lg:col-span-2 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[360px] lg:col-span-2 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Attraction Traffic Sources</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Asymmetrical treemap of inbound acquisition channels</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <TrafficSourcesTreemap />
                       </div>
                     </motion.div>
 
                     {/* Customer segments details */}
-                    <div className="lg:col-span-3 bg-card p-6 rounded-3xl shadow-[var(--card-shadow)] border border-transparent">
-                      <div className="mb-6">
+                    <div className="lg:col-span-3 bg-card p-4 sm:p-6 rounded-3xl shadow-[var(--card-shadow)] border border-transparent w-full max-w-full overflow-hidden">
+                      <div className="mb-4 sm:mb-6">
                         <h3 className="text-xs font-bold text-foreground">Attributed Segment Breakdown</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wider block mt-0.5">Detailed CRM purchasers data</span>
                       </div>
@@ -387,7 +387,7 @@ export default function App() {
                                   className="h-full bg-primary rounded-full"
                                 />
                               </div>
-                              <div className="flex justify-between text-[10px] text-muted">
+                              <div className="flex justify-between text-[10px] text-muted flex-wrap gap-1">
                                 <span>Reach: {new Intl.NumberFormat('en-IN').format(c.total_customers)} purchasers</span>
                                 <span>Sales: {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(c.total_revenue)}</span>
                               </div>
@@ -403,8 +403,8 @@ export default function App() {
               {/* VIEW: EMAIL CAMPAIGNS */}
               {activeTab === 'email' && (
                 <>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="bg-card p-5 rounded-2xl shadow-[var(--card-shadow)] flex flex-col justify-between h-28">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="bg-card p-4 sm:p-5 rounded-2xl shadow-[var(--card-shadow)] flex flex-col justify-between h-28">
                       <div className="flex justify-between items-start">
                         <span className="text-[9px] font-bold text-muted uppercase tracking-wide">Emails Dispatched</span>
                         <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
@@ -419,7 +419,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="bg-card p-5 rounded-2xl shadow-[var(--card-shadow)] flex flex-col justify-between h-28">
+                    <div className="bg-card p-4 sm:p-5 rounded-2xl shadow-[var(--card-shadow)] flex flex-col justify-between h-28">
                       <div className="flex justify-between items-start">
                         <span className="text-[9px] font-bold text-muted uppercase tracking-wide">Open Rate</span>
                         <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
@@ -434,7 +434,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="bg-card p-5 rounded-2xl shadow-[var(--card-shadow)] flex flex-col justify-between h-28">
+                    <div className="bg-card p-4 sm:p-5 rounded-2xl shadow-[var(--card-shadow)] flex flex-col justify-between h-28">
                       <div className="flex justify-between items-start">
                         <span className="text-[9px] font-bold text-muted uppercase tracking-wide">Clicks CTR</span>
                         <div className="p-1.5 bg-primary/10 rounded-lg text-primary">
@@ -450,18 +450,18 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
                     {/* Funnel chart left */}
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[340px] lg:col-span-2 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[340px] lg:col-span-2 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Email Dispatch Funnel</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Sent vs Opened vs Clicked proportions</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <EmailFunnelChart email={email} />
                       </div>
                     </motion.div>
@@ -470,13 +470,13 @@ export default function App() {
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
-                      className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[340px] lg:col-span-3 border border-transparent"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[340px] lg:col-span-3 border border-transparent w-full max-w-full overflow-hidden"
                     >
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <h3 className="text-xs font-bold text-foreground">Revenue Trend Gradient</h3>
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Rolling monthly sales timeline</span>
                       </div>
-                      <div className="flex-1 min-h-0">
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
                         <RevenueTrendGradientAreaChart monthlyData={monthlyData} />
                       </div>
                     </motion.div>
