@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Database, RefreshCw, Bell, Search, Sun, Moon, Menu, X, LogOut } from 'lucide-react';
+import { Database, RefreshCw, Search, Sun, Moon, Menu, X, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -127,20 +127,6 @@ export function Header({
         >
           <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
         </button>
-
-        {/* Notifications indicator */}
-        <div className="relative">
-          <button
-            aria-label="Notifications"
-            className="p-2.5 sm:p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center transition-colors active:scale-95"
-          >
-            <Bell size={14} />
-          </button>
-          <span className="absolute -top-1 -right-1 flex h-2 w-2 pointer-events-none">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-          </span>
-        </div>
 
         {/* Theme Toggle switch */}
         <button
