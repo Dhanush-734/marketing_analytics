@@ -21,7 +21,7 @@ export function StickyBottomNav({ activeTab, setActiveTab }: StickyBottomNavProp
 
       {/* Glassmorphism Sticky Bottom Navigation Bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-card/85 border-t border-slate-200 dark:border-border/60 z-50 grid grid-cols-5 items-center md:hidden px-1 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] select-none w-full max-w-full overflow-hidden"
+        className="fixed bottom-0 left-0 right-0 h-16 bg-white/90 dark:bg-[#131A2E]/90 border-t border-slate-200 dark:border-slate-800/80 z-50 grid grid-cols-5 items-center md:hidden px-1 shadow-[0_-4px_20px_rgba(0,0,0,0.12)] select-none w-full max-w-full overflow-hidden"
         style={{
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)'
@@ -37,13 +37,13 @@ export function StickyBottomNav({ activeTab, setActiveTab }: StickyBottomNavProp
               className={`flex flex-col items-center justify-center h-full w-full min-h-[44px] min-w-0 transition-all duration-150 active:scale-95 cursor-pointer px-0.5 ${
                 isActive
                   ? 'text-primary font-bold'
-                  : 'text-muted hover:text-foreground'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-foreground'
               }`}
             >
-              <div className={`${isActive ? 'text-primary scale-110 drop-shadow-xs' : 'text-muted/80'} transition-transform`}>
+              <div className={`${isActive ? 'text-primary scale-110 drop-shadow-xs' : 'text-slate-600 dark:text-slate-400'} transition-transform`}>
                 {item.icon}
               </div>
-              <span className={`text-[8.5px] xs:text-[9.5px] mt-1 font-semibold tracking-tight text-center truncate max-w-full block leading-none ${isActive ? 'text-primary font-extrabold' : 'text-muted'}`}>
+              <span className={`text-[8.5px] xs:text-[9.5px] mt-1 font-semibold tracking-tight text-center truncate max-w-full block leading-none ${isActive ? 'text-primary font-extrabold' : 'text-slate-600 dark:text-slate-400'}`}>
                 {item.label}
               </span>
             </button>
