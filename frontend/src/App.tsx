@@ -20,7 +20,7 @@ import {
   TrafficSourcesTreemap,
   MarketingChannelsStackedBarChart
 } from './components/PerformanceCharts';
-import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Info, Terminal, Cpu, Layers, GitBranch, ArrowRight, Check } from 'lucide-react';
+import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Info, Terminal, Cpu, Layers, GitBranch, ArrowRight, ArrowDown, Check } from 'lucide-react';
 import { Logo } from './components/Logo';
 import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
@@ -582,45 +582,45 @@ export default function App() {
 
               {/* VIEW: ABOUT & TEAM */}
               {activeTab === 'about' && (
-                <div className="space-y-8 select-none">
+                <div className="space-y-6 sm:space-y-8 select-none w-full max-w-full overflow-hidden">
                   {/* About Section */}
-                  <div className="bg-card p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent relative overflow-hidden">
+                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent relative overflow-hidden w-full max-w-full">
                     <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl pointer-events-none" />
-                    <div className="relative max-w-4xl space-y-4 font-sans">
+                    <div className="relative max-w-4xl space-y-3 sm:space-y-4 font-sans">
                       <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/15 border border-primary/20 rounded-full text-primary text-[10px] font-bold uppercase tracking-wider">
                         <Info size={11} />
                         About Insight Innovators
                       </div>
-                      <h2 className="text-xl md:text-2xl font-extrabold text-foreground leading-tight tracking-tight">
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-foreground leading-tight tracking-tight">
                         Transforming Raw Business Data into Strategic Value
                       </h2>
-                      <p className="text-xs md:text-sm text-muted leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted leading-relaxed">
                         Insight Innovators is a student development team focused on building intelligent, data-driven software solutions using modern technologies. Our goal is to transform raw business data into meaningful insights through analytics, visualization, automation, and cloud technologies.
                       </p>
-                      <p className="text-xs md:text-sm text-muted leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted leading-relaxed">
                         This project demonstrates how marketing campaign data can be collected, processed, analyzed, and visualized to support better business decision-making. It combines data engineering, cloud warehousing, business intelligence, and web development into one integrated platform.
                       </p>
-                      <p className="text-xs md:text-sm text-muted leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted leading-relaxed">
                         Our mission is to create scalable, modern, and enterprise-ready analytics solutions that help organizations monitor campaign performance, measure ROI, understand customer behavior, and automate reporting processes.
                       </p>
                     </div>
                   </div>
 
                   {/* Workflow Pipeline */}
-                  <div className="bg-card p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-6">
+                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-5 sm:space-y-6 w-full max-w-full overflow-hidden">
                     <div>
-                      <h3 className="text-xs md:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                         <GitBranch size={16} className="text-primary animate-pulse" />
-                        Project Data Pipeline & Workflow
+                        Project Data Pipeline &amp; Workflow
                       </h3>
-                      <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">END-TO-END DATA ORCHESTRATION & GOVERNANCE LIFECYCLE</span>
+                      <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">END-TO-END DATA ORCHESTRATION &amp; GOVERNANCE LIFECYCLE</span>
                     </div>
 
                     {/* Responsive Pipeline Flowchart */}
-                    <div className="flex flex-col xl:flex-row gap-3 items-center justify-between relative py-2">
+                    <div className="flex flex-col xl:flex-row gap-3 items-center justify-between relative py-2 w-full max-w-full">
 
                       {/* Box 1 */}
-                      <div className="w-full xl:w-40 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
+                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-2">
                           <Terminal size={16} />
                         </div>
@@ -629,12 +629,13 @@ export default function App() {
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
-                        <ArrowRight size={15} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 py-0.5">
+                        <ArrowRight size={15} className="text-primary hidden xl:block" />
+                        <ArrowDown size={15} className="text-primary xl:hidden" />
                       </div>
 
                       {/* Box 2 */}
-                      <div className="w-full xl:w-40 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
+                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-2">
                           <Database size={16} />
                         </div>
@@ -643,12 +644,13 @@ export default function App() {
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
-                        <ArrowRight size={15} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 py-0.5">
+                        <ArrowRight size={15} className="text-primary hidden xl:block" />
+                        <ArrowDown size={15} className="text-primary xl:hidden" />
                       </div>
 
                       {/* Box 3 */}
-                      <div className="w-full xl:w-40 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
+                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-cyan-50 dark:bg-cyan-950/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-2">
                           <Cpu size={16} />
                         </div>
@@ -657,12 +659,13 @@ export default function App() {
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
-                        <ArrowRight size={15} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 py-0.5">
+                        <ArrowRight size={15} className="text-primary hidden xl:block" />
+                        <ArrowDown size={15} className="text-primary xl:hidden" />
                       </div>
 
                       {/* Box 4 */}
-                      <div className="w-full xl:w-40 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
+                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-2">
                           <Layers size={16} />
                         </div>
@@ -671,12 +674,13 @@ export default function App() {
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
-                        <ArrowRight size={15} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 py-0.5">
+                        <ArrowRight size={15} className="text-primary hidden xl:block" />
+                        <ArrowDown size={15} className="text-primary xl:hidden" />
                       </div>
 
                       {/* Box 5 */}
-                      <div className="w-full xl:w-44 min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-sm flex flex-col items-center justify-center">
+                      <div className="w-full xl:w-44 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
                         <div className="mx-auto w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
                           <Code size={16} />
                         </div>
@@ -685,8 +689,9 @@ export default function App() {
                       </div>
 
                       {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 xl:rotate-0 rotate-90 py-0.5">
-                        <ArrowRight size={15} className="text-primary" />
+                      <div className="flex justify-center text-muted shrink-0 py-0.5">
+                        <ArrowRight size={15} className="text-primary hidden xl:block" />
+                        <ArrowDown size={15} className="text-primary xl:hidden" />
                       </div>
 
                       {/* Box 6 (Final Portal with side features) */}
@@ -732,23 +737,23 @@ export default function App() {
                   </div>
 
                   {/* Developers Section */}
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4 w-full max-w-full overflow-hidden">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-xs md:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                        <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                           <User size={16} className="text-primary" />
                           Project Developers
                         </h3>
                         <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">The core team behind the system</span>
                       </div>
                       <span className="text-[9px] font-bold text-primary lg:hidden flex items-center gap-1">
-                        Swipe to view &rarr;
+                        Swipe &rarr;
                       </span>
                     </div>
 
                     {/* Mobile Horizontal Carousel / Desktop 6-Column Grid */}
                     <div
-                      className="flex lg:grid lg:grid-cols-6 gap-4 overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory scrollbar-none pb-2 pt-1 px-0.5 max-w-full"
+                      className="flex lg:grid lg:grid-cols-6 gap-3.5 sm:gap-4 overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory scrollbar-none pb-2 pt-1 px-0.5 w-full max-w-full"
                       style={{ WebkitOverflowScrolling: 'touch' }}
                     >
                       {[
@@ -762,13 +767,14 @@ export default function App() {
                         <div
                           key={i}
                           tabIndex={0}
-                          className="bg-card p-5 rounded-3xl border border-transparent shadow-[var(--card-shadow)] text-center space-y-3 flex flex-col justify-center items-center group hover:scale-[1.03] transition-all duration-200 shrink-0 lg:shrink w-[65%] sm:w-[45%] md:w-[30%] lg:w-auto snap-start focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="bg-card p-4 sm:p-5 rounded-3xl border border-border/60 shadow-[var(--card-shadow)] text-center space-y-2.5 flex flex-col justify-center items-center group hover:scale-[1.02] transition-all duration-200 shrink-0 lg:shrink w-[240px] xs:w-[260px] lg:w-auto snap-start focus:outline-none focus:ring-1 focus:ring-primary"
                         >
                           <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${dev.color} text-white font-extrabold text-sm flex items-center justify-center shadow-md`}>
                             {dev.initial}
                           </div>
                           <div>
                             <h4 className="text-xs font-bold text-foreground truncate w-full">{dev.name}</h4>
+                            <span className="text-[9px] text-muted block font-semibold mt-0.5">Insight Innovators</span>
                           </div>
                         </div>
                       ))}
@@ -776,15 +782,15 @@ export default function App() {
                   </div>
 
                   {/* Technology & Features Row */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden">
 
                     {/* Technologies Used Card */}
-                    <div className="bg-card p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-5">
+                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-4 sm:space-y-5 w-full max-w-full">
                       <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                         <Cpu size={14} className="text-primary" />
                         Project Technologies
                       </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {[
                           { category: 'Frontend', tech: 'React, TypeScript, Tailwind CSS, Recharts' },
                           { category: 'Database', tech: 'MySQL Database' },
@@ -802,16 +808,16 @@ export default function App() {
                     </div>
 
                     {/* Features & Future Enhancements */}
-                    <div className="bg-card p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-6">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-5 sm:space-y-6 w-full max-w-full">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
 
                         {/* Implemented Features */}
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                             <CheckCircle size={14} className="text-primary" />
                             Core Features
                           </h4>
-                          <ul className="space-y-2.5">
+                          <ul className="space-y-2">
                             {[
                               'Executive Dashboard',
                               'KPI Analytics',
@@ -838,12 +844,12 @@ export default function App() {
                         </div>
 
                         {/* Future Enhancements */}
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                           <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                             <Layers size={14} className="text-primary" />
                             Future Expansion
                           </h4>
-                          <ul className="space-y-2.5">
+                          <ul className="space-y-2">
                             {[
                               'Power BI Executive Reporting',
                               'AI-Based Campaign Recommendations',
