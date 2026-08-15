@@ -584,19 +584,19 @@ export default function App() {
                 <div className="space-y-4 sm:space-y-6 select-none w-full max-w-full overflow-hidden font-sans min-w-0 box-border">
                   
                   {/* About Section */}
-                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 relative overflow-hidden w-full max-w-full min-w-0 box-border">
+                  <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 relative overflow-hidden w-full max-w-full min-w-0 box-border">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/25 rounded-full text-primary text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-3">
                       <Info size={12} />
                       ABOUT INSIGHT INNOVATORS
                     </div>
 
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-foreground leading-snug tracking-tight mb-2 break-words">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 dark:text-foreground leading-snug tracking-tight mb-2 break-words">
                       Transforming Raw Business Data<br className="hidden sm:inline" /> into Strategic Insights
                     </h2>
 
                     <div className="w-12 h-1 bg-primary rounded-full mb-4" />
 
-                    <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal break-words">
+                    <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm text-slate-700 dark:text-foreground/85 leading-relaxed font-normal break-words">
                       <p>
                         Insight Innovators is a student development team focused on building solutions to transform raw business data into meaningful insights through analytics and technology.
                       </p>
@@ -610,19 +610,19 @@ export default function App() {
                   </div>
 
                   {/* Workflow Pipeline Card */}
-                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
+                  <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
                     <div>
-                      <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
                         <GitBranch size={16} className="text-primary shrink-0" />
                         PROJECT DATA PIPELINE &amp; WORKFLOW
                       </h3>
-                      <span className="text-[8.5px] sm:text-[10px] text-muted block mt-0.5 uppercase tracking-wide">
+                      <span className="text-[8.5px] sm:text-[10px] text-slate-500 dark:text-muted block mt-0.5 uppercase tracking-wide">
                         END-TO-END DATA ORCHESTRATION &amp; GOVERNANCE LIFECYCLE
                       </span>
                     </div>
 
                     {/* Mobile Vertically Stacked Layout (< 768px) */}
-                    <div className="block md:hidden border border-blue-200 dark:border-blue-900/40 bg-blue-50/20 dark:bg-slate-900/40 p-3.5 rounded-2xl w-full max-w-full min-w-0 box-border space-y-1.5">
+                    <div className="block md:hidden border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 dark:bg-slate-900/40 p-3.5 rounded-2xl w-full max-w-full min-w-0 box-border space-y-1.5">
                       {[
                         { step: '1. Data Sources', desc: 'Collect data from multiple marketing channels and platforms.', icon: Database, color: 'bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400' },
                         { step: '2. Ingestion', desc: 'Extract and ingest raw data into the staging environment.', icon: Filter, color: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400' },
@@ -632,13 +632,13 @@ export default function App() {
                         { step: '6. Governance', desc: 'Ensure data quality, security, and compliance at every step.', icon: CheckCircle, color: 'bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400' },
                       ].map((item, idx, arr) => (
                         <div key={idx} className="flex flex-col items-center">
-                          <div className="w-full bg-background/80 dark:bg-slate-900/80 p-3 rounded-xl border border-border/60 flex items-center gap-3 min-w-0 box-border">
+                          <div className="w-full bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-slate-200/80 dark:border-border/60 flex items-center gap-3 min-w-0 box-border shadow-xs">
                             <div className={`w-9 h-9 rounded-full ${item.color} flex items-center justify-center shrink-0 shadow-xs`}>
                               <item.icon size={16} />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-[11px] font-extrabold text-foreground">{item.step}</h4>
-                              <p className="text-[9px] text-muted leading-tight mt-0.5 break-words">{item.desc}</p>
+                              <h4 className="text-[11px] font-extrabold text-slate-900 dark:text-foreground">{item.step}</h4>
+                              <p className="text-[9px] text-slate-600 dark:text-muted leading-tight mt-0.5 break-words">{item.desc}</p>
                             </div>
                           </div>
                           {idx < arr.length - 1 && (
@@ -649,61 +649,61 @@ export default function App() {
                     </div>
 
                     {/* Desktop Horizontal Layout (>= 768px) */}
-                    <div className="hidden md:block border border-blue-200 dark:border-blue-900/40 bg-blue-50/20 dark:bg-slate-900/40 p-6 rounded-2xl w-full max-w-full min-w-0 box-border">
+                    <div className="hidden md:block border border-blue-100 dark:border-blue-900/40 bg-blue-50/30 dark:bg-slate-900/40 p-6 rounded-2xl w-full max-w-full min-w-0 box-border">
                       <div className="grid grid-cols-6 gap-3.5 w-full max-w-full min-w-0">
                         
                         {/* Node 1 */}
-                        <div className="bg-background/60 dark:bg-slate-900/60 p-3 rounded-xl border border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0">
+                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
                           <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
                             <Database size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-foreground">1. Data Sources</h4>
-                          <p className="text-[9px] text-muted leading-tight">Collect data from multiple marketing channels.</p>
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">1. Data Sources</h4>
+                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Collect data from multiple marketing channels.</p>
                         </div>
 
                         {/* Node 2 */}
-                        <div className="bg-background/60 dark:bg-slate-900/60 p-3 rounded-xl border border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0">
+                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
                           <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-xs">
                             <Filter size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-foreground">2. Ingestion</h4>
-                          <p className="text-[9px] text-muted leading-tight">Extract and ingest raw data into staging.</p>
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">2. Ingestion</h4>
+                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Extract and ingest raw data into staging.</p>
                         </div>
 
                         {/* Node 3 */}
-                        <div className="bg-background/60 dark:bg-slate-900/60 p-3 rounded-xl border border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0">
+                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
                           <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-xs">
                             <Settings size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-foreground">3. Processing</h4>
-                          <p className="text-[9px] text-muted leading-tight">Clean, validate, and transform data.</p>
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">3. Processing</h4>
+                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Clean, validate, and transform data.</p>
                         </div>
 
                         {/* Node 4 */}
-                        <div className="bg-background/60 dark:bg-slate-900/60 p-3 rounded-xl border border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0">
+                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
                           <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-xs">
                             <Layers size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-foreground">4. Storage</h4>
-                          <p className="text-[9px] text-muted leading-tight">Load curated data into Snowflake.</p>
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">4. Storage</h4>
+                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Load curated data into Snowflake.</p>
                         </div>
 
                         {/* Node 5 */}
-                        <div className="bg-background/60 dark:bg-slate-900/60 p-3 rounded-xl border border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0">
+                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
                           <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
                             <BarChart3 size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-foreground">5. Analytics</h4>
-                          <p className="text-[9px] text-muted leading-tight">Generate insights &amp; visualizations.</p>
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">5. Analytics</h4>
+                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Generate insights &amp; visualizations.</p>
                         </div>
 
                         {/* Node 6 */}
-                        <div className="bg-background/60 dark:bg-slate-900/60 p-3 rounded-xl border border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0">
+                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
                           <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400 flex items-center justify-center shadow-xs">
                             <CheckCircle size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-foreground">6. Governance</h4>
-                          <p className="text-[9px] text-muted leading-tight">Ensure data quality &amp; compliance.</p>
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">6. Governance</h4>
+                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Ensure data quality &amp; compliance.</p>
                         </div>
 
                       </div>
@@ -711,13 +711,13 @@ export default function App() {
                   </div>
 
                   {/* OUR TEAM Section Grid */}
-                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
+                  <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
                     <div>
-                      <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
                         <User size={16} className="text-primary shrink-0" />
                         OUR TEAM
                       </h3>
-                      <span className="text-[8.5px] sm:text-[10px] text-muted block mt-0.5 uppercase tracking-wide">
+                      <span className="text-[8.5px] sm:text-[10px] text-slate-500 dark:text-muted block mt-0.5 uppercase tracking-wide">
                         THE MINDS BEHIND INSIGHT INNOVATORS
                       </span>
                     </div>
@@ -734,14 +734,14 @@ export default function App() {
                       ].map((dev, i) => (
                         <div
                           key={i}
-                          className="bg-background/50 p-3.5 sm:p-5 rounded-2xl border border-border/70 text-center space-y-2 flex flex-col justify-center items-center w-full min-w-0 box-border"
+                          className="bg-slate-50/70 dark:bg-background/50 p-3.5 sm:p-5 rounded-2xl border border-slate-200 dark:border-border/70 text-center space-y-2 flex flex-col justify-center items-center w-full min-w-0 box-border shadow-xs"
                         >
                           <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br ${dev.color} text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-md`}>
                             {dev.initial}
                           </div>
                           <div className="w-full min-w-0">
-                            <h4 className="text-[11px] sm:text-xs font-bold text-foreground truncate w-full">{dev.name}</h4>
-                            <span className="text-[8.5px] sm:text-[9px] text-muted block font-semibold mt-0.5 truncate">Insight Innovators</span>
+                            <h4 className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-foreground truncate w-full">{dev.name}</h4>
+                            <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-muted block font-semibold mt-0.5 truncate">Insight Innovators</span>
                           </div>
                         </div>
                       ))}
@@ -752,8 +752,8 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full max-w-full overflow-hidden min-w-0 box-border">
 
                     {/* Technologies Used Card */}
-                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 w-full max-w-full min-w-0 box-border">
-                      <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                    <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 w-full max-w-full min-w-0 box-border">
+                      <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
                         <Cpu size={14} className="text-primary shrink-0" />
                         PROJECT TECHNOLOGIES
                       </h4>
@@ -766,21 +766,21 @@ export default function App() {
                           { category: 'Analytics', tech: 'Snowflake SQL, INSIGHTS AI' },
                           { category: 'Business Intelligence', tech: 'Power BI (Future Enhancement)' },
                         ].map((t, idx) => (
-                          <div key={idx} className="space-y-1 bg-background/40 p-3 rounded-2xl border border-border min-w-0 box-border">
+                          <div key={idx} className="space-y-1 bg-slate-50/70 dark:bg-background/40 p-3 rounded-2xl border border-slate-200 dark:border-border min-w-0 box-border">
                             <span className="text-[8.5px] sm:text-[9px] font-extrabold text-primary uppercase block">{t.category}</span>
-                            <p className="text-[10px] font-semibold text-foreground leading-relaxed break-words">{t.tech}</p>
+                            <p className="text-[10px] font-semibold text-slate-900 dark:text-foreground leading-relaxed break-words">{t.tech}</p>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Features & Future Enhancements */}
-                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 sm:space-y-6 w-full max-w-full min-w-0 box-border">
+                    <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 sm:space-y-6 w-full max-w-full min-w-0 box-border">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 min-w-0">
 
                         {/* Implemented Features */}
                         <div className="space-y-2.5 sm:space-y-4 min-w-0">
-                          <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
                             <CheckCircle size={14} className="text-primary shrink-0" />
                             CORE FEATURES
                           </h4>
@@ -802,7 +802,7 @@ export default function App() {
                               'Data Visualization',
                               'Enterprise UI'
                             ].map((f, idx) => (
-                              <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-foreground break-words">
+                              <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-slate-900 dark:text-foreground break-words">
                                 <Check size={12} className="text-primary shrink-0" strokeWidth={3} />
                                 {f}
                               </li>
@@ -812,7 +812,7 @@ export default function App() {
 
                         {/* Future Enhancements */}
                         <div className="space-y-2.5 sm:space-y-4 min-w-0">
-                          <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
+                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
                             <Layers size={14} className="text-primary shrink-0" />
                             FUTURE EXPANSION
                           </h4>

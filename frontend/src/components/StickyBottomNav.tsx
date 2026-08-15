@@ -17,11 +17,11 @@ export function StickyBottomNav({ activeTab, setActiveTab }: StickyBottomNavProp
   return (
     <>
       {/* Subtle top gradient transition overlay */}
-      <div className="fixed bottom-16 left-0 right-0 h-6 bg-gradient-to-t from-background/60 to-transparent pointer-events-none md:hidden z-40" />
+      <div className="fixed bottom-16 left-0 right-0 h-6 bg-gradient-to-t from-white/60 dark:from-background/60 to-transparent pointer-events-none md:hidden z-40" />
 
       {/* Glassmorphism Sticky Bottom Navigation Bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 h-16 bg-card/85 border-t border-border/60 z-50 grid grid-cols-5 items-center md:hidden px-1 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none w-full max-w-full overflow-hidden"
+        className="fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-card/85 border-t border-slate-200 dark:border-border/60 z-50 grid grid-cols-5 items-center md:hidden px-1 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] select-none w-full max-w-full overflow-hidden"
         style={{
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)'
