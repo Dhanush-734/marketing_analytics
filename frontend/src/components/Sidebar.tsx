@@ -1,7 +1,7 @@
 import {
   LayoutDashboard,
   Layers,
-  BarChart3,
+  TrendingUp,
   Users,
   Mail,
   ChevronLeft,
@@ -35,7 +35,7 @@ export function Sidebar({
   const menuItems = [
     { id: 'dashboard', label: 'Executive Dashboard', icon: <LayoutDashboard size={18} /> },
     { id: 'channels', label: 'Multi-Channel ROI', icon: <Layers size={18} /> },
-    { id: 'campaigns', label: 'Campaign Breakdown', icon: <BarChart3 size={18} /> },
+    { id: 'prediction', label: 'Campaign Prediction', icon: <TrendingUp size={18} /> },
     { id: 'customers', label: 'Customer Segmentation', icon: <Users size={18} /> },
     { id: 'email', label: 'Email Analytics', icon: <Mail size={18} /> },
     { id: 'copilot', label: 'INSIGHTS AI', icon: <Sparkles size={18} /> },

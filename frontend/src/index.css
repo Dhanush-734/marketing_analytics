@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-sidebar: var(--sidebar);
+  --color-foreground: var(--text);
+  --color-muted: var(--text-secondary);
+  --color-border: var(--border);
+  --color-hover: var(--hover);
+}
+
 :root {
   --background: #FFFFFF;
   --card: #FFFFFF;

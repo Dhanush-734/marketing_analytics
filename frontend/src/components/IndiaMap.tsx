@@ -74,7 +74,7 @@ export function IndiaMap({ stateData }: IndiaMapProps) {
 
   return (
     <div className="bg-card rounded-3xl p-4 sm:p-6 shadow-[var(--card-shadow)] space-y-5 select-none animate-slide-up w-full max-w-full overflow-hidden">
-      
+
       {/* Title & Live Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-border/40">
         <div>
@@ -86,7 +86,7 @@ export function IndiaMap({ stateData }: IndiaMapProps) {
             Geographic customer reach dynamically calculated from Snowflake
           </span>
         </div>
-        
+
         <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-xl border border-primary/20 self-start sm:self-auto shrink-0">
           <Database size={11} />
           <span>Snowflake Telemetry Active</span>
@@ -95,10 +95,10 @@ export function IndiaMap({ stateData }: IndiaMapProps) {
 
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full max-w-full overflow-hidden">
-        
+
         {/* Left Column: Authentic Interactive India Map (col-span-7) */}
         <div className="lg:col-span-7 bg-background/40 border border-border rounded-3xl p-3 sm:p-5 relative min-h-[300px] sm:min-h-[460px] flex flex-col justify-between overflow-hidden w-full max-w-full">
-          
+
           <div className="flex items-center justify-between text-xs text-muted mb-2 gap-2 flex-wrap">
             <span className="font-bold text-foreground text-[11px] sm:text-xs">Interactive State Choropleth Map</span>
             <span className="text-[9px] sm:text-[10px] text-primary font-bold">Customer Distribution Across India</span>
@@ -223,10 +223,10 @@ export function IndiaMap({ stateData }: IndiaMapProps) {
 
         {/* Right Column: Telemetry Summary Cards & Top 5 Ranking (col-span-5) */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-5 w-full max-w-full overflow-hidden">
-          
+
           {/* Top Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-full">
-            
+
             {/* Total Customers */}
             <div className="bg-background/60 p-3.5 sm:p-4 rounded-2xl border border-border space-y-1 shadow-sm w-full max-w-full overflow-hidden">
               <span className="text-[9px] font-bold text-muted uppercase tracking-wider block">Total Customers</span>

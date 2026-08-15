@@ -1,4 +1,4 @@
-import { LayoutDashboard, Layers, BarChart3, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, Layers, Users, Settings } from 'lucide-react';
 
 interface StickyBottomNavProps {
   activeTab: string;
@@ -10,7 +10,6 @@ export function StickyBottomNav({ activeTab, setActiveTab, darkMode }: StickyBot
   const navItems = [
     { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard size={18} /> },
     { id: 'channels', label: 'Channels', icon: <Layers size={18} /> },
-    { id: 'campaigns', label: 'Campaigns', icon: <BarChart3 size={18} /> },
     { id: 'customers', label: 'Customers', icon: <Users size={18} /> },
     { id: 'settings', label: 'Settings', icon: <Settings size={18} /> },
   ];
@@ -29,7 +28,7 @@ export function StickyBottomNav({ activeTab, setActiveTab, darkMode }: StickyBot
 
       {/* Glassmorphism Sticky Bottom Navigation Bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 h-16 border-t z-50 grid grid-cols-5 items-center md:hidden px-1 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none w-full max-w-full overflow-hidden"
+        className="fixed bottom-0 left-0 right-0 h-16 border-t z-50 grid grid-cols-4 items-center md:hidden px-1 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] select-none w-full max-w-full overflow-hidden"
         style={{
           backgroundColor: darkMode ? 'rgba(19, 26, 46, 0.94)' : 'rgba(255, 255, 255, 0.94)',
           borderColor: darkMode ? 'rgba(30, 41, 59, 0.8)' : 'rgba(226, 232, 240, 0.8)',

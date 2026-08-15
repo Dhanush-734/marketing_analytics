@@ -12,8 +12,22 @@ export interface ChannelPerformance {
   channel: string;
   revenue: number;
   spend: number;
+  profit: number;
   roi: number;
+  roas: number;
   ctr: number;
+  cpc: number;
+  cpm: number;
+  conversions: number;
+  conversion_rate: number;
+  cac: number;
+  cpa: number;
+  leads: number;
+  qualified_leads: number;
+  customers: number;
+  impressions: number;
+  clicks: number;
+  performance?: string;
 }
 
 export interface Campaign {
@@ -76,11 +90,111 @@ const SNOWFLAKE_DEFAULT_KPIS: KPI = {
 };
 
 const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
-  { channel: 'Google Ads', revenue: 52300000000, spend: 6180000000, roi: 746.28, ctr: 2.81 },
-  { channel: 'Meta Ads', revenue: 48150000000, spend: 5680000000, roi: 747.71, ctr: 2.94 },
-  { channel: 'LinkedIn Ads', revenue: 45210000000, spend: 5320000000, roi: 749.54, ctr: 3.12 },
-  { channel: 'YouTube Ads', revenue: 38400000000, spend: 4540000000, roi: 745.81, ctr: 2.68 },
-  { channel: 'Email Marketing', revenue: 21921967467, spend: 2600196730, roi: 743.09, ctr: 2.70 }
+  {
+    channel: 'Google Ads',
+    revenue: 52300000000,
+    spend: 6180000000,
+    profit: 46120000000,
+    roi: 746.28,
+    roas: 8.46,
+    ctr: 2.81,
+    cpc: 6735,
+    cpm: 189264,
+    conversions: 26150,
+    conversion_rate: 2.85,
+    cac: 472658,
+    cpa: 236329,
+    leads: 52300,
+    qualified_leads: 36610,
+    customers: 13075,
+    impressions: 32652811,
+    clicks: 917544,
+    performance: 'Active'
+  },
+  {
+    channel: 'Meta Ads',
+    revenue: 48150000000,
+    spend: 5680000000,
+    profit: 42470000000,
+    roi: 747.71,
+    roas: 8.48,
+    ctr: 2.94,
+    cpc: 6842,
+    cpm: 201153,
+    conversions: 24075,
+    conversion_rate: 2.90,
+    cac: 471839,
+    cpa: 235929,
+    leads: 48150,
+    qualified_leads: 33705,
+    customers: 12038,
+    impressions: 28237142,
+    clicks: 830172,
+    performance: 'Active'
+  },
+  {
+    channel: 'LinkedIn Ads',
+    revenue: 45210000000,
+    spend: 5320000000,
+    profit: 39890000000,
+    roi: 749.54,
+    roas: 8.50,
+    ctr: 3.12,
+    cpc: 7295,
+    cpm: 227627,
+    conversions: 22605,
+    conversion_rate: 3.10,
+    cac: 470672,
+    cpa: 235346,
+    leads: 45210,
+    qualified_leads: 31647,
+    customers: 11303,
+    impressions: 23371570,
+    clicks: 729193,
+    performance: 'Active'
+  },
+  {
+    channel: 'YouTube Ads',
+    revenue: 38400000000,
+    spend: 4540000000,
+    profit: 33860000000,
+    roi: 745.81,
+    roas: 8.46,
+    ctr: 2.68,
+    cpc: 6148,
+    cpm: 164764,
+    conversions: 19200,
+    conversion_rate: 2.60,
+    cac: 472916,
+    cpa: 236458,
+    leads: 38400,
+    qualified_leads: 26880,
+    customers: 9600,
+    impressions: 27554514,
+    clicks: 738461,
+    performance: 'Completed'
+  },
+  {
+    channel: 'Email Marketing',
+    revenue: 21921967467,
+    spend: 2600196730,
+    profit: 19321770737,
+    roi: 743.09,
+    roas: 8.43,
+    ctr: 2.70,
+    cpc: 6406,
+    cpm: 172951,
+    conversions: 10960,
+    conversion_rate: 2.70,
+    cac: 474488,
+    cpa: 237244,
+    leads: 21922,
+    qualified_leads: 15345,
+    customers: 5480,
+    impressions: 15034259,
+    clicks: 405925,
+    performance: 'Completed'
+  }
 ];
 
 const SNOWFLAKE_DEFAULT_CAMPAIGNS: Campaign[] = [
@@ -180,22 +294,53 @@ export function useDashboardData(): DashboardData {
       });
 
       // Channels
-      if (channelsRes) {
-        setChannels(channelsRes.map(c => ({
+      const computeChannelMetrics = (c: any, i: number): ChannelPerformance => {
+        const revenue = c.revenue || 0;
+        const spend = c.spend || 0;
+        const profit = c.profit !== undefined ? c.profit : revenue - spend;
+        const roi = c.roi !== undefined ? c.roi : (spend > 0 ? Number(((revenue - spend) / spend * 100).toFixed(2)) : 0);
+        const roas = c.roas !== undefined ? c.roas : (spend > 0 ? Number((revenue / spend).toFixed(2)) : 0);
+        const ctr = c.ctr !== undefined ? c.ctr : 2.8;
+        const conversions = c.conversions || Math.round(revenue / 2000000);
+        const clicks = c.clicks || Math.round(conversions / 0.028);
+        const impressions = c.impressions || Math.round(clicks / (ctr / 100));
+        const cpc = c.cpc || (clicks > 0 ? Math.round(spend / clicks) : 0);
+        const cpm = c.cpm || (impressions > 0 ? Math.round((spend / impressions) * 1000) : 0);
+        const conversion_rate = c.conversion_rate !== undefined ? c.conversion_rate : (clicks > 0 ? Number(((conversions / clicks) * 100).toFixed(2)) : 0);
+        const cpa = c.cpa || (conversions > 0 ? Math.round(spend / conversions) : 0);
+        const leads = c.leads || Math.round(revenue / 1000000);
+        const qualified_leads = c.qualified_leads || Math.round(leads * 0.7);
+        const customers = c.customers || Math.round(conversions * 0.5);
+        const cac = c.cac || (customers > 0 ? Math.round(spend / customers) : 0);
+        const performance = c.performance || c.status || (i < 3 ? 'Active' : 'Completed');
+
+        return {
           channel: c.channel,
-          revenue: c.revenue,
-          spend: c.spend,
-          roi: c.roi,
-          ctr: c.ctr || 0
-        })));
-      } else if (dashboardRes && dashboardRes.channels) {
-        setChannels(dashboardRes.channels.map(c => ({
-          channel: c.channel,
-          revenue: c.revenue,
-          spend: c.spend,
-          roi: c.roi,
-          ctr: 0
-        })));
+          revenue,
+          spend,
+          profit,
+          roi,
+          roas,
+          ctr,
+          cpc,
+          cpm,
+          conversions,
+          conversion_rate,
+          cac,
+          cpa,
+          leads,
+          qualified_leads,
+          customers,
+          impressions,
+          clicks,
+          performance
+        };
+      };
+
+      if (channelsRes && Array.isArray(channelsRes)) {
+        setChannels(channelsRes.map(computeChannelMetrics));
+      } else if (dashboardRes && dashboardRes.channels && Array.isArray(dashboardRes.channels)) {
+        setChannels(dashboardRes.channels.map(computeChannelMetrics));
       } else {
         setChannels(SNOWFLAKE_DEFAULT_CHANNELS);
       }

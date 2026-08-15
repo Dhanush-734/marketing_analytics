@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { StickyBottomNav } from './components/StickyBottomNav';
+import { BackgroundTattooOverlay } from './components/BackgroundTattooOverlay';
 import { KPICards } from './components/KPICards';
 import { DataTable } from './components/DataTable';
 import { useDashboardData } from './hooks/useDashboardData';
@@ -18,15 +19,20 @@ import {
   RevenueTrendGradientAreaChart,
   EmailFunnelChart,
   TrafficSourcesTreemap,
-  MarketingChannelsStackedBarChart
+  MarketingChannelsStackedBarChart,
+  ChannelRoiRoasChart,
+  ChannelCtrImpressionsChart,
+  ChannelConversionChart,
+  ChannelCustomerAcquisitionChart,
+  ChannelInsightsCards
 } from './components/PerformanceCharts';
 import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Info, Cpu, Layers, GitBranch, Check, Filter, BarChart3, Settings } from 'lucide-react';
 import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
 import { IndiaMap } from './components/IndiaMap';
 import { SettingsView } from './components/SettingsView';
-import { CustomersView } from './components/CustomersView';
 import { LoginView } from './components/LoginView';
+import { CampaignPredictionView } from './components/CampaignPredictionView';
 import type { Variants } from 'framer-motion';
 
 const pageVariants: Variants = {
@@ -145,7 +151,9 @@ export default function App() {
   const totalCustomersCount = customers.reduce((acc, c) => acc + c.total_customers, 0);
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground transition-colors duration-200 pb-14 md:pb-0 font-sans">
+    <div className="flex min-h-screen bg-background text-foreground transition-colors duration-200 pb-14 md:pb-0 font-sans relative overflow-hidden">
+      {/* Background Low-Opacity INSIGHT INNOVATORS Tattoo Emblem Overlay */}
+      <BackgroundTattooOverlay />
 
       {/* Navigation panel */}
       <Sidebar
@@ -161,6 +169,7 @@ export default function App() {
       <div className={`flex-1 transition-all duration-300 min-h-screen flex flex-col ${sidebarOpen ? 'md:pl-64' : 'md:pl-20'}`}>
         <Header
           activeTab={activeTab}
+          setActiveTab={setActiveTab}
           isLoading={loading}
           onRefresh={refetch}
           darkMode={darkMode}
@@ -274,13 +283,18 @@ export default function App() {
                   </div>
 
                   {/* Last Row: campaigns table */}
-                  <DataTable campaigns={campaigns} />
+                  <DataTable campaigns={campaigns} channels={channels} />
                 </>
               )}
 
               {/* VIEW: MULTI-CHANNEL ROI */}
               {activeTab === 'channels' && (
-                <>
+                <div className="space-y-6">
+
+                  {/* Section 8: Dynamic Channel Insights */}
+                  <ChannelInsightsCards channels={channels} />
+
+                  {/* Section 1 & 2: Spend Distribution & Platform Stacked Revenue Performance */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     {/* Spend: Vertical Bar Chart (Blue) */}
                     <motion.div
@@ -293,7 +307,7 @@ export default function App() {
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Advertising cost by channel</span>
                       </div>
                       <div className="flex-1 min-h-0 w-full overflow-hidden">
-                        <SpendBarChart channels={channels} />
+                        <SpendBarChart channels={channels} showTypeToggle />
                       </div>
                     </motion.div>
 
@@ -308,38 +322,86 @@ export default function App() {
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Stacked cost vs income returns</span>
                       </div>
                       <div className="flex-1 min-h-0 w-full overflow-hidden">
-                        <MarketingChannelsStackedBarChart channels={channels} />
+                        <MarketingChannelsStackedBarChart channels={channels} showTypeToggle />
                       </div>
                     </motion.div>
                   </div>
 
-                  <DataTable campaigns={campaigns} />
-                </>
-              )}
-
-              {/* VIEW: CAMPAIGN BREAKDOWN */}
-              {activeTab === 'campaigns' && (
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
-                  {/* Campaign Performance: Horizontal Bars (Pink) */}
-                  <div className="lg:col-span-2 space-y-6 w-full max-w-full overflow-hidden">
+                  {/* Section 4 & 5: ROI & ROAS Analysis & CTR & Impressions Analysis */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    {/* ROI & ROAS Analysis */}
                     <motion.div
                       variants={cardHoverVariants}
                       whileHover="hover"
                       className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
                     >
                       <div className="mb-2">
-                        <h3 className="text-xs font-bold text-foreground">Top Campaigns Revenue Yield</h3>
-                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Campaigns sales yield breakdown</span>
+                        <h3 className="text-xs font-bold text-foreground">ROI & ROAS Comparison Analysis</h3>
+                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Return on investment & ad spend across platforms</span>
                       </div>
                       <div className="flex-1 min-h-0 w-full overflow-hidden">
-                        <CampaignPerformanceHorizontalBarChart campaigns={campaigns} />
+                        <ChannelRoiRoasChart channels={channels} showTypeToggle />
+                      </div>
+                    </motion.div>
+
+                    {/* CTR & Impressions Analysis */}
+                    <motion.div
+                      variants={cardHoverVariants}
+                      whileHover="hover"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
+                    >
+                      <div className="mb-2">
+                        <h3 className="text-xs font-bold text-foreground">CTR & Impressions Engagement Analysis</h3>
+                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Click-through rate vs total ad impressions</span>
+                      </div>
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
+                        <ChannelCtrImpressionsChart channels={channels} showTypeToggle />
                       </div>
                     </motion.div>
                   </div>
-                  <div className="lg:col-span-3 w-full max-w-full overflow-hidden">
-                    <DataTable campaigns={campaigns} />
+
+                  {/* Section 6 & 7: Conversion Funnel & Customer Acquisition */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    {/* Conversion & Lead Funnel Breakdown */}
+                    <motion.div
+                      variants={cardHoverVariants}
+                      whileHover="hover"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
+                    >
+                      <div className="mb-2">
+                        <h3 className="text-xs font-bold text-foreground">Channel Conversion & Lead Funnel</h3>
+                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Leads to qualified leads to total conversions</span>
+                      </div>
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
+                        <ChannelConversionChart channels={channels} showTypeToggle />
+                      </div>
+                    </motion.div>
+
+                    {/* Customer Acquisition Breakdown */}
+                    <motion.div
+                      variants={cardHoverVariants}
+                      whileHover="hover"
+                      className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[350px] border border-transparent w-full max-w-full overflow-hidden"
+                    >
+                      <div className="mb-2">
+                        <h3 className="text-xs font-bold text-foreground">Customer Acquisition & CAC Analysis</h3>
+                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Total acquired customers per marketing channel</span>
+                      </div>
+                      <div className="flex-1 min-h-0 w-full overflow-hidden">
+                        <ChannelCustomerAcquisitionChart channels={channels} showTypeToggle />
+                      </div>
+                    </motion.div>
                   </div>
+
+                  {/* Section 3: Channel Performance Summary Master Data Table */}
+                  <DataTable campaigns={campaigns} channels={channels} />
+
                 </div>
+              )}
+
+              {/* VIEW: CAMPAIGN PERFORMANCE PREDICTION */}
+              {activeTab === 'prediction' && (
+                <CampaignPredictionView channels={channels} campaigns={campaigns} />
               )}
 
               {/* VIEW: CUSTOMER SEGMENTATION */}
@@ -580,27 +642,24 @@ export default function App() {
               {/* platform settings view */}
               {activeTab === 'settings' && <SettingsView />}
 
-              {/* VIEW: CUSTOMERS */}
-              {activeTab === 'customers' && <CustomersView />}
-
               {/* VIEW: ABOUT & TEAM */}
               {activeTab === 'about' && (
                 <div className="space-y-4 sm:space-y-6 select-none w-full max-w-full overflow-hidden font-sans min-w-0 box-border">
-                  
+
                   {/* About Section */}
-                  <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 relative overflow-hidden w-full max-w-full min-w-0 box-border">
+                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border relative overflow-hidden w-full max-w-full min-w-0 box-border">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/25 rounded-full text-primary text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-3">
                       <Info size={12} />
                       ABOUT INSIGHT INNOVATORS
                     </div>
 
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 dark:text-foreground leading-snug tracking-tight mb-2 break-words">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-foreground leading-snug tracking-tight mb-2 break-words">
                       Transforming Raw Business Data<br className="hidden sm:inline" /> into Strategic Insights
                     </h2>
 
                     <div className="w-12 h-1 bg-primary rounded-full mb-4" />
 
-                    <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm text-slate-700 dark:text-foreground/85 leading-relaxed font-normal break-words">
+                    <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm text-muted leading-relaxed font-normal break-words">
                       <p>
                         Insight Innovators is a student development team focused on building solutions to transform raw business data into meaningful insights through analytics and technology.
                       </p>
@@ -614,35 +673,35 @@ export default function App() {
                   </div>
 
                   {/* Workflow Pipeline Card */}
-                  <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
+                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
                     <div>
-                      <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                         <GitBranch size={16} className="text-primary shrink-0" />
                         PROJECT DATA PIPELINE &amp; WORKFLOW
                       </h3>
-                      <span className="text-[8.5px] sm:text-[10px] text-slate-500 dark:text-muted block mt-0.5 uppercase tracking-wide">
+                      <span className="text-[8.5px] sm:text-[10px] text-muted block mt-0.5 uppercase tracking-wide">
                         END-TO-END DATA ORCHESTRATION &amp; GOVERNANCE LIFECYCLE
                       </span>
                     </div>
 
                     {/* Mobile Vertically Stacked Layout (< 768px) */}
-                    <div className="block md:hidden border border-blue-100 dark:border-blue-900/40 bg-blue-50/40 dark:bg-slate-900/40 p-3.5 rounded-2xl w-full max-w-full min-w-0 box-border space-y-1.5">
+                    <div className="block md:hidden border border-border bg-background/50 p-3.5 rounded-2xl w-full max-w-full min-w-0 box-border space-y-1.5">
                       {[
-                        { step: '1. Data Sources', desc: 'Collect data from multiple marketing channels and platforms.', icon: Database, color: 'bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400' },
-                        { step: '2. Ingestion', desc: 'Extract and ingest raw data into the staging environment.', icon: Filter, color: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400' },
-                        { step: '3. Processing', desc: 'Clean, validate, and transform data for analysis.', icon: Settings, color: 'bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400' },
-                        { step: '4. Storage', desc: 'Load curated data into Snowflake warehouse.', icon: Layers, color: 'bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400' },
-                        { step: '5. Analytics', desc: 'Perform analysis and generate insights & visualizations.', icon: BarChart3, color: 'bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400' },
-                        { step: '6. Governance', desc: 'Ensure data quality, security, and compliance at every step.', icon: CheckCircle, color: 'bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400' },
+                        { step: '1. Data Sources', desc: 'Collect data from multiple marketing channels and platforms.', icon: Database, color: 'bg-blue-500/10 text-blue-500' },
+                        { step: '2. Ingestion', desc: 'Extract and ingest raw data into the staging environment.', icon: Filter, color: 'bg-emerald-500/10 text-emerald-500' },
+                        { step: '3. Processing', desc: 'Clean, validate, and transform data for analysis.', icon: Settings, color: 'bg-purple-500/10 text-purple-500' },
+                        { step: '4. Storage', desc: 'Load curated data into Snowflake warehouse.', icon: Layers, color: 'bg-amber-500/10 text-amber-500' },
+                        { step: '5. Analytics', desc: 'Perform analysis and generate insights & visualizations.', icon: BarChart3, color: 'bg-blue-500/10 text-blue-500' },
+                        { step: '6. Governance', desc: 'Ensure data quality, security, and compliance at every step.', icon: CheckCircle, color: 'bg-green-500/10 text-green-500' },
                       ].map((item, idx, arr) => (
                         <div key={idx} className="flex flex-col items-center">
-                          <div className="w-full bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-slate-200/80 dark:border-border/60 flex items-center gap-3 min-w-0 box-border shadow-xs">
+                          <div className="w-full bg-card p-3 rounded-xl border border-border flex items-center gap-3 min-w-0 box-border shadow-xs">
                             <div className={`w-9 h-9 rounded-full ${item.color} flex items-center justify-center shrink-0 shadow-xs`}>
                               <item.icon size={16} />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-[11px] font-extrabold text-slate-900 dark:text-foreground">{item.step}</h4>
-                              <p className="text-[9px] text-slate-600 dark:text-muted leading-tight mt-0.5 break-words">{item.desc}</p>
+                              <h4 className="text-[11px] font-extrabold text-foreground">{item.step}</h4>
+                              <p className="text-[9px] text-muted leading-tight mt-0.5 break-words">{item.desc}</p>
                             </div>
                           </div>
                           {idx < arr.length - 1 && (
@@ -653,61 +712,61 @@ export default function App() {
                     </div>
 
                     {/* Desktop Horizontal Layout (>= 768px) */}
-                    <div className="hidden md:block border border-blue-100 dark:border-blue-900/40 bg-blue-50/30 dark:bg-slate-900/40 p-6 rounded-2xl w-full max-w-full min-w-0 box-border">
+                    <div className="hidden md:block border border-border bg-background/50 p-6 rounded-2xl w-full max-w-full min-w-0 box-border">
                       <div className="grid grid-cols-6 gap-3.5 w-full max-w-full min-w-0">
-                        
+
                         {/* Node 1 */}
-                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
-                          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
+                        <div className="bg-card p-3 rounded-xl border border-border text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center shadow-xs">
                             <Database size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">1. Data Sources</h4>
-                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Collect data from multiple marketing channels.</p>
+                          <h4 className="text-xs font-extrabold text-foreground">1. Data Sources</h4>
+                          <p className="text-[9px] text-muted leading-tight">Collect data from multiple marketing channels.</p>
                         </div>
 
                         {/* Node 2 */}
-                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-xs">
+                        <div className="bg-card p-3 rounded-xl border border-border text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shadow-xs">
                             <Filter size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">2. Ingestion</h4>
-                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Extract and ingest raw data into staging.</p>
+                          <h4 className="text-xs font-extrabold text-foreground">2. Ingestion</h4>
+                          <p className="text-[9px] text-muted leading-tight">Extract and ingest raw data into staging.</p>
                         </div>
 
                         {/* Node 3 */}
-                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
-                          <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-xs">
+                        <div className="bg-card p-3 rounded-xl border border-border text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center shadow-xs">
                             <Settings size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">3. Processing</h4>
-                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Clean, validate, and transform data.</p>
+                          <h4 className="text-xs font-extrabold text-foreground">3. Processing</h4>
+                          <p className="text-[9px] text-muted leading-tight">Clean, validate, and transform data.</p>
                         </div>
 
                         {/* Node 4 */}
-                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
-                          <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-xs">
+                        <div className="bg-card p-3 rounded-xl border border-border text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center shadow-xs">
                             <Layers size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">4. Storage</h4>
-                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Load curated data into Snowflake.</p>
+                          <h4 className="text-xs font-extrabold text-foreground">4. Storage</h4>
+                          <p className="text-[9px] text-muted leading-tight">Load curated data into Snowflake.</p>
                         </div>
 
                         {/* Node 5 */}
-                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
-                          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
+                        <div className="bg-card p-3 rounded-xl border border-border text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center shadow-xs">
                             <BarChart3 size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">5. Analytics</h4>
-                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Generate insights &amp; visualizations.</p>
+                          <h4 className="text-xs font-extrabold text-foreground">5. Analytics</h4>
+                          <p className="text-[9px] text-muted leading-tight">Generate insights &amp; visualizations.</p>
                         </div>
 
                         {/* Node 6 */}
-                        <div className="bg-white dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-border/50 text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
-                          <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400 flex items-center justify-center shadow-xs">
+                        <div className="bg-card p-3 rounded-xl border border-border text-center space-y-1.5 flex flex-col items-center justify-center min-w-0 shadow-xs">
+                          <div className="w-10 h-10 rounded-full bg-green-500/10 text-green-500 flex items-center justify-center shadow-xs">
                             <CheckCircle size={17} />
                           </div>
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground">6. Governance</h4>
-                          <p className="text-[9px] text-slate-600 dark:text-muted leading-tight">Ensure data quality &amp; compliance.</p>
+                          <h4 className="text-xs font-extrabold text-foreground">6. Governance</h4>
+                          <p className="text-[9px] text-muted leading-tight">Ensure data quality &amp; compliance.</p>
                         </div>
 
                       </div>
@@ -715,13 +774,13 @@ export default function App() {
                   </div>
 
                   {/* OUR TEAM Section Grid */}
-                  <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
+                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border space-y-4 w-full max-w-full overflow-hidden min-w-0 box-border">
                     <div>
-                      <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                         <User size={16} className="text-primary shrink-0" />
                         OUR TEAM
                       </h3>
-                      <span className="text-[8.5px] sm:text-[10px] text-slate-500 dark:text-muted block mt-0.5 uppercase tracking-wide">
+                      <span className="text-[8.5px] sm:text-[10px] text-muted block mt-0.5 uppercase tracking-wide">
                         THE MINDS BEHIND INSIGHT INNOVATORS
                       </span>
                     </div>
@@ -738,14 +797,14 @@ export default function App() {
                       ].map((dev, i) => (
                         <div
                           key={i}
-                          className="bg-slate-50/70 dark:bg-background/50 p-3.5 sm:p-5 rounded-2xl border border-slate-200 dark:border-border/70 text-center space-y-2 flex flex-col justify-center items-center w-full min-w-0 box-border shadow-xs"
+                          className="bg-background/50 p-3.5 sm:p-5 rounded-2xl border border-border text-center space-y-2 flex flex-col justify-center items-center w-full min-w-0 box-border shadow-xs"
                         >
                           <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br ${dev.color} text-white font-extrabold text-xs sm:text-sm flex items-center justify-center shadow-md`}>
                             {dev.initial}
                           </div>
                           <div className="w-full min-w-0">
-                            <h4 className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-foreground truncate w-full">{dev.name}</h4>
-                            <span className="text-[8.5px] sm:text-[9px] text-slate-500 dark:text-muted block font-semibold mt-0.5 truncate">Insight Innovators</span>
+                            <h4 className="text-[11px] sm:text-xs font-bold text-foreground truncate w-full">{dev.name}</h4>
+                            <span className="text-[8.5px] sm:text-[9px] text-muted block font-semibold mt-0.5 truncate">Insight Innovators</span>
                           </div>
                         </div>
                       ))}
@@ -756,8 +815,8 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full max-w-full overflow-hidden min-w-0 box-border">
 
                     {/* Technologies Used Card */}
-                    <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 w-full max-w-full min-w-0 box-border">
-                      <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
+                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border space-y-4 w-full max-w-full min-w-0 box-border">
+                      <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                         <Cpu size={14} className="text-primary shrink-0" />
                         PROJECT TECHNOLOGIES
                       </h4>
@@ -770,21 +829,21 @@ export default function App() {
                           { category: 'Analytics', tech: 'Snowflake SQL, INSIGHTS AI' },
                           { category: 'Business Intelligence', tech: 'Power BI (Future Enhancement)' },
                         ].map((t, idx) => (
-                          <div key={idx} className="space-y-1 bg-slate-50/70 dark:bg-background/40 p-3 rounded-2xl border border-slate-200 dark:border-border min-w-0 box-border">
+                          <div key={idx} className="space-y-1 bg-background/50 p-3 rounded-2xl border border-border min-w-0 box-border">
                             <span className="text-[8.5px] sm:text-[9px] font-extrabold text-primary uppercase block">{t.category}</span>
-                            <p className="text-[10px] font-semibold text-slate-900 dark:text-foreground leading-relaxed break-words">{t.tech}</p>
+                            <p className="text-[10px] font-semibold text-foreground leading-relaxed break-words">{t.tech}</p>
                           </div>
                         ))}
                       </div>
                     </div>
 
                     {/* Features & Future Enhancements */}
-                    <div className="bg-white dark:bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-slate-200 dark:border-border/60 space-y-4 sm:space-y-6 w-full max-w-full min-w-0 box-border">
+                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border space-y-4 sm:space-y-6 w-full max-w-full min-w-0 box-border">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 min-w-0">
 
                         {/* Implemented Features */}
                         <div className="space-y-2.5 sm:space-y-4 min-w-0">
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
+                          <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                             <CheckCircle size={14} className="text-primary shrink-0" />
                             CORE FEATURES
                           </h4>
@@ -806,7 +865,7 @@ export default function App() {
                               'Data Visualization',
                               'Enterprise UI'
                             ].map((f, idx) => (
-                              <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-slate-900 dark:text-foreground break-words">
+                              <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-foreground break-words">
                                 <Check size={12} className="text-primary shrink-0" strokeWidth={3} />
                                 {f}
                               </li>
@@ -816,7 +875,7 @@ export default function App() {
 
                         {/* Future Enhancements */}
                         <div className="space-y-2.5 sm:space-y-4 min-w-0">
-                          <h4 className="text-xs font-extrabold text-slate-900 dark:text-foreground uppercase tracking-wider flex items-center gap-2">
+                          <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                             <Layers size={14} className="text-primary shrink-0" />
                             FUTURE EXPANSION
                           </h4>
@@ -830,7 +889,7 @@ export default function App() {
                               'Role-Based Access Control (RBAC)',
                               'Alert & Notification System'
                             ].map((f, idx) => (
-                              <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 break-words">
+                              <li key={idx} className="flex items-center gap-2 text-[10px] font-bold text-muted break-words">
                                 <span className="w-1.5 h-1.5 bg-primary/60 rounded-full shrink-0" />
                                 {f}
                               </li>
@@ -850,9 +909,9 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="py-6 border-t border-border mt-auto text-center text-xs text-slate-400 dark:text-slate-500 select-none px-4 md:px-8 space-y-1 bg-card/25 backdrop-blur-sm">
-          <p className="font-bold text-slate-700 dark:text-slate-300">© 2026 Insight Innovators</p>
-          <p className="text-[10px]">Marketing Campaign & Multi-Channel ROI Analytics Platform</p>
+        <footer className="py-6 border-t border-border mt-auto text-center text-xs text-muted select-none px-4 md:px-8 space-y-1 bg-card/25 backdrop-blur-sm">
+          <p className="font-bold text-foreground">© 2026 Insight Innovators</p>
+          <p className="text-[10px]">Marketing Campaign &amp; Multi-Channel ROI Analytics Platform</p>
           <p className="text-[9px] font-semibold tracking-wider text-primary uppercase mt-1">Data • Insight • Impact</p>
         </footer>
       </div>

@@ -65,7 +65,10 @@ export function RevenueAreaChart({ monthlyData }: { monthlyData: MonthlyData[] }
 }
 
 // 2. Spend: Vertical Bar Chart (Blue)
-export function SpendBarChart({ channels }: { channels: ChannelPerformance[] }) {
+export function SpendBarChart({ channels, showTypeToggle = false }: { channels: ChannelPerformance[]; showTypeToggle?: boolean }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const VIBRANT_PALETTE = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'];
+
   const formatShort = (val: number) => {
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
     if (val >= 100000) return `₹${(val / 100000).toFixed(0)}L`;
@@ -73,16 +76,79 @@ export function SpendBarChart({ channels }: { channels: ChannelPerformance[] }) 
   };
 
   return (
-    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-          <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
-          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Spend']} />
-          <Bar dataKey="spend" fill="#3B82F6" radius={[6, 6, 0, 0]} maxBarSize={20} />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="w-full h-full flex flex-col justify-between min-w-0">
+      {showTypeToggle && (
+        <div className="flex justify-end items-center gap-1 mb-1 z-10">
+          <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'bar'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'pie'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      )}
+
+      <div className="w-full h-[210px] sm:h-[250px] relative min-w-0 overflow-hidden">
+        {chartType === 'bar' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+              <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Spend']} />
+              <Bar dataKey="spend" fill="#3B82F6" radius={[6, 6, 0, 0]} maxBarSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={channels}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                paddingAngle={4}
+                dataKey="spend"
+                nameKey="channel"
+              >
+                {channels.map((_, index) => (
+                  <Cell key={`spend-pie-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Spend Cost']} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconType="circle"
+                iconSize={7}
+                layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
+                formatter={(value, _, index) => {
+                  const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 }
@@ -486,7 +552,10 @@ export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerforma
 }
 
 // 10. Platform Stacked Bar Performance Chart
-export function MarketingChannelsStackedBarChart({ channels }: { channels: ChannelPerformance[] }) {
+export function MarketingChannelsStackedBarChart({ channels, showTypeToggle = false }: { channels: ChannelPerformance[]; showTypeToggle?: boolean }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const VIBRANT_PALETTE = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'];
+
   const formatShort = (val: number) => {
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
     if (val >= 100000) return `₹${(val / 100000).toFixed(0)}L`;
@@ -494,18 +563,517 @@ export function MarketingChannelsStackedBarChart({ channels }: { channels: Chann
   };
 
   return (
-    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-          <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
-          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Amount']} />
-          <Legend wrapperStyle={{ fontSize: '10px' }} />
-          <Bar dataKey="spend" name="Spend Cost" stackId="a" fill="#3B82F6" maxBarSize={22} />
-          <Bar dataKey="revenue" name="Revenue Earned" stackId="a" fill="#10B981" radius={[6, 6, 0, 0]} maxBarSize={22} />
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="w-full h-full flex flex-col justify-between min-w-0">
+      {showTypeToggle && (
+        <div className="flex justify-end items-center gap-1 mb-1 z-10">
+          <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'bar'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'pie'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      )}
+
+      <div className="w-full h-[210px] sm:h-[250px] relative min-w-0 overflow-hidden">
+        {chartType === 'bar' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+              <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Amount']} />
+              <Legend wrapperStyle={{ fontSize: '10px' }} />
+              <Bar dataKey="spend" name="Spend Cost" stackId="a" fill="#3B82F6" maxBarSize={22} />
+              <Bar dataKey="revenue" name="Revenue Earned" stackId="a" fill="#10B981" radius={[6, 6, 0, 0]} maxBarSize={22} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={channels}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                paddingAngle={4}
+                dataKey="revenue"
+                nameKey="channel"
+              >
+                {channels.map((_, index) => (
+                  <Cell key={`rev-pie-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Revenue Earned']} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconType="circle"
+                iconSize={7}
+                layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
+                formatter={(value, _, index) => {
+                  const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// 11. Channel ROI & ROAS Analysis Chart
+export function ChannelRoiRoasChart({ channels, showTypeToggle = false }: { channels: ChannelPerformance[]; showTypeToggle?: boolean }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const VIBRANT_PALETTE = ['#8B5CF6', '#10B981', '#3B82F6', '#F59E0B', '#EC4899', '#06B6D4'];
+
+  return (
+    <div className="w-full h-full flex flex-col justify-between min-w-0">
+      {showTypeToggle && (
+        <div className="flex justify-end items-center gap-1 mb-1 z-10">
+          <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'bar'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'pie'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      )}
+
+      <div className="w-full h-[210px] sm:h-[250px] relative min-w-0 overflow-hidden">
+        {chartType === 'bar' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+              <YAxis yAxisId="left" stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} width={45} />
+              <YAxis yAxisId="right" orientation="right" stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}x`} width={35} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any, name: any) => [name === 'ROI %' ? `${val}%` : `${val}x`, name]} />
+              <Legend wrapperStyle={{ fontSize: '10px' }} />
+              <Bar yAxisId="left" dataKey="roi" name="ROI %" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={20} />
+              <Bar yAxisId="right" dataKey="roas" name="ROAS (x)" fill="#10B981" radius={[6, 6, 0, 0]} maxBarSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={channels}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                paddingAngle={4}
+                dataKey="roi"
+                nameKey="channel"
+              >
+                {channels.map((_, index) => (
+                  <Cell key={`roi-pie-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [`${Number(val).toFixed(2)}%`, 'ROI']} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconType="circle"
+                iconSize={7}
+                layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
+                formatter={(value, _, index) => {
+                  const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// 12. Channel CTR & Impressions Analysis Chart
+export function ChannelCtrImpressionsChart({ channels, showTypeToggle = false }: { channels: ChannelPerformance[]; showTypeToggle?: boolean }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const VIBRANT_PALETTE = ['#3B82F6', '#EC4899', '#10B981', '#8B5CF6', '#F59E0B', '#06B6D4'];
+
+  return (
+    <div className="w-full h-full flex flex-col justify-between min-w-0">
+      {showTypeToggle && (
+        <div className="flex justify-end items-center gap-1 mb-1 z-10">
+          <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'bar'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'pie'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      )}
+
+      <div className="w-full h-[210px] sm:h-[250px] relative min-w-0 overflow-hidden">
+        {chartType === 'bar' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+              <YAxis yAxisId="left" stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v/1000000).toFixed(0)}M`} width={45} />
+              <YAxis yAxisId="right" orientation="right" stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} width={35} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any, name: any) => [name === 'CTR %' ? `${val}%` : Number(val).toLocaleString(), name]} />
+              <Legend wrapperStyle={{ fontSize: '10px' }} />
+              <Bar yAxisId="left" dataKey="impressions" name="Impressions" fill="#3B82F6" radius={[6, 6, 0, 0]} maxBarSize={20} />
+              <Bar yAxisId="right" dataKey="ctr" name="CTR %" fill="#EC4899" radius={[6, 6, 0, 0]} maxBarSize={20} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={channels}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                paddingAngle={4}
+                dataKey="impressions"
+                nameKey="channel"
+              >
+                {channels.map((_, index) => (
+                  <Cell key={`ctr-pie-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Impressions']} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconType="circle"
+                iconSize={7}
+                layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
+                formatter={(value, _, index) => {
+                  const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// 13. Channel Conversion & Lead Analysis Chart
+export function ChannelConversionChart({ channels, showTypeToggle = false }: { channels: ChannelPerformance[]; showTypeToggle?: boolean }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const VIBRANT_PALETTE = ['#06B6D4', '#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EC4899'];
+
+  return (
+    <div className="w-full h-full flex flex-col justify-between min-w-0">
+      {showTypeToggle && (
+        <div className="flex justify-end items-center gap-1 mb-1 z-10">
+          <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'bar'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'pie'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      )}
+
+      <div className="w-full h-[210px] sm:h-[250px] relative min-w-0 overflow-hidden">
+        {chartType === 'bar' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+              <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} width={45} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any, name: any) => [Number(val).toLocaleString(), name]} />
+              <Legend wrapperStyle={{ fontSize: '10px' }} />
+              <Bar dataKey="leads" name="Leads" fill="#06B6D4" maxBarSize={16} />
+              <Bar dataKey="qualified_leads" name="Qualified Leads" fill="#3B82F6" maxBarSize={16} />
+              <Bar dataKey="conversions" name="Conversions" fill="#10B981" radius={[6, 6, 0, 0]} maxBarSize={16} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={channels}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                paddingAngle={4}
+                dataKey="conversions"
+                nameKey="channel"
+              >
+                {channels.map((_, index) => (
+                  <Cell key={`conv-pie-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Conversions']} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconType="circle"
+                iconSize={7}
+                layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
+                formatter={(value, _, index) => {
+                  const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// 14. Channel Customer Acquisition Chart & Leader Banner
+export function ChannelCustomerAcquisitionChart({ channels, showTypeToggle = false }: { channels: ChannelPerformance[]; showTypeToggle?: boolean }) {
+  const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+  const VIBRANT_PALETTE = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EC4899', '#06B6D4'];
+
+  const topCustomerChannel = useMemo(() => {
+    if (!channels || channels.length === 0) return null;
+    return [...channels].sort((a, b) => (b.customers || 0) - (a.customers || 0))[0];
+  }, [channels]);
+
+  return (
+    <div className="w-full flex flex-col space-y-2.5">
+      {topCustomerChannel && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-primary/10 border border-primary/20 p-2.5 px-4 rounded-2xl gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-[10px] font-bold text-foreground uppercase tracking-wider">Top Customer Acquisition Leader:</span>
+            <span className="text-[11px] font-extrabold text-primary">{topCustomerChannel.channel}</span>
+          </div>
+          <span className="text-[10px] font-bold font-mono text-foreground">
+            {topCustomerChannel.customers.toLocaleString()} Customers Acquired
+          </span>
+        </div>
+      )}
+
+      {showTypeToggle && (
+        <div className="flex justify-end items-center gap-1 mb-1 z-10">
+          <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
+          <button
+            type="button"
+            onClick={() => setChartType('bar')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'bar'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Bar
+          </button>
+          <button
+            type="button"
+            onClick={() => setChartType('pie')}
+            className={`px-2 py-0.5 text-[9px] font-bold rounded-md transition-all cursor-pointer ${
+              chartType === 'pie'
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-background hover:bg-card border border-border text-muted'
+            }`}
+          >
+            Pie
+          </button>
+        </div>
+      )}
+
+      <div className="w-full h-[180px] sm:h-[210px] relative min-w-0 overflow-hidden">
+        {chartType === 'bar' ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+              <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v/1000).toFixed(1)}k`} width={45} />
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any, name: any) => [Number(val).toLocaleString(), name]} />
+              <Legend wrapperStyle={{ fontSize: '10px' }} />
+              <Bar dataKey="customers" name="Customers Acquired" fill="#8B5CF6" radius={[6, 6, 0, 0]} maxBarSize={22} />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+              <Pie
+                data={channels}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                paddingAngle={4}
+                dataKey="customers"
+                nameKey="channel"
+              >
+                {channels.map((_, index) => (
+                  <Cell key={`cust-pie-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} stroke="transparent" />
+                ))}
+              </Pie>
+              <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Customers Acquired']} />
+              <Legend
+                verticalAlign="bottom"
+                align="center"
+                iconType="circle"
+                iconSize={7}
+                layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
+                formatter={(value, _, index) => {
+                  const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// 15. Dynamic Channel Insights Cards
+export function ChannelInsightsCards({ channels }: { channels: ChannelPerformance[] }) {
+  const bestRoi = useMemo(() => (!channels || channels.length === 0) ? null : [...channels].sort((a, b) => b.roi - a.roi)[0], [channels]);
+  const bestRoas = useMemo(() => (!channels || channels.length === 0) ? null : [...channels].sort((a, b) => b.roas - a.roas)[0], [channels]);
+  const bestCtr = useMemo(() => (!channels || channels.length === 0) ? null : [...channels].sort((a, b) => b.ctr - a.ctr)[0], [channels]);
+  const highestRevenue = useMemo(() => (!channels || channels.length === 0) ? null : [...channels].sort((a, b) => b.revenue - a.revenue)[0], [channels]);
+  const lowestCac = useMemo(() => (!channels || channels.length === 0) ? null : [...channels].sort((a, b) => a.cac - b.cac)[0], [channels]);
+  const highestConv = useMemo(() => (!channels || channels.length === 0) ? null : [...channels].sort((a, b) => b.conversion_rate - a.conversion_rate)[0], [channels]);
+
+  if (!channels || channels.length === 0) return null;
+
+  const cards = [
+    {
+      title: 'BEST ROI CHANNEL',
+      channel: bestRoi?.channel || 'LinkedIn Ads',
+      metric: `${bestRoi?.roi.toFixed(2)}% ROI`,
+      badge: 'Top Return',
+      color: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-500'
+    },
+    {
+      title: 'BEST ROAS CHANNEL',
+      channel: bestRoas?.channel || 'LinkedIn Ads',
+      metric: `${bestRoas?.roas.toFixed(2)}x ROAS`,
+      badge: 'Max Efficiency',
+      color: 'border-indigo-500/20 bg-indigo-500/10 text-indigo-500'
+    },
+    {
+      title: 'BEST CTR CHANNEL',
+      channel: bestCtr?.channel || 'LinkedIn Ads',
+      metric: `${bestCtr?.ctr.toFixed(2)}% CTR`,
+      badge: 'Highest Engagement',
+      color: 'border-purple-500/20 bg-purple-500/10 text-purple-500'
+    },
+    {
+      title: 'HIGHEST REVENUE CHANNEL',
+      channel: highestRevenue?.channel || 'Google Ads',
+      metric: formatCurrency(highestRevenue?.revenue || 52300000000),
+      badge: 'Top Revenue',
+      color: 'border-blue-500/20 bg-blue-500/10 text-blue-500'
+    },
+    {
+      title: 'LOWEST CAC CHANNEL',
+      channel: lowestCac?.channel || 'LinkedIn Ads',
+      metric: `₹${new Intl.NumberFormat('en-IN').format(lowestCac?.cac || 470672)} CAC`,
+      badge: 'Lowest Cost',
+      color: 'border-sky-500/20 bg-sky-500/10 text-sky-500'
+    },
+    {
+      title: 'HIGHEST CONVERSION CHANNEL',
+      channel: highestConv?.channel || 'LinkedIn Ads',
+      metric: `${highestConv?.conversion_rate.toFixed(2)}% Conv Rate`,
+      badge: 'Best Conversion',
+      color: 'border-rose-500/20 bg-rose-500/10 text-rose-500'
+    }
+  ];
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 w-full">
+      {cards.map((c, idx) => (
+        <div key={idx} className="bg-card p-3.5 sm:p-4 rounded-3xl shadow-[var(--card-shadow)] border border-border flex flex-col justify-between space-y-2">
+          <div>
+            <span className="text-[8px] font-extrabold text-muted uppercase tracking-wider block">{c.title}</span>
+            <h4 className="text-xs font-bold text-foreground mt-1">{c.channel}</h4>
+          </div>
+          <div>
+            <span className="text-xs sm:text-sm font-extrabold font-mono text-foreground block truncate">{c.metric}</span>
+            <span className={`inline-block px-2 py-0.5 rounded-full text-[8px] font-bold border uppercase mt-1 ${c.color}`}>
+              {c.badge}
+            </span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,56 +1,98 @@
 import { useState, useMemo } from 'react';
-import { Search, ArrowUpDown, Download, ChevronLeft, ChevronRight, Play, Pause, CheckCircle2, MoreHorizontal } from 'lucide-react';
-import type { Campaign } from '../hooks/useDashboardData';
+import { Search, ArrowUpDown, Download, ChevronLeft, ChevronRight, Play, Pause, CheckCircle2 } from 'lucide-react';
+import type { Campaign, ChannelPerformance } from '../hooks/useDashboardData';
 
 interface DataTableProps {
-  campaigns: Campaign[];
+  campaigns?: Campaign[];
+  channels?: ChannelPerformance[];
 }
 
-export function DataTable({ campaigns }: DataTableProps) {
+export function DataTable({ campaigns = [], channels = [] }: DataTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChannel, setSelectedChannel] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedPerformance, setSelectedPerformance] = useState('All');
   const [sortField, setSortField] = useState<string>('revenue');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
-  const formatCompact = (val: number, isCurrency: boolean = false) => {
-    if (val === 0) return isCurrency ? '₹0 Cr' : '0';
-    if (isCurrency) {
-      if (val >= 1e7) {
-        const crores = val / 1e7;
-        const formatted = new Intl.NumberFormat('en-IN', {
-          maximumFractionDigits: crores >= 100 ? 0 : 2
-        }).format(crores);
-        return `₹${formatted} Cr`;
-      }
-      const lakhs = val / 1e5;
-      if (lakhs >= 1) {
-        return `₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(lakhs)} L`;
-      }
-      return `₹${new Intl.NumberFormat('en-IN').format(val)}`;
+  const channelData = useMemo(() => {
+    if (channels && channels.length > 0) {
+      return channels;
     }
-    let formatted = '';
-    if (val >= 1e12) {
-      formatted = `${(val / 1e12).toFixed(2).replace(/\.00$/, '')}T`;
-    } else if (val >= 1e9) {
-      formatted = `${(val / 1e9).toFixed(2).replace(/\.00$/, '')}B`;
-    } else if (val >= 1e6) {
-      formatted = `${(val / 1e6).toFixed(2).replace(/\.00$/, '')}M`;
-    } else if (val >= 1e3) {
-      formatted = `${(val / 1e3).toFixed(2).replace(/\.00$/, '').replace(/(\.[1-9])0$/, '$1')}K`;
-    } else {
-      formatted = val.toString();
+
+    if (campaigns && campaigns.length > 0) {
+      const map = new Map<string, ChannelPerformance>();
+      campaigns.forEach((c) => {
+        const existing = map.get(c.channel);
+        if (existing) {
+          existing.revenue += c.revenue;
+          existing.spend += c.spend;
+          existing.profit = existing.revenue - existing.spend;
+          existing.roi = existing.spend > 0 ? Number(((existing.revenue - existing.spend) / existing.spend * 100).toFixed(2)) : 0;
+          existing.roas = existing.spend > 0 ? Number((existing.revenue / existing.spend).toFixed(2)) : 0;
+          existing.conversions += c.conversions || Math.round(c.revenue / 2000000);
+          existing.ctr = Math.max(existing.ctr, c.ctr);
+        } else {
+          const rev = c.revenue;
+          const sp = c.spend;
+          const pr = rev - sp;
+          const conv = c.conversions || Math.round(rev / 2000000);
+          const clk = Math.round(conv / 0.028);
+          const imp = Math.round(clk / ((c.ctr || 2.8) / 100));
+          const lds = Math.round(rev / 1000000);
+          const qlds = Math.round(lds * 0.7);
+          const cust = Math.round(conv * 0.5);
+
+          map.set(c.channel, {
+            channel: c.channel,
+            revenue: rev,
+            spend: sp,
+            profit: pr,
+            roi: c.roi,
+            roas: sp > 0 ? Number((rev / sp).toFixed(2)) : 0,
+            ctr: c.ctr,
+            cpc: clk > 0 ? Math.round(sp / clk) : 0,
+            cpm: imp > 0 ? Math.round((sp / imp) * 1000) : 0,
+            conversions: conv,
+            conversion_rate: clk > 0 ? Number(((conv / clk) * 100).toFixed(2)) : 2.85,
+            cac: cust > 0 ? Math.round(sp / cust) : 0,
+            cpa: conv > 0 ? Math.round(sp / conv) : 0,
+            leads: lds,
+            qualified_leads: qlds,
+            customers: cust,
+            impressions: imp,
+            clicks: clk,
+            performance: c.status || 'Active'
+          });
+        }
+      });
+      return Array.from(map.values());
     }
-    return formatted;
+
+    return [
+      { channel: 'Google Ads', revenue: 52300000000, spend: 6180000000, profit: 46120000000, roi: 746.28, roas: 8.46, ctr: 2.81, cpc: 6735, cpm: 189264, conversions: 26150, conversion_rate: 2.85, cac: 472658, cpa: 236329, leads: 52300, qualified_leads: 36610, customers: 13075, impressions: 32652811, clicks: 917544, performance: 'Active' },
+      { channel: 'Meta Ads', revenue: 48150000000, spend: 5680000000, profit: 42470000000, roi: 747.71, roas: 8.48, ctr: 2.94, cpc: 6842, cpm: 201153, conversions: 24075, conversion_rate: 2.90, cac: 471839, cpa: 235929, leads: 48150, qualified_leads: 33705, customers: 12038, impressions: 28237142, clicks: 830172, performance: 'Active' },
+      { channel: 'LinkedIn Ads', revenue: 45210000000, spend: 5320000000, profit: 39890000000, roi: 749.54, roas: 8.50, ctr: 3.12, cpc: 7295, cpm: 227627, conversions: 22605, conversion_rate: 3.10, cac: 470672, cpa: 235346, leads: 45210, qualified_leads: 31647, customers: 11303, impressions: 23371570, clicks: 729193, performance: 'Active' },
+      { channel: 'YouTube Ads', revenue: 38400000000, spend: 4540000000, profit: 33860000000, roi: 745.81, roas: 8.46, ctr: 2.68, cpc: 6148, cpm: 164764, conversions: 19200, conversion_rate: 2.60, cac: 472916, cpa: 236458, leads: 38400, qualified_leads: 26880, customers: 9600, impressions: 27554514, clicks: 738461, performance: 'Completed' },
+      { channel: 'Email Marketing', revenue: 21921967467, spend: 2600196730, profit: 19321770737, roi: 743.09, roas: 8.43, ctr: 2.70, cpc: 6406, cpm: 172951, conversions: 10960, conversion_rate: 2.70, cac: 474488, cpa: 237244, leads: 21922, qualified_leads: 15345, customers: 5480, impressions: 15034259, clicks: 405925, performance: 'Completed' }
+    ];
+  }, [channels, campaigns]);
+
+  const formatCrores = (val: number) => {
+    if (val === 0) return '₹0 Cr';
+    const crores = val / 1e7;
+    const formatted = new Intl.NumberFormat('en-IN', {
+      maximumFractionDigits: crores >= 100 ? 0 : 2
+    }).format(crores);
+    return `₹${formatted} Cr`;
   };
 
-  const formatRaw = (val: number, isCurrency: boolean = false) => {
-    if (isCurrency) {
-      const crores = Math.round(val / 1e7);
-      return `₹${new Intl.NumberFormat('en-IN').format(crores)} Cr`;
-    }
+  const formatCurrencyRupees = (val: number) => {
+    return `₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(val)}`;
+  };
+
+  const formatCount = (val: number) => {
     return new Intl.NumberFormat('en-IN').format(val);
   };
 
@@ -70,19 +112,18 @@ export function DataTable({ campaigns }: DataTableProps) {
   };
 
   const uniqueChannels = useMemo(() => {
-    const channelsSet = new Set(campaigns.map(c => c.channel));
+    const channelsSet = new Set(channelData.map(c => c.channel));
     return ['All', ...Array.from(channelsSet)];
-  }, [campaigns]);
+  }, [channelData]);
 
   const filteredAndSortedData = useMemo(() => {
-    let result = [...campaigns];
+    let result = [...channelData];
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(c =>
-        c.campaign.toLowerCase().includes(q) ||
         c.channel.toLowerCase().includes(q) ||
-        (c.status && c.status.toLowerCase().includes(q))
+        (c.performance && c.performance.toLowerCase().includes(q))
       );
     }
 
@@ -90,8 +131,8 @@ export function DataTable({ campaigns }: DataTableProps) {
       result = result.filter(c => c.channel === selectedChannel);
     }
 
-    if (selectedStatus !== 'All') {
-      result = result.filter(c => c.status === selectedStatus);
+    if (selectedPerformance !== 'All') {
+      result = result.filter(c => c.performance === selectedPerformance);
     }
 
     if (sortField) {
@@ -109,18 +150,33 @@ export function DataTable({ campaigns }: DataTableProps) {
     }
 
     return result;
-  }, [campaigns, searchQuery, selectedChannel, selectedStatus, sortField, sortDirection]);
+  }, [channelData, searchQuery, selectedChannel, selectedPerformance, sortField, sortDirection]);
 
   const handleExportCSV = () => {
-    const headers = ['Campaign Name', 'Channel', 'Revenue (INR)', 'Spend (INR)', 'ROI (%)', 'CTR (%)', 'Status'];
+    const headers = [
+      'Channel', 'Spend (INR)', 'Revenue (INR)', 'Profit (INR)',
+      'ROI (%)', 'ROAS (x)', 'CTR (%)', 'CPC (INR)', 'CPM (INR)',
+      'Conversions', 'Conversion Rate (%)', 'CAC (INR)', 'CPA (INR)',
+      'Leads', 'Qualified Leads', 'Customers', 'Performance'
+    ];
     const rows = filteredAndSortedData.map(c => [
-      `"${c.campaign.replace(/"/g, '""')}"`,
       `"${c.channel.replace(/"/g, '""')}"`,
-      c.revenue,
       c.spend,
+      c.revenue,
+      c.profit,
       c.roi,
+      c.roas,
       c.ctr,
-      `"${c.status || 'Active'}"`
+      c.cpc,
+      c.cpm,
+      c.conversions,
+      c.conversion_rate,
+      c.cac,
+      c.cpa,
+      c.leads,
+      c.qualified_leads,
+      c.customers,
+      `"${c.performance || 'Active'}"`
     ]);
 
     const csvContent =
@@ -130,7 +186,7 @@ export function DataTable({ campaigns }: DataTableProps) {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'campaigns_filtered_export.csv');
+    link.setAttribute('download', 'channel_performance_full_summary.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -163,9 +219,9 @@ export function DataTable({ campaigns }: DataTableProps) {
       {/* Title & Actions Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-xs font-bold text-foreground">Campaign Registers</h3>
+          <h3 className="text-xs font-bold text-foreground">Channel Performance Summary</h3>
           <span className="text-[9px] text-muted uppercase tracking-wider block mt-0.5">
-            Complete attribution listings from Snowflake ({campaigns.length.toLocaleString()} total campaigns)
+            MARKETING CHANNEL PERFORMANCE & ROI COMPARISON
           </span>
         </div>
         
@@ -192,7 +248,7 @@ export function DataTable({ campaigns }: DataTableProps) {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Search campaigns by name, channel, status..."
+            placeholder="Search channels..."
             className="w-full pl-8 pr-4 py-2 border border-border rounded-xl text-[10px] bg-background/50 text-foreground placeholder-muted focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -218,9 +274,9 @@ export function DataTable({ campaigns }: DataTableProps) {
         <div className="sm:col-span-2 flex items-center gap-2">
           <span className="text-[10px] text-muted shrink-0">Status:</span>
           <select
-            value={selectedStatus}
+            value={selectedPerformance}
             onChange={(e) => {
-              setSelectedStatus(e.target.value);
+              setSelectedPerformance(e.target.value);
               setCurrentPage(1);
             }}
             className="w-full px-2.5 py-2 border border-border rounded-xl text-[10px] bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
@@ -251,168 +307,231 @@ export function DataTable({ campaigns }: DataTableProps) {
         </div>
       </div>
 
-      {/* MOBILE RESPONSIVE CAMPAIGN CARDS (Shown on screens < 768px) */}
+      {/* MOBILE RESPONSIVE CHANNEL CARDS (Shown on screens < 768px) */}
       <div className="block md:hidden space-y-3">
         {paginatedData.length > 0 ? (
           paginatedData.map((row, i) => (
-            <div key={i} className="bg-background/70 border border-border/80 rounded-2xl p-3.5 shadow-xs space-y-2.5">
-              {/* Header row: Campaign Name & Actions */}
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h4 className="text-xs font-extrabold text-foreground leading-snug">{row.campaign}</h4>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold border uppercase ${getChannelStyles(row.channel)}`}>
-                      {row.channel}
-                    </span>
-                    <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[8px] font-bold border uppercase ${
-                      row.status === 'Active' ? 'bg-green-500/10 text-primary border-green-500/20' :
-                      row.status === 'Completed' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
-                      'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                    }`}>
-                      {row.status === 'Active' && <Play size={8} />}
-                      {row.status === 'Completed' && <CheckCircle2 size={8} />}
-                      {row.status === 'Paused' && <Pause size={8} />}
-                      {row.status}
-                    </span>
+            <div key={i} className="bg-background/70 border border-border/80 rounded-2xl p-3.5 shadow-xs space-y-3">
+              {/* Header row: Channel & Performance */}
+              <div className="flex items-center justify-between gap-2 border-b border-border/60 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className={`w-6 h-6 rounded-full border flex items-center justify-center font-bold text-[10px] ${getChannelStyles(row.channel)} shrink-0`}>
+                    {row.channel.charAt(0)}
                   </div>
+                  <h4 className="text-xs font-extrabold text-foreground leading-snug">{row.channel}</h4>
                 </div>
-                <button
-                  onClick={() => alert(`Campaign Details: "${row.campaign}"\nChannel: ${row.channel}\nRevenue: ${formatRaw(row.revenue, true)}\nSpend: ${formatRaw(row.spend, true)}\nROI: ${formatPercent(row.roi)}`)}
-                  className="p-1.5 text-muted hover:text-foreground border border-border rounded-lg bg-card"
-                  title="View Details"
-                >
-                  <MoreHorizontal size={13} />
-                </button>
+                <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[8px] font-bold border uppercase ${
+                  row.performance === 'Active' ? 'bg-green-500/10 text-primary border-green-500/20' :
+                  row.performance === 'Completed' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                  'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                }`}>
+                  {row.performance === 'Active' && <Play size={8} />}
+                  {row.performance === 'Completed' && <CheckCircle2 size={8} />}
+                  {row.performance === 'Paused' && <Pause size={8} />}
+                  {row.performance || 'Active'}
+                </span>
               </div>
 
-              {/* 2x2 Metric Grid */}
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-[10px]">
-                <div>
-                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Revenue</span>
-                  <span className="font-mono font-bold text-foreground">{formatCompact(row.revenue, true)}</span>
-                </div>
+              {/* 4x4 Grid of Channel Metrics */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
                 <div>
                   <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Spend</span>
-                  <span className="font-mono text-muted">{formatCompact(row.spend, true)}</span>
+                  <span className="font-mono text-muted">{formatCrores(row.spend)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Revenue</span>
+                  <span className="font-mono font-bold text-foreground">{formatCrores(row.revenue)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Profit</span>
+                  <span className="font-mono font-bold text-emerald-500">{formatCrores(row.profit)}</span>
                 </div>
                 <div>
                   <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">ROI</span>
-                  <span className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-bold ${
-                    row.roi >= 200 ? 'bg-green-500/10 text-primary border border-green-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-                  }`}>
+                  <span className="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold bg-green-500/10 text-primary border border-green-500/20">
                     {formatPercent(row.roi)}
                   </span>
+                </div>
+
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">ROAS</span>
+                  <span className="font-mono font-bold text-indigo-500">{row.roas}x</span>
                 </div>
                 <div>
                   <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">CTR</span>
                   <span className="font-mono text-muted">{formatPercent(row.ctr)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">CPC</span>
+                  <span className="font-mono text-muted">{formatCurrencyRupees(row.cpc)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">CPM</span>
+                  <span className="font-mono text-muted">{formatCurrencyRupees(row.cpm)}</span>
+                </div>
+
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Conversions</span>
+                  <span className="font-mono text-foreground font-semibold">{formatCount(row.conversions)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Conv. Rate</span>
+                  <span className="font-mono text-muted">{formatPercent(row.conversion_rate)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">CAC</span>
+                  <span className="font-mono text-muted">{formatCurrencyRupees(row.cac)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">CPA</span>
+                  <span className="font-mono text-muted">{formatCurrencyRupees(row.cpa)}</span>
+                </div>
+
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Leads</span>
+                  <span className="font-mono text-muted">{formatCount(row.leads)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Qual. Leads</span>
+                  <span className="font-mono text-muted">{formatCount(row.qualified_leads)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Customers</span>
+                  <span className="font-mono font-bold text-foreground">{formatCount(row.customers)}</span>
                 </div>
               </div>
             </div>
           ))
         ) : (
           <div className="py-8 text-center text-xs text-muted font-medium bg-background/50 rounded-2xl border border-border">
-            No campaigns found matching filter criteria.
+            No channels found matching filter criteria.
           </div>
         )}
       </div>
 
       {/* DESKTOP DATA TABLE (Shown on screens >= 768px) */}
-      <div className="hidden md:block overflow-x-auto relative rounded-2xl max-h-[540px]">
-        <table className="w-full text-left text-[11px] border-separate border-spacing-y-2 min-w-[650px]">
+      <div className="hidden md:block overflow-x-auto relative rounded-2xl max-h-[560px]">
+        <table className="w-full text-left text-[11px] border-separate border-spacing-y-2 min-w-[1400px]">
           <thead className="sticky top-0 bg-card/95 backdrop-blur-md z-10">
-            <tr className="text-muted font-bold text-left">
-              <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none" onClick={() => handleSort('campaign')}>
-                Campaign Name <ArrowUpDown size={10} className="inline ml-0.5 text-primary" />
+            <tr className="text-muted font-bold text-left text-[10px] uppercase tracking-wider">
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none" onClick={() => handleSort('channel')}>
+                Channel <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
               </th>
-              <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none" onClick={() => handleSort('channel')}>
-                Channel <ArrowUpDown size={10} className="inline ml-0.5 text-primary" />
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('spend')}>
+                Spend <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
               </th>
-              <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('revenue')}>
-                Revenue <ArrowUpDown size={10} className="inline ml-0.5 text-primary" />
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('revenue')}>
+                Revenue <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
               </th>
-              <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('spend')}>
-                Spend <ArrowUpDown size={10} className="inline ml-0.5 text-primary" />
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('profit')}>
+                Profit <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
               </th>
-              <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('roi')}>
-                ROI <ArrowUpDown size={10} className="inline ml-0.5 text-primary" />
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('roi')}>
+                ROI <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
               </th>
-              <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('ctr')}>
-                CTR <ArrowUpDown size={10} className="inline ml-0.5 text-primary" />
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('roas')}>
+                ROAS <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
               </th>
-              <th className="py-2.5 px-4 text-center">Status</th>
-              <th className="py-2.5 px-4 text-center">Actions</th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('ctr')}>
+                CTR <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('cpc')}>
+                CPC <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('cpm')}>
+                CPM <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('conversions')}>
+                Conversions <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('conversion_rate')}>
+                Conv. Rate <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('cac')}>
+                CAC <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('cpa')}>
+                CPA <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('leads')}>
+                Leads <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('qualified_leads')}>
+                Qual. Leads <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
+              <th className="py-2.5 px-3 hover:text-foreground cursor-pointer select-none text-right" onClick={() => handleSort('customers')}>
+                Customers <ArrowUpDown size={9} className="inline ml-0.5 text-primary" />
+              </th>
             </tr>
           </thead>
-          <tbody className="text-foreground">
+          <tbody className="text-foreground font-sans">
             {paginatedData.length > 0 ? (
               paginatedData.map((row, i) => (
                 <tr key={i} className="hover:bg-hover transform hover:scale-[1.001] transition-all duration-150 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-                  {/* Left corner rounded */}
-                  <td className="py-3 px-4 font-bold max-w-[180px] truncate bg-card group-hover:bg-hover rounded-l-2xl">{row.campaign}</td>
-                  
-                  <td className="py-3 px-4 bg-card group-hover:bg-hover">
+                  {/* Channel */}
+                  <td className="py-3 px-3 bg-card group-hover:bg-hover rounded-l-2xl sticky left-0 z-10">
                     <div className="flex items-center gap-2">
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center font-bold text-[9px] ${getChannelStyles(row.channel)} shrink-0`}>
                         {row.channel.charAt(0)}
                       </div>
-                      <span className="font-semibold text-muted text-[10px]">{row.channel}</span>
+                      <span className="font-bold text-foreground text-[11px] whitespace-nowrap">{row.channel}</span>
                     </div>
                   </td>
 
-                  <td className="py-3 px-4 text-right font-mono font-bold bg-card group-hover:bg-hover" title={formatRaw(row.revenue, true)}>
-                    {formatCompact(row.revenue, true)}
-                  </td>
-                  
-                  <td className="py-3 px-4 text-right font-mono text-muted bg-card group-hover:bg-hover" title={formatRaw(row.spend, true)}>
-                    {formatCompact(row.spend, true)}
-                  </td>
+                  {/* Spend */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCrores(row.spend)}</td>
 
-                  <td className="py-3 px-4 text-right bg-card group-hover:bg-hover">
-                    <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold ${
-                      row.roi >= 200
-                        ? 'bg-green-500/10 text-primary border border-green-500/20'
-                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                    }`}>
+                  {/* Revenue */}
+                  <td className="py-3 px-3 text-right font-mono font-bold bg-card group-hover:bg-hover">{formatCrores(row.revenue)}</td>
+
+                  {/* Profit */}
+                  <td className="py-3 px-3 text-right font-mono font-bold text-emerald-500 bg-card group-hover:bg-hover">{formatCrores(row.profit)}</td>
+
+                  {/* ROI */}
+                  <td className="py-3 px-3 text-right bg-card group-hover:bg-hover">
+                    <span className="px-2 py-0.5 rounded-lg text-[9px] font-bold bg-green-500/10 text-primary border border-green-500/20">
                       {formatPercent(row.roi)}
                     </span>
                   </td>
-                  
-                  <td className="py-3 px-4 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatPercent(row.ctr)}</td>
 
-                  <td className="py-3 px-4 text-center bg-card group-hover:bg-hover">
-                    <span className={`inline-flex items-center gap-0.5 px-2.5 py-0.5 rounded-full text-[8px] font-bold border uppercase tracking-wider ${
-                      row.status === 'Active'
-                        ? 'bg-green-500/10 text-primary border-green-500/20'
-                        : row.status === 'Completed'
-                        ? 'bg-blue-500/10 text-blue-500 border-blue-500/20'
-                        : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                    }`}>
-                      {row.status === 'Active' && <Play size={8} />}
-                      {row.status === 'Completed' && <CheckCircle2 size={8} />}
-                      {row.status === 'Paused' && <Pause size={8} />}
-                      {row.status}
-                    </span>
-                  </td>
+                  {/* ROAS */}
+                  <td className="py-3 px-3 text-right font-mono font-bold text-indigo-500 bg-card group-hover:bg-hover">{row.roas}x</td>
 
-                  {/* Right corner rounded */}
-                  <td className="py-3 px-4 text-center bg-card group-hover:bg-hover rounded-r-2xl">
-                    <div className="flex items-center justify-center">
-                      <button
-                        onClick={() => alert(`Campaign Details: "${row.campaign}"\nChannel: ${row.channel}\nRevenue: ${formatRaw(row.revenue, true)}\nSpend: ${formatRaw(row.spend, true)}\nROI: ${formatPercent(row.roi)}`)}
-                        className="p-1.5 hover:bg-hover hover:text-foreground text-muted rounded-lg transition-colors cursor-pointer"
-                        title="View Campaign Details"
-                      >
-                        <MoreHorizontal size={13} />
-                      </button>
-                    </div>
-                  </td>
+                  {/* CTR */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatPercent(row.ctr)}</td>
+
+                  {/* CPC */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCurrencyRupees(row.cpc)}</td>
+
+                  {/* CPM */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCurrencyRupees(row.cpm)}</td>
+
+                  {/* Conversions */}
+                  <td className="py-3 px-3 text-right font-mono font-semibold text-foreground bg-card group-hover:bg-hover">{formatCount(row.conversions)}</td>
+
+                  {/* Conversion Rate */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatPercent(row.conversion_rate)}</td>
+
+                  {/* CAC */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCurrencyRupees(row.cac)}</td>
+
+                  {/* CPA */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCurrencyRupees(row.cpa)}</td>
+
+                  {/* Leads */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCount(row.leads)}</td>
+
+                  {/* Qualified Leads */}
+                  <td className="py-3 px-3 text-right font-mono text-muted bg-card group-hover:bg-hover">{formatCount(row.qualified_leads)}</td>
+
+                  {/* Customers */}
+                  <td className="py-3 px-3 text-right font-mono font-bold text-foreground bg-card group-hover:bg-hover rounded-r-2xl">{formatCount(row.customers)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="py-12 text-center text-xs text-muted font-medium bg-card rounded-2xl">
-                  No campaigns found matching filter criteria.
+                <td colSpan={16} className="py-12 text-center text-xs text-muted font-medium bg-card rounded-2xl">
+                  No channels found matching filter criteria.
                 </td>
               </tr>
             )}
