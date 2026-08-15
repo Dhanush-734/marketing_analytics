@@ -1,6 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { User, Lock, Eye, EyeOff, CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, Sun, Moon, TrendingUp, Zap, BarChart2 } from 'lucide-react';
 import { Logo } from './Logo';
+import { DragonTattooOverlay } from './DragonTattooOverlay';
 
 interface LoginViewProps {
   onLoginSuccess: () => void;
@@ -76,7 +77,12 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
     <div className="min-h-screen w-full bg-slate-50 dark:bg-[#070A13] text-slate-900 dark:text-slate-100 flex items-center justify-center p-4 relative overflow-hidden select-none font-sans transition-colors duration-300">
       
       {/* ------------------------------------------------------------- */}
-      {/* BACKGROUND GRAPHICS & AMBIENT DATA VISUALIZATIONS */}
+      {/* BLACK AND WHITE DRAGON TATTOO BACKGROUND OVERLAY */}
+      {/* ------------------------------------------------------------- */}
+      <DragonTattooOverlay />
+
+      {/* ------------------------------------------------------------- */}
+      {/* AMBIENT LIGHTING & DATA VISUALIZATION GRAPHICS */}
       {/* ------------------------------------------------------------- */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         
@@ -85,7 +91,7 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
         <div className="absolute -bottom-32 -left-20 w-[550px] h-[550px] rounded-full bg-purple-600/15 dark:bg-purple-600/20 blur-[160px]" />
 
         {/* Futuristic SVG Waves & Grid Network Overlay */}
-        <svg className="absolute inset-0 w-full h-full opacity-20 dark:opacity-30" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full opacity-15 dark:opacity-25" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="loginGrid" width="40" height="40" patternUnits="userSpaceOnUse">
               <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-slate-400/40 dark:text-slate-700/40" />
@@ -109,16 +115,9 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
             strokeWidth="2.5"
             className="animate-pulse"
           />
-          <path
-            d="M -100 500 Q 300 650 700 400 T 1400 600 T 2000 450"
-            fill="none"
-            stroke="url(#waveGrad)"
-            strokeWidth="1.5"
-            opacity="0.6"
-          />
         </svg>
 
-        {/* FLOATING DEKSTOP DATA METRIC BADGES (Visually frames the center card on large screens) */}
+        {/* FLOATING DEKSTOP DATA METRIC BADGES */}
         <div className="hidden lg:flex justify-between items-center w-full max-w-6xl px-12 absolute inset-0 mx-auto pointer-events-none z-0">
           
           {/* Left Metric Widget */}
@@ -187,7 +186,7 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
         {/* Subtle Outer Glow Border Gradient Wrapper */}
         <div className="p-[1px] rounded-3xl bg-gradient-to-b from-blue-500/30 via-purple-500/20 to-slate-200/40 dark:to-slate-800/40 shadow-2xl">
           
-          <div className="w-full bg-white/90 dark:bg-slate-900/80 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+          <div className="w-full bg-white/90 dark:bg-slate-900/85 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
             
             {/* Success Access Granted Overlay */}
             {isSuccess && (
@@ -381,3 +380,4 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
     </div>
   );
 }
+
