@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   AreaChart,
   Area,
@@ -431,16 +431,24 @@ const CustomTreemapNode = (props: any) => {
   );
 };
 
-// 9. Authentic Recharts Attraction Treemap Chart (Exact 6-block layout with zero text overflow)
-export function TrafficSourcesTreemap() {
-  const treemapData = [
-    { name: 'Organic Search', size: 5200 },
-    { name: 'Social Media', size: 4500 },
-    { name: 'Email Marketing', size: 3800 },
-    { name: 'Direct Traffic', size: 3200 },
-    { name: 'Paid Ads', size: 2800 },
-    { name: 'Referrals', size: 1900 },
-  ];
+// 9. Authentic Recharts Attraction Treemap Chart (Dynamic Snowflake channel names)
+export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerformance[] }) {
+  const treemapData = useMemo(() => {
+    if (channels && channels.length > 0) {
+      return channels.map((c) => ({
+        name: c.channel,
+        size: c.revenue || c.spend || 1000,
+      }));
+    }
+    return [
+      { name: 'Google Ads', size: 52300 },
+      { name: 'Meta Ads', fontName: 'Meta Ads', size: 48150 },
+      { name: 'LinkedIn Ads', size: 45210 },
+      { name: 'YouTube Ads', size: 38400 },
+      { name: 'Email Marketing', size: 21920 },
+      { name: 'Direct Traffic', size: 18500 },
+    ];
+  }, [channels]);
 
   return (
     <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
@@ -454,7 +462,7 @@ export function TrafficSourcesTreemap() {
         >
           <Tooltip
             wrapperClassName="custom-tooltip"
-            formatter={(val: any) => [`Visits : ${Number(val).toLocaleString()}`, 'Source']}
+            formatter={(val: any) => [`Revenue Yield : ₹${(Number(val) / 1000).toFixed(1)}k Cr`, 'Channel']}
           />
         </Treemap>
       </ResponsiveContainer>

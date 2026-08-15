@@ -361,7 +361,7 @@ export default function App() {
                         <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Asymmetrical treemap of inbound acquisition channels</span>
                       </div>
                       <div className="flex-1 min-h-0 w-full overflow-hidden">
-                        <TrafficSourcesTreemap />
+                        <TrafficSourcesTreemap channels={channels} />
                       </div>
                     </motion.div>
 
