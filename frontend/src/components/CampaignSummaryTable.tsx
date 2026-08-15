@@ -152,107 +152,108 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
     const st = (status || 'Active').toLowerCase();
     if (st === 'active') {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 uppercase tracking-wider">
-          <Play size={10} className="fill-current" /> Active
+        <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 uppercase tracking-wider shrink-0">
+          <Play size={9} className="fill-current" /> Active
         </span>
       );
     }
     if (st === 'completed') {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-500/10 text-blue-500 border border-blue-500/30 uppercase tracking-wider">
-          <CheckCircle2 size={10} /> Completed
+        <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-blue-500/10 text-blue-500 border border-blue-500/30 uppercase tracking-wider shrink-0">
+          <CheckCircle2 size={9} /> Completed
         </span>
       );
     }
     if (st === 'paused') {
       return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase tracking-wider">
-          <Pause size={10} className="fill-current" /> Paused
+        <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-amber-500/10 text-amber-500 border border-amber-500/30 uppercase tracking-wider shrink-0">
+          <Pause size={9} className="fill-current" /> Paused
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-purple-500/10 text-purple-500 border border-purple-500/30 uppercase tracking-wider">
+      <span className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-purple-500/10 text-purple-500 border border-purple-500/30 uppercase tracking-wider shrink-0">
         {status || 'Scheduled'}
       </span>
     );
   };
 
   return (
-    <div className="bg-card p-4 sm:p-6 rounded-3xl shadow-[var(--card-shadow)] border border-transparent w-full max-w-full overflow-hidden space-y-4">
+    <div className="bg-card p-3.5 sm:p-6 rounded-3xl shadow-[var(--card-shadow)] border border-transparent w-full max-w-full overflow-hidden space-y-4 mb-16 md:mb-0 select-none font-sans">
       
-      {/* Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/40">
-        <div>
-          <h3 className="text-xs sm:text-sm font-black text-foreground uppercase tracking-tight">
-            CAMPAIGN SUMMARY
-          </h3>
-          <span className="text-[9px] sm:text-[10px] text-muted uppercase tracking-wider block mt-0.5">
-            CAMPAIGN-LEVEL PERFORMANCE ACROSS MARKETING CHANNELS
-          </span>
+      {/* Header & Mobile Controls */}
+      <div className="flex flex-col space-y-3 pb-2 border-b border-border/40">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xs sm:text-sm font-black text-foreground uppercase tracking-tight">
+              CAMPAIGN SUMMARY
+            </h3>
+            <span className="text-[8.5px] sm:text-[10px] text-muted uppercase tracking-wider block mt-0.5">
+              CAMPAIGN-LEVEL PERFORMANCE ACROSS MARKETING CHANNELS
+            </span>
+          </div>
         </div>
 
-        {/* Filter & Search Bar */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        {/* Filter Controls (Fully Responsive Mobile Grid) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:flex md:items-center gap-2 w-full">
           {/* Search Box */}
-          <div className="relative flex-1 sm:flex-initial min-w-[160px]">
+          <div className="relative w-full md:w-56">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
             <input
               type="text"
               placeholder="Search campaigns..."
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-              className="w-full pl-9 pr-3 py-1.5 bg-background border border-border/80 rounded-2xl text-xs text-foreground placeholder-muted focus:outline-none focus:border-primary font-medium"
+              className="w-full pl-8 pr-3 py-1.5 bg-background border border-border/80 rounded-2xl text-xs text-foreground placeholder-muted focus:outline-none focus:border-primary font-medium"
             />
           </div>
 
-          {/* Channel Filter */}
-          <div className="relative">
+          {/* Filter Selects Grid */}
+          <div className="grid grid-cols-3 gap-1.5 w-full md:w-auto">
+            {/* Channel Filter */}
             <select
               value={selectedChannel}
               onChange={(e) => { setSelectedChannel(e.target.value); setCurrentPage(1); }}
-              className="px-3 py-1.5 bg-background border border-border/80 rounded-2xl text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
+              className="w-full px-2 py-1.5 bg-background border border-border/80 rounded-2xl text-[10px] sm:text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer truncate"
             >
               <option value="All">All Channels</option>
               {uniqueChannels.filter(c => c !== 'All').map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
-          </div>
 
-          {/* Status Filter */}
-          <div className="relative">
+            {/* Status Filter */}
             <select
               value={selectedStatus}
               onChange={(e) => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
-              className="px-3 py-1.5 bg-background border border-border/80 rounded-2xl text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
+              className="w-full px-2 py-1.5 bg-background border border-border/80 rounded-2xl text-[10px] sm:text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer truncate"
             >
               <option value="All">All Statuses</option>
               {uniqueStatuses.filter(s => s !== 'All').map(s => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
-          </div>
 
-          {/* Rows Per Page Selector */}
-          <div className="relative">
+            {/* Rows Per Page Selector */}
             <select
               value={itemsPerPage}
               onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
-              className="px-3 py-1.5 bg-background border border-border/80 rounded-2xl text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
+              className="w-full px-2 py-1.5 bg-background border border-border/80 rounded-2xl text-[10px] sm:text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer truncate"
             >
-              <option value={10}>10 per page</option>
-              <option value={25}>25 per page</option>
-              <option value={50}>50 per page</option>
-              <option value={100}>All Campaigns</option>
+              <option value={10}>10 / Page</option>
+              <option value={25}>25 / Page</option>
+              <option value={50}>50 / Page</option>
+              <option value={100}>All Rows</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* Table Area with Internal Horizontal Overflow Scroll */}
-      <div className="overflow-x-auto w-full -mx-4 px-4 sm:mx-0 sm:px-0">
-        <table className="w-full text-left border-collapse min-w-[640px]">
+      {/* ------------------------------------------------------------- */}
+      {/* DESKTOP VIEW: FULL INTERACTIVE DATA TABLE (hidden on mobile) */}
+      {/* ------------------------------------------------------------- */}
+      <div className="hidden md:block overflow-x-auto w-full">
+        <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
             <tr className="border-b border-border/60 text-[10px] font-extrabold text-muted uppercase tracking-wider">
               <th className="py-3 px-3 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('campaign')}>
@@ -340,15 +341,76 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
         </table>
       </div>
 
+      {/* ------------------------------------------------------------- */}
+      {/* MOBILE VIEW: SLEEK MOBILE CAMPAIGN CARDS (shown on mobile) */}
+      {/* ------------------------------------------------------------- */}
+      <div className="block md:hidden space-y-3">
+        {paginatedData.length > 0 ? (
+          paginatedData.map((row, idx) => {
+            const calculatedRoi = row.roi !== undefined ? row.roi : calculateRoi(row.revenue, row.spend);
+            return (
+              <div
+                key={`mob-card-${idx}`}
+                className="p-3.5 bg-background/60 dark:bg-slate-900/50 rounded-2xl border border-border/60 space-y-2.5 shadow-2xs"
+              >
+                {/* Header: Campaign Name & Status */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h4 className="text-xs font-extrabold text-foreground leading-snug">
+                      {row.campaign}
+                    </h4>
+                    <span className="text-[9.5px] font-bold text-muted uppercase tracking-wider block mt-0.5">
+                      {row.channel}
+                    </span>
+                  </div>
+                  {getStatusBadge(row.status)}
+                </div>
+
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-border/40 text-xs">
+                  
+                  <div className="bg-card p-2 rounded-xl border border-border/40 space-y-0.5">
+                    <span className="text-[8.5px] font-extrabold text-muted uppercase block">Spend</span>
+                    <span className="font-mono font-black text-foreground">{formatCrores(row.spend)}</span>
+                  </div>
+
+                  <div className="bg-card p-2 rounded-xl border border-border/40 space-y-0.5">
+                    <span className="text-[8.5px] font-extrabold text-muted uppercase block">Revenue</span>
+                    <span className="font-mono font-black text-emerald-500">{formatCrores(row.revenue)}</span>
+                  </div>
+
+                  <div className="bg-card p-2 rounded-xl border border-border/40 space-y-0.5">
+                    <span className="text-[8.5px] font-extrabold text-muted uppercase block">ROI</span>
+                    <span className="font-mono font-black text-primary">
+                      {calculatedRoi >= 0 ? `+${calculatedRoi.toFixed(2)}%` : `${calculatedRoi.toFixed(2)}%`}
+                    </span>
+                  </div>
+
+                  <div className="bg-card p-2 rounded-xl border border-border/40 space-y-0.5">
+                    <span className="text-[8.5px] font-extrabold text-muted uppercase block">Conversions</span>
+                    <span className="font-mono font-black text-foreground">{formatNumber(row.conversions)}</span>
+                  </div>
+
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="py-8 text-center text-muted font-medium text-xs">
+            No matching campaigns found.
+          </div>
+        )}
+      </div>
+
       {/* Pagination Footer */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-border/40 text-xs">
-        <span className="text-[10.5px] font-semibold text-muted">
+        <span className="text-[10px] sm:text-[10.5px] font-semibold text-muted text-center sm:text-left">
           Showing {totalItems === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + itemsPerPage, totalItems)} of {totalItems} campaigns
         </span>
 
         {/* Pagination Buttons */}
         {totalPages > 1 && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 justify-center">
             <button
               type="button"
               disabled={currentPage === 1}
@@ -356,23 +418,30 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
               className="p-1.5 rounded-xl border border-border/80 bg-background text-foreground hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Previous Page"
             >
-              <ChevronLeft size={14} />
+              <ChevronLeft size={13} />
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-              <button
-                key={pageNum}
-                type="button"
-                onClick={() => setCurrentPage(pageNum)}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                  currentPage === pageNum
-                    ? 'bg-primary text-white shadow-xs'
-                    : 'bg-background border border-border/80 text-foreground hover:bg-accent'
-                }`}
-              >
-                {pageNum}
-              </button>
-            ))}
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              let pageNum = i + 1;
+              if (totalPages > 5 && currentPage > 3) {
+                pageNum = currentPage - 2 + i;
+                if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+              }
+              return (
+                <button
+                  key={pageNum}
+                  type="button"
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`px-2.5 py-1 rounded-xl text-[11px] font-bold transition-colors cursor-pointer ${
+                    currentPage === pageNum
+                      ? 'bg-primary text-white shadow-xs'
+                      : 'bg-background border border-border/80 text-foreground hover:bg-accent'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
 
             <button
               type="button"
@@ -381,7 +450,7 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
               className="p-1.5 rounded-xl border border-border/80 bg-background text-foreground hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               title="Next Page"
             >
-              <ChevronRight size={14} />
+              <ChevronRight size={13} />
             </button>
           </div>
         )}
