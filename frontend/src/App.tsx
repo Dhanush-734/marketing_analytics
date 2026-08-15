@@ -20,8 +20,7 @@ import {
   TrafficSourcesTreemap,
   MarketingChannelsStackedBarChart
 } from './components/PerformanceCharts';
-import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Info, Terminal, Cpu, Layers, GitBranch, ArrowRight, ArrowDown, Check } from 'lucide-react';
-import { Logo } from './components/Logo';
+import { Send, Eye, MousePointerClick, Database, CheckCircle, Code, User, Info, Cpu, Layers, GitBranch, Check, Filter, BarChart3, Settings } from 'lucide-react';
 import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
 import { IndiaMap } from './components/IndiaMap';
@@ -582,174 +581,128 @@ export default function App() {
 
               {/* VIEW: ABOUT & TEAM */}
               {activeTab === 'about' && (
-                <div className="space-y-6 sm:space-y-8 select-none w-full max-w-full overflow-hidden pb-12 sm:pb-0">
-                  {/* About Section */}
-                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent relative overflow-hidden w-full max-w-full">
-                    <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl pointer-events-none" />
-                    <div className="relative max-w-4xl space-y-3 sm:space-y-4 font-sans">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/15 border border-primary/20 rounded-full text-primary text-[10px] font-bold uppercase tracking-wider">
-                        <Info size={11} />
-                        About Insight Innovators
-                      </div>
-                      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-foreground leading-snug tracking-tight break-words">
-                        Transforming Raw Business Data into Strategic Value
-                      </h2>
-                      <p className="text-xs sm:text-sm text-muted leading-relaxed break-words">
-                        Insight Innovators is a student development team focused on building intelligent, data-driven software solutions using modern technologies. Our goal is to transform raw business data into meaningful insights through analytics, visualization, automation, and cloud technologies.
+                <div className="space-y-6 sm:space-y-8 select-none w-full max-w-full overflow-hidden pb-12 sm:pb-0 font-sans">
+                  {/* About Section matching Picture 2 */}
+                  <div className="bg-card p-5 sm:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 relative overflow-hidden w-full max-w-full">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-primary/10 border border-primary/25 rounded-full text-primary text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-4">
+                      <Info size={13} />
+                      ABOUT INSIGHT INNOVATORS
+                    </div>
+
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-foreground leading-snug tracking-tight mb-2 break-words">
+                      Transforming Raw Business Data<br className="hidden sm:inline" /> into Strategic Insights
+                    </h2>
+
+                    <div className="w-12 h-1 bg-primary rounded-full mb-5" />
+
+                    <div className="space-y-4 text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal">
+                      <p>
+                        Insight Innovators is a student development team focused on building solutions to transform raw business data into meaningful insights through analytics and technology.
                       </p>
-                      <p className="text-xs sm:text-sm text-muted leading-relaxed break-words">
-                        This project demonstrates how marketing campaign data can be collected, processed, analyzed, and visualized to support better business decision-making. It combines data engineering, cloud warehousing, business intelligence, and web development into one integrated platform.
+                      <p>
+                        This project demonstrates how marketing campaign data can be leveraged for smarter decision-making. It combines data engineering, cloud warehousing, business intelligence, and data governance.
                       </p>
-                      <p className="text-xs sm:text-sm text-muted leading-relaxed break-words">
-                        Our mission is to create scalable, modern, and enterprise-ready analytics solutions that help organizations monitor campaign performance, measure ROI, understand customer behavior, and automate reporting processes.
+                      <p>
+                        Our mission is to create scalable, modern, and enterprise-ready solutions that deliver measurable ROI, understand customer behavior, and automate reporting processes.
                       </p>
                     </div>
                   </div>
 
-                  {/* Workflow Pipeline */}
-                  <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-5 sm:space-y-6 w-full max-w-full overflow-hidden">
+                  {/* Workflow Pipeline Card matching Picture 2 */}
+                  <div className="bg-card p-5 sm:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 w-full max-w-full overflow-hidden">
                     <div>
                       <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
-                        <GitBranch size={16} className="text-primary animate-pulse" />
-                        Project Data Pipeline &amp; Workflow
+                        <GitBranch size={16} className="text-primary" />
+                        PROJECT DATA PIPELINE &amp; WORKFLOW
                       </h3>
-                      <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">END-TO-END DATA ORCHESTRATION &amp; GOVERNANCE LIFECYCLE</span>
+                      <span className="text-[9px] sm:text-[10px] text-muted block mt-0.5 uppercase tracking-wide">
+                        END-TO-END DATA ORCHESTRATION &amp; GOVERNANCE LIFECYCLE
+                      </span>
                     </div>
 
-                    {/* Responsive Pipeline Flowchart */}
-                    <div className="flex flex-col xl:flex-row gap-2.5 sm:gap-3 items-center justify-between relative py-1 w-full max-w-full">
-
-                      {/* Box 1 */}
-                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
-                        <div className="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-1.5">
-                          <Terminal size={15} />
-                        </div>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 01</span>
-                        <h4 className="text-[10px] font-bold text-foreground">Marketing Source Data</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Google • Meta • Email CSVs</span>
-                      </div>
-
-                      {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 py-0.5">
-                        <ArrowRight size={15} className="text-primary hidden xl:block" />
-                        <ArrowDown size={15} className="text-primary xl:hidden" />
-                      </div>
-
-                      {/* Box 2 */}
-                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
-                        <div className="w-7 h-7 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-1.5">
-                          <Database size={15} />
-                        </div>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 02</span>
-                        <h4 className="text-[10px] font-bold text-foreground">MySQL Operational Database</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Structured data storage</span>
-                      </div>
-
-                      {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 py-0.5">
-                        <ArrowRight size={15} className="text-primary hidden xl:block" />
-                        <ArrowDown size={15} className="text-primary xl:hidden" />
-                      </div>
-
-                      {/* Box 3 */}
-                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
-                        <div className="w-7 h-7 rounded-xl bg-cyan-50 dark:bg-cyan-950/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-1.5">
-                          <Cpu size={15} />
-                        </div>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 03</span>
-                        <h4 className="text-[10px] font-bold text-foreground">Alteryx ETL Pipeline</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Clean • Transform • Validate</span>
-                      </div>
-
-                      {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 py-0.5">
-                        <ArrowRight size={15} className="text-primary hidden xl:block" />
-                        <ArrowDown size={15} className="text-primary xl:hidden" />
-                      </div>
-
-                      {/* Box 4 */}
-                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
-                        <div className="w-7 h-7 rounded-xl bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-1.5">
-                          <Layers size={15} />
-                        </div>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 04</span>
-                        <h4 className="text-[10px] font-bold text-foreground">Snowflake Data Warehouse</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Cloud analytics warehouse</span>
-                      </div>
-
-                      {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 py-0.5">
-                        <ArrowRight size={15} className="text-primary hidden xl:block" />
-                        <ArrowDown size={15} className="text-primary xl:hidden" />
-                      </div>
-
-                      {/* Box 5 */}
-                      <div className="w-full xl:w-44 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
-                        <div className="w-7 h-7 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-1.5">
-                          <Code size={15} />
-                        </div>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 05</span>
-                        <h4 className="text-[10px] font-bold text-foreground">React + TypeScript Dashboard</h4>
-                        <span className="text-[8px] text-muted block mt-0.5">Interactive UI Portal</span>
-                      </div>
-
-                      {/* Arrow */}
-                      <div className="flex justify-center text-muted shrink-0 py-0.5">
-                        <ArrowRight size={15} className="text-primary hidden xl:block" />
-                        <ArrowDown size={15} className="text-primary xl:hidden" />
-                      </div>
-
-                      {/* Box 6 (Final Portal with side features) */}
-                      <div className="w-full xl:w-64 bg-primary/5 border-2 border-primary/20 p-4 rounded-3xl text-center shadow-md relative">
-                        <div className="absolute top-3 right-3 flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                        </div>
-                        <div className="mx-auto w-9 h-9 rounded-2xl bg-primary text-white flex items-center justify-center mb-1.5 shadow-sm shadow-primary/20">
-                          <Logo size={22} />
-                        </div>
-                        <h4 className="text-xs font-extrabold text-foreground">Analytics + INSIGHTS AI</h4>
-                        <span className="text-[8px] text-muted block mt-0.5 font-semibold">Insight Innovators Core Engine</span>
-
-                        <div className="mt-3 pt-2.5 border-t border-border space-y-2 text-left">
-                          <div className="text-[8.5px] font-bold text-primary uppercase tracking-wider block">
-                            Platform Capabilities
+                    {/* 6-Node Flowchart Card matching Picture 2 */}
+                    <div className="border border-blue-200 dark:border-blue-900/40 bg-blue-50/20 dark:bg-slate-900/40 p-4 sm:p-6 rounded-2xl overflow-x-auto scrollbar-none w-full max-w-full">
+                      <div className="flex items-start gap-2.5 sm:gap-3.5 min-w-max py-2">
+                        
+                        {/* Node 1 */}
+                        <div className="w-28 sm:w-36 text-center space-y-1.5 shrink-0 flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
+                            <Database size={20} />
                           </div>
-                          <div className="grid grid-cols-2 gap-x-1.5 gap-y-0.5 text-[8px] font-semibold text-foreground/80">
-                            <div>• Executive Dashboard</div>
-                            <div>• Multi-Channel ROI</div>
-                            <div>• Campaign Analysis</div>
-                            <div>• Customer Segments</div>
-                            <div>• Email Analytics</div>
-                            <div>• SQL Analytics</div>
-                            <div className="col-span-2 text-primary font-extrabold">• INSIGHTS AI Copilot</div>
-                          </div>
-
-                          <div className="mt-2.5 pt-2 border-t border-border/60 space-y-1">
-                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-foreground/80">
-                              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                              Snowflake Verified Sync
-                            </div>
-                            <div className="flex items-center gap-1.5 text-[8px] font-bold text-muted/80">
-                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                              Power BI (Future Dev)
-                            </div>
-                          </div>
+                          <h4 className="text-[10px] sm:text-xs font-extrabold text-foreground">1. Data Sources</h4>
+                          <p className="text-[8.5px] sm:text-[9.5px] text-muted leading-tight">Collect data from multiple marketing channels and platforms.</p>
                         </div>
-                      </div>
 
+                        <div className="text-slate-300 dark:text-slate-600 shrink-0 pt-4 font-bold text-xs">→</div>
+
+                        {/* Node 2 */}
+                        <div className="w-28 sm:w-36 text-center space-y-1.5 shrink-0 flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-xs">
+                            <Filter size={20} />
+                          </div>
+                          <h4 className="text-[10px] sm:text-xs font-extrabold text-foreground">2. Ingestion</h4>
+                          <p className="text-[8.5px] sm:text-[9.5px] text-muted leading-tight">Extract and ingest raw data into the staging environment.</p>
+                        </div>
+
+                        <div className="text-slate-300 dark:text-slate-600 shrink-0 pt-4 font-bold text-xs">→</div>
+
+                        {/* Node 3 */}
+                        <div className="w-28 sm:w-36 text-center space-y-1.5 shrink-0 flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-xs">
+                            <Settings size={20} />
+                          </div>
+                          <h4 className="text-[10px] sm:text-xs font-extrabold text-foreground">3. Processing</h4>
+                          <p className="text-[8.5px] sm:text-[9.5px] text-muted leading-tight">Clean, validate, and transform data for analysis.</p>
+                        </div>
+
+                        <div className="text-slate-300 dark:text-slate-600 shrink-0 pt-4 font-bold text-xs">→</div>
+
+                        {/* Node 4 */}
+                        <div className="w-28 sm:w-36 text-center space-y-1.5 shrink-0 flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-xs">
+                            <Layers size={20} />
+                          </div>
+                          <h4 className="text-[10px] sm:text-xs font-extrabold text-foreground">4. Storage</h4>
+                          <p className="text-[8.5px] sm:text-[9.5px] text-muted leading-tight">Load curated data into Snowflake warehouse.</p>
+                        </div>
+
+                        <div className="text-slate-300 dark:text-slate-600 shrink-0 pt-4 font-bold text-xs">→</div>
+
+                        {/* Node 5 */}
+                        <div className="w-28 sm:w-36 text-center space-y-1.5 shrink-0 flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
+                            <BarChart3 size={20} />
+                          </div>
+                          <h4 className="text-[10px] sm:text-xs font-extrabold text-foreground">5. Analytics</h4>
+                          <p className="text-[8.5px] sm:text-[9.5px] text-muted leading-tight">Perform analysis and generate insights &amp; visualizations.</p>
+                        </div>
+
+                        <div className="text-slate-300 dark:text-slate-600 shrink-0 pt-4 font-bold text-xs">→</div>
+
+                        {/* Node 6 */}
+                        <div className="w-28 sm:w-36 text-center space-y-1.5 shrink-0 flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-950/60 text-green-600 dark:text-green-400 flex items-center justify-center shadow-xs">
+                            <CheckCircle size={20} />
+                          </div>
+                          <h4 className="text-[10px] sm:text-xs font-extrabold text-foreground">6. Governance</h4>
+                          <p className="text-[8.5px] sm:text-[9.5px] text-muted leading-tight">Ensure data quality, security, and compliance at every step.</p>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
 
-                  {/* Developers Section */}
-                  <div className="space-y-3 sm:space-y-4 w-full max-w-full overflow-hidden">
+                  {/* OUR TEAM Section matching Picture 2 */}
+                  <div className="bg-card p-5 sm:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 w-full max-w-full overflow-hidden">
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-xs sm:text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                           <User size={16} className="text-primary" />
-                          Project Developers
+                          OUR TEAM
                         </h3>
-                        <span className="text-[9px] text-muted block mt-0.5 uppercase tracking-wide">The core team behind the system</span>
+                        <span className="text-[9px] sm:text-[10px] text-muted block mt-0.5 uppercase tracking-wide">
+                          THE MINDS BEHIND INSIGHT INNOVATORS
+                        </span>
                       </div>
                       <span className="text-[9px] font-bold text-primary lg:hidden flex items-center gap-1">
                         Swipe &rarr;
@@ -772,7 +725,7 @@ export default function App() {
                         <div
                           key={i}
                           tabIndex={0}
-                          className="bg-card p-4 sm:p-5 rounded-3xl border border-border/60 shadow-[var(--card-shadow)] text-center space-y-2.5 flex flex-col justify-center items-center group hover:scale-[1.02] transition-all duration-200 shrink-0 lg:shrink w-[240px] xs:w-[260px] lg:w-auto snap-start focus:outline-none focus:ring-1 focus:ring-primary"
+                          className="bg-background/50 p-4 sm:p-5 rounded-2xl border border-border/70 text-center space-y-2.5 flex flex-col justify-center items-center group hover:scale-[1.02] transition-all duration-200 shrink-0 lg:shrink w-[220px] xs:w-[240px] lg:w-auto snap-start focus:outline-none focus:ring-1 focus:ring-primary"
                         >
                           <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${dev.color} text-white font-extrabold text-sm flex items-center justify-center shadow-md`}>
                             {dev.initial}
@@ -790,7 +743,7 @@ export default function App() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full max-w-full overflow-hidden">
 
                     {/* Technologies Used Card */}
-                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-4 sm:space-y-5 w-full max-w-full">
+                    <div className="bg-card p-5 sm:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-4 sm:space-y-5 w-full max-w-full">
                       <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
                         <Cpu size={14} className="text-primary" />
                         Project Technologies
@@ -813,7 +766,7 @@ export default function App() {
                     </div>
 
                     {/* Features & Future Enhancements */}
-                    <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-5 sm:space-y-6 w-full max-w-full">
+                    <div className="bg-card p-5 sm:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-border/60 space-y-5 sm:space-y-6 w-full max-w-full">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
 
                         {/* Implemented Features */}
