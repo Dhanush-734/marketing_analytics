@@ -394,8 +394,9 @@ const CustomTreemapNode = (props: any) => {
   const COLORS = ['#2563EB', '#F59E0B', '#8B5CF6', '#10B981', '#EC4899', '#06B6D4'];
   const fill = COLORS[index % COLORS.length];
 
-  const maxChars = Math.floor(width / 8);
-  const displayName = name && name.length > maxChars && maxChars > 3 ? `${name.substring(0, maxChars - 2)}..` : name;
+  const words = name ? name.split(' ') : [];
+  const line1 = words[0] || '';
+  const line2 = words.slice(1).join(' ') || '';
 
   return (
     <g>
@@ -412,19 +413,27 @@ const CustomTreemapNode = (props: any) => {
           strokeWidth: 1.5,
         }}
       />
-      {width > 35 && height > 18 && (
+      {width > 25 && height > 20 && (
         <text
           x={x + width / 2}
           y={y + height / 2}
           textAnchor="middle"
           dominantBaseline="central"
           fill="#FFFFFF"
-          fontSize={width < 75 ? 9 : 11}
-          fontWeight={800}
-          fontFamily="sans-serif"
+          fontSize={width < 65 ? 10 : 12}
+          fontWeight={900}
+          fontFamily="system-ui, -apple-system, sans-serif"
           className="select-none pointer-events-none"
+          style={{ filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.6))' }}
         >
-          {displayName}
+          {line2 ? (
+            <>
+              <tspan x={x + width / 2} dy="-0.5em">{line1}</tspan>
+              <tspan x={x + width / 2} dy="1.1em">{line2}</tspan>
+            </>
+          ) : (
+            line1
+          )}
         </text>
       )}
     </g>
