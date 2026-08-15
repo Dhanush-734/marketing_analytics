@@ -25,6 +25,7 @@ import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
 import { IndiaMap } from './components/IndiaMap';
 import { SettingsView } from './components/SettingsView';
+import { CustomersView } from './components/CustomersView';
 import { LoginView } from './components/LoginView';
 import type { Variants } from 'framer-motion';
 
@@ -578,6 +579,9 @@ export default function App() {
 
               {/* platform settings view */}
               {activeTab === 'settings' && <SettingsView />}
+
+              {/* VIEW: CUSTOMERS */}
+              {activeTab === 'customers' && <CustomersView />}
 
               {/* VIEW: ABOUT & TEAM */}
               {activeTab === 'about' && (
