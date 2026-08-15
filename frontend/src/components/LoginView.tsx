@@ -13,6 +13,8 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [statusStep, setStatusStep] = useState('AUTHENTICATING...');
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
@@ -24,21 +26,48 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
       return;
     }
 
-    setIsLoading(true);
+    const isValid = username.trim().toLowerCase() === 'admin' && password === 'admin123';
 
+    // Initialize loading state & step animation
+    setIsLoading(true);
+    setIsSuccess(false);
+    setProgress(15);
+    setStatusStep('AUTHENTICATING...');
+
+    // Step 1: Verifying credentials (200ms)
     setTimeout(() => {
-      // Authenticate against platform admin credentials
-      if (username.trim().toLowerCase() === 'admin' && password === 'admin123') {
-        setIsSuccess(true);
-        setIsLoading(false);
+      setProgress(40);
+      setStatusStep('VERIFYING CREDENTIALS...');
+    }, 220);
+
+    // Step 2: Process authentication & validation result (500ms)
+    setTimeout(() => {
+      if (isValid) {
+        setProgress(70);
+        setStatusStep('CONNECTING TO ANALYTICS PLATFORM...');
+
         setTimeout(() => {
-          onLoginSuccess();
-        }, 1000);
+          setProgress(90);
+          setStatusStep('LOADING DASHBOARD...');
+
+          setTimeout(() => {
+            setProgress(100);
+            setStatusStep('WELCOME TO INSIGHT INNOVATORS');
+            setIsSuccess(true);
+
+            setTimeout(() => {
+              onLoginSuccess();
+            }, 500);
+          }, 320);
+        }, 280);
+
       } else {
+        // Stop animation immediately on error & return user to form
         setIsLoading(false);
+        setProgress(0);
         setErrorMsg('Invalid Username or Password. Please try admin / admin123.');
       }
-    }, 600);
+    }, 520);
   };
 
   return (
@@ -56,18 +85,48 @@ export function LoginView({ onLoginSuccess }: LoginViewProps) {
       {/* Login Card Container */}
       <div className="w-full max-w-md bg-slate-900/80 backdrop-blur-2xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl z-10 relative overflow-hidden">
         
-        {/* Success Overlay Screen */}
-        {isSuccess && (
-          <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-20 flex flex-col items-center justify-center p-6 text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
-            <div className="w-16 h-16 rounded-full bg-emerald-500/15 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center shadow-lg animate-bounce">
-              <CheckCircle2 size={36} />
+        {/* PREMIUM LOADING & PROGRESS OVERLAY */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-xl z-30 flex flex-col items-center justify-center p-6 text-center space-y-6 animate-in fade-in duration-200">
+            
+            {/* Centered Insight Innovators Logo */}
+            <div className="p-3 bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-blue-500/30 rounded-2xl shadow-xl shadow-blue-500/20 animate-pulse">
+              <Logo size={56} showText={false} />
             </div>
-            <h3 className="text-xl font-extrabold text-white tracking-tight">
-              Access Granted
-            </h3>
-            <p className="text-xs text-slate-400 font-medium">
-              Connecting to Snowflake Cloud Data Warehouse...
-            </p>
+
+            {/* Brand Title & Status Message */}
+            <div className="space-y-1">
+              <h2 className="text-xl font-extrabold tracking-tight text-white uppercase">
+                Insight <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Innovators</span>
+              </h2>
+              <p className="text-[11px] font-mono font-bold tracking-widest text-slate-300 uppercase transition-all duration-300">
+                {statusStep}
+              </p>
+            </div>
+
+            {/* Premium Animated Progress Bar */}
+            <div className="w-full max-w-xs space-y-2">
+              <div className="flex justify-between items-center text-[10px] font-mono font-extrabold text-slate-400">
+                <span className="uppercase tracking-wider">PROGRESS</span>
+                <span className="text-blue-400 font-bold">{progress}%</span>
+              </div>
+
+              <div className="w-full h-3 bg-slate-900 border border-slate-800 rounded-full overflow-hidden p-0.5 shadow-inner">
+                <div
+                  style={{ width: `${progress}%` }}
+                  className="h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-full transition-all duration-300 ease-out shadow-md shadow-blue-500/30 relative overflow-hidden"
+                />
+              </div>
+            </div>
+
+            {/* SUCCESS BADGE */}
+            {isSuccess && (
+              <div className="inline-flex items-center gap-2 text-xs font-extrabold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-4 py-2 rounded-full shadow-lg shadow-emerald-500/20 animate-bounce">
+                <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+                <span className="tracking-wider uppercase">AUTHENTICATION SUCCESSFUL</span>
+              </div>
+            )}
+
           </div>
         )}
 
