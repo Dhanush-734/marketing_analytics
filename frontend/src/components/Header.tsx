@@ -40,7 +40,7 @@ export function Header({
 
   return (
     <header
-      className="h-16 px-2 sm:px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 border-b border-border/45 transition-colors duration-200 select-none w-full max-w-full overflow-hidden"
+      className="h-16 px-3 sm:px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 border-b border-border/45 transition-colors duration-200 select-none w-full max-w-full overflow-hidden"
       style={{
         backgroundColor: darkMode ? 'rgba(11, 15, 25, 0.88)' : 'rgba(255, 255, 255, 0.88)',
         backdropFilter: 'blur(12px)',
@@ -49,7 +49,7 @@ export function Header({
     >
 
       {/* Left segment: Mobile menu button & Page Title */}
-      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Open Navigation Drawer"
@@ -59,7 +59,7 @@ export function Header({
         </button>
 
         <div className="min-w-0 flex-1">
-          <h1 className="text-[11px] sm:text-xs md:text-sm font-extrabold text-foreground tracking-tight leading-none uppercase truncate max-w-[110px] xs:max-w-[140px] sm:max-w-none">
+          <h1 className="text-[11px] sm:text-xs md:text-sm font-extrabold text-foreground tracking-tight leading-none uppercase truncate max-w-[95px] xs:max-w-[125px] sm:max-w-none">
             {getTitle()}
           </h1>
         </div>
@@ -86,7 +86,7 @@ export function Header({
       )}
 
       {/* Middle segment: Desktop Search Bar */}
-      <div className="hidden md:flex items-center relative w-64 xl:w-80">
+      <div className="hidden md:flex items-center relative w-64 xl:w-80 mx-2">
         <Search size={13} className="absolute left-3 text-muted pointer-events-none" />
         <input
           type="text"
@@ -95,8 +95,8 @@ export function Header({
         />
       </div>
 
-      {/* Right segment: Controls & Profile */}
-      <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
+      {/* Right segment: Controls & Profile with uniform 8px gap */}
+      <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 shrink-0">
         
         {/* Mobile search trigger icon */}
         <button
@@ -108,7 +108,7 @@ export function Header({
         </button>
 
         {/* Snowflake Connected Status Indicator */}
-        <div className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/40 rounded-xl text-green-700 dark:text-green-400 text-[10px] font-bold shrink-0">
+        <div className="flex items-center gap-1.5 px-2 py-1.5 sm:px-2.5 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/40 rounded-xl text-green-700 dark:text-green-400 text-[10px] font-bold shrink-0">
           <span className="relative flex h-1.5 w-1.5 shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
@@ -139,7 +139,7 @@ export function Header({
         </button>
 
         {/* User avatar profile & Logout */}
-        <div className="flex items-center gap-1.5 select-none shrink-0 pl-0.5">
+        <div className="flex items-center gap-1.5 select-none shrink-0">
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-primary/10 text-primary border border-primary/20 font-bold text-xs flex items-center justify-center shrink-0">
             A
           </div>
