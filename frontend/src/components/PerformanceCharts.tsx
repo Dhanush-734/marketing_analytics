@@ -15,7 +15,6 @@ import {
   FunnelChart,
   Funnel,
   LabelList,
-  Treemap,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -386,29 +385,43 @@ export function EmailFunnelChart({ email }: { email: EmailPerformance }) {
   );
 }
 
-// 9. Traffic Sources: Treemap Chart
-export function TrafficSourcesTreemap() {
-  const data = [
-    { name: 'Organic Search', size: 4500, fill: '#3B82F6' },
-    { name: 'Direct Traffic', size: 3200, fill: '#10B981' },
-    { name: 'Social Media', size: 2800, fill: '#F59E0B' },
-    { name: 'Email Marketing', size: 1900, fill: '#8B5CF6' },
-    { name: 'Paid Ads', size: 2400, fill: '#EC4899' },
-    { name: 'Referrals', size: 1200, fill: '#06B6D4' },
+// 9. Attraction Channels Performance Chart (Dynamically sourced from Snowflake)
+export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerformance[] }) {
+  const formatShort = (val: number) => {
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
+    if (val >= 100000) return `₹${(val / 100000).toFixed(0)}L`;
+    return `₹${val}`;
+  };
+
+  const VIBRANT_PALETTE = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'];
+
+  const chartData = channels && channels.length > 0 ? channels : [
+    { channel: 'Google Ads', revenue: 52300000000 },
+    { channel: 'Meta Ads', revenue: 48150000000 },
+    { channel: 'LinkedIn Ads', revenue: 45210000000 },
+    { channel: 'YouTube Ads', revenue: 38400000000 },
+    { channel: 'Email Marketing', revenue: 21921967467 }
   ];
+
+  const formatYAxisLabel = (val: string) => {
+    if (!val) return '';
+    return val.length > 13 ? `${val.substring(0, 11)}..` : val;
+  };
 
   return (
     <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
       <ResponsiveContainer width="100%" height="100%">
-        <Treemap
-          data={data}
-          dataKey="size"
-          aspectRatio={4 / 3}
-          stroke="var(--card)"
-          fill="#3B82F6"
-        >
-          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Visits']} />
-        </Treemap>
+        <BarChart data={chartData} layout="vertical" margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+          <XAxis type="number" stroke="var(--text-secondary)" fontSize={9} tickLine={false} tickFormatter={formatShort} />
+          <YAxis dataKey="channel" type="category" stroke="var(--text-secondary)" fontSize={8.5} tickLine={false} tickFormatter={formatYAxisLabel} width={85} />
+          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Revenue Generated']} />
+          <Bar dataKey="revenue" name="Revenue Yield" radius={[0, 6, 6, 0]} maxBarSize={18}>
+            {chartData.map((_, index) => (
+              <Cell key={`treemap-cell-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} />
+            ))}
+          </Bar>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );

@@ -357,11 +357,11 @@ export default function App() {
                       className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[260px] sm:h-[360px] lg:col-span-2 border border-transparent w-full max-w-full overflow-hidden"
                     >
                       <div className="mb-2">
-                        <h3 className="text-xs font-bold text-foreground">Attraction Traffic Sources</h3>
-                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Asymmetrical treemap of inbound acquisition channels</span>
+                        <h3 className="text-xs font-bold text-foreground">Attraction Channel Returns</h3>
+                        <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Snowflake acquisition channel revenue yields</span>
                       </div>
                       <div className="flex-1 min-h-0 w-full overflow-hidden">
-                        <TrafficSourcesTreemap />
+                        <TrafficSourcesTreemap channels={channels} />
                       </div>
                     </motion.div>
 
