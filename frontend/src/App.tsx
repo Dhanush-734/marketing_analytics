@@ -168,7 +168,7 @@ export default function App() {
           setMobileOpen={setMobileOpen}
         />
 
-        <main className="p-3 sm:p-6 lg:p-8 w-full max-w-full min-w-0 space-y-6 md:space-y-8 overflow-x-hidden flex-1">
+        <main className="p-3 sm:p-6 lg:p-8 w-full max-w-full min-w-0 space-y-6 md:space-y-8 overflow-x-hidden flex-1 pb-28 md:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}

@@ -40,26 +40,26 @@ export function Header({
 
   return (
     <header
-      className="h-16 px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 border-b border-border/45 transition-colors duration-200 select-none max-w-full"
+      className="h-16 px-2 sm:px-4 md:px-8 flex items-center justify-between sticky top-0 z-30 border-b border-border/45 transition-colors duration-200 select-none w-full max-w-full overflow-hidden"
       style={{
-        backgroundColor: darkMode ? 'rgba(11, 15, 25, 0.85)' : 'rgba(255, 255, 255, 0.85)',
+        backgroundColor: darkMode ? 'rgba(11, 15, 25, 0.88)' : 'rgba(255, 255, 255, 0.88)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)'
       }}
     >
 
       {/* Left segment: Mobile menu button & Page Title */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Open Navigation Drawer"
-          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-border bg-card hover:bg-hover md:hidden text-foreground shrink-0 cursor-pointer transition-transform active:scale-95"
+          className="min-h-[38px] min-w-[38px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl border border-border bg-card hover:bg-hover md:hidden text-foreground shrink-0 cursor-pointer transition-transform active:scale-95 shadow-xs"
         >
-          <Menu size={18} />
+          <Menu size={17} />
         </button>
 
-        <div className="min-w-0">
-          <h1 className="text-xs sm:text-sm font-extrabold text-foreground tracking-tight leading-none uppercase truncate">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-[11px] sm:text-xs md:text-sm font-extrabold text-foreground tracking-tight leading-none uppercase truncate max-w-[110px] xs:max-w-[140px] sm:max-w-none">
             {getTitle()}
           </h1>
         </div>
@@ -96,19 +96,19 @@ export function Header({
       </div>
 
       {/* Right segment: Controls & Profile */}
-      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
         
         {/* Mobile search trigger icon */}
         <button
           onClick={() => setMobileSearchOpen(true)}
           aria-label="Search BI Platform"
-          className="p-2.5 sm:p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover md:hidden transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
+          className="p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover md:hidden transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center shrink-0"
         >
-          <Search size={14} />
+          <Search size={13} />
         </button>
 
         {/* Snowflake Connected Status Indicator */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/40 rounded-xl text-green-700 dark:text-green-400 text-[10px] font-bold">
+        <div className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1.5 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800/40 rounded-xl text-green-700 dark:text-green-400 text-[10px] font-bold shrink-0">
           <span className="relative flex h-1.5 w-1.5 shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
@@ -122,28 +122,25 @@ export function Header({
           onClick={onRefresh}
           disabled={isLoading}
           aria-label="Refresh Data Telemetry"
-          className="p-2.5 sm:p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover disabled:opacity-50 transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center active:scale-95"
+          className="p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover disabled:opacity-50 transition-colors cursor-pointer min-h-[36px] min-w-[36px] sm:min-h-[40px] sm:min-w-[40px] flex items-center justify-center active:scale-95 shrink-0"
           title="Refresh Data"
         >
-          <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+          <RefreshCw size={13} className={isLoading ? 'animate-spin' : ''} />
         </button>
 
         {/* Theme Toggle switch */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           aria-label={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          className="p-2.5 sm:p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center active:scale-95"
+          className="p-2 border border-border text-muted hover:text-foreground bg-card rounded-xl hover:bg-hover transition-colors cursor-pointer min-h-[36px] min-w-[36px] sm:min-h-[40px] sm:min-w-[40px] flex items-center justify-center active:scale-95 shrink-0"
           title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
-          {darkMode ? <Sun size={14} className="text-amber-500" /> : <Moon size={14} />}
+          {darkMode ? <Sun size={13} className="text-amber-500" /> : <Moon size={13} />}
         </button>
 
-        {/* Separator */}
-        <div className="h-5 w-px bg-border hidden sm:block" />
-
         {/* User avatar profile & Logout */}
-        <div className="flex items-center gap-2 select-none pl-0.5">
-          <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary border border-primary/20 font-bold text-xs flex items-center justify-center shrink-0">
+        <div className="flex items-center gap-1.5 select-none shrink-0 pl-0.5">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-primary/10 text-primary border border-primary/20 font-bold text-xs flex items-center justify-center shrink-0">
             A
           </div>
           <div className="hidden lg:flex flex-col text-left leading-none">
@@ -157,9 +154,9 @@ export function Header({
               onClick={onLogout}
               aria-label="Sign Out of Platform"
               title="Sign Out"
-              className="p-2 border border-border text-muted hover:text-red-400 bg-card rounded-xl hover:bg-red-500/10 hover:border-red-500/30 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center ml-1"
+              className="p-1.5 border border-border text-muted hover:text-red-400 bg-card rounded-xl hover:bg-red-500/10 hover:border-red-500/30 transition-colors cursor-pointer min-h-[34px] min-w-[34px] flex items-center justify-center shrink-0"
             >
-              <LogOut size={14} />
+              <LogOut size={13} />
             </button>
           )}
         </div>
