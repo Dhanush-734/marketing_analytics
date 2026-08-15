@@ -6,7 +6,7 @@ export function DragonTattooOverlay() {
     >
       <svg
         viewBox="0 0 1000 1000"
-        className="w-[950px] h-[950px] max-w-[98vw] max-h-[98vh] text-slate-900 dark:text-slate-100 transform scale-105"
+        className="w-[950px] h-[950px] max-w-[98vw] max-h-[98vh] text-slate-100 transform scale-105"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -21,9 +21,7 @@ export function DragonTattooOverlay() {
           </linearGradient>
         </defs>
 
-        {/* ------------------------------------------------------------- */}
-        {/* TRIBAL DRAGON TATTOO COMPASS RINGS */}
-        {/* ------------------------------------------------------------- */}
+        {/* Outer Tattoo Rings */}
         <circle cx="500" cy="500" r="470" stroke="url(#bwDragonGrad)" strokeWidth="2.5" strokeDasharray="14 8 4 8" />
         <circle cx="500" cy="500" r="450" stroke="currentColor" strokeWidth="1" strokeOpacity="0.7" />
         <circle cx="500" cy="500" r="425" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" />
@@ -54,12 +52,10 @@ export function DragonTattooOverlay() {
         <circle cx="500" cy="500" r="360" stroke="currentColor" strokeWidth="2.5" />
         <circle cx="500" cy="500" r="340" stroke="currentColor" strokeWidth="1" strokeDasharray="6 3" />
 
-        {/* ------------------------------------------------------------- */}
-        {/* INTRICATE BLACK & WHITE DRAGON TATTOO SILHOUETTE & PATHS */}
-        {/* ------------------------------------------------------------- */}
+        {/* Dragon Silhouette & Tribal Paths */}
         <g transform="translate(500, 500) scale(0.9) translate(-500, -500)">
           
-          {/* Dragon Main Coiled Serpent Body Path */}
+          {/* Dragon Main Coiled Body */}
           <path
             d="M 500 170 
                C 620 170, 730 240, 750 350 
@@ -78,7 +74,7 @@ export function DragonTattooOverlay() {
             strokeLinejoin="round"
           />
 
-          {/* Dragon Outer Spine Crest Spikes */}
+          {/* Dragon Outer Spine Spikes */}
           <path
             d="M 500 150 Q 520 130 540 160 Q 570 130 590 170 Q 630 140 650 190 Q 690 170 710 220 Q 750 210 760 260 Q 790 270 780 320 Q 810 350 780 400 Q 800 440 760 480 Q 770 530 720 560 Q 710 610 650 630 Q 620 670 560 670 Q 500 700 450 670"
             fill="none"
@@ -87,14 +83,12 @@ export function DragonTattooOverlay() {
             strokeLinecap="round"
           />
 
-          {/* Dragon Scale Patterns */}
+          {/* Dragon Scale Accents */}
           {[
             { cx: 580, cy: 220 }, { cx: 640, cy: 260 }, { cx: 680, cy: 320 },
             { cx: 700, cy: 390 }, { cx: 680, cy: 460 }, { cx: 630, cy: 520 },
             { cx: 560, cy: 550 }, { cx: 480, cy: 550 }, { cx: 410, cy: 520 },
-            { cx: 370, cy: 460 }, { cx: 370, cy: 380 }, { cx: 410, cy: 310 },
-            { cx: 470, cy: 270 }, { cx: 540, cy: 280 }, { cx: 590, cy: 330 },
-            { cx: 590, cy: 400 }, { cx: 550, cy: 450 }, { cx: 480, cy: 460 }
+            { cx: 370, cy: 460 }, { cx: 370, cy: 380 }, { cx: 410, cy: 310 }
           ].map((sc, i) => (
             <path
               key={i}
@@ -106,56 +100,25 @@ export function DragonTattooOverlay() {
             />
           ))}
 
-          {/* Dragon Head (Top Centered Powerful Dragon Head Silhouette) */}
+          {/* Dragon Head */}
           <g transform="translate(430, 110)">
-            {/* Dragon Horns */}
             <path d="M 70 60 C 90 20, 130 -10, 160 0 C 130 30, 100 50, 85 75" fill="currentColor" />
             <path d="M 50 60 C 30 20, -10 -10, -40 0 C -10 30, 20 50, 35 75" fill="currentColor" />
-            
-            {/* Dragon Skull & Snout */}
             <path d="M 30 75 Q 60 40 90 75 Q 110 100 110 120 Q 90 145 60 140 Q 30 145 10 120 Q 10 100 30 75 Z" fill="currentColor" />
-            
-            {/* Dragon Eyes (Sharp B&W cutouts) */}
             <polygon points="40,85 55,92 42,98" fill="none" stroke="currentColor" strokeWidth="2" />
             <polygon points="80,85 65,92 78,98" fill="none" stroke="currentColor" strokeWidth="2" />
-
-            {/* Whiskers / Tendrils */}
             <path d="M 20 125 C -20 140, -50 130, -80 160 C -40 150, -10 140, 15 132" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
             <path d="M 100 125 C 140 140, 170 130, 200 160 C 160 150, 130 140, 105 132" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-
-            {/* Fangs */}
-            <polygon points="35,135 40,150 45,135" fill="currentColor" />
-            <polygon points="75,135 80,150 85,135" fill="currentColor" />
           </g>
 
-          {/* Dragon Claws / Talons */}
-          {/* Top Right Claw */}
+          {/* Dragon Claws */}
           <g transform="translate(680, 260) rotate(30)">
             <path d="M 0 0 Q 30 -20 50 -10 Q 20 10 0 0 M 0 10 Q 35 0 60 20 Q 25 25 0 10 M -10 20 Q 20 30 45 55 Q 10 40 -10 20" fill="currentColor" />
           </g>
 
-          {/* Bottom Left Claw */}
           <g transform="translate(320, 500) rotate(-130)">
             <path d="M 0 0 Q 30 -20 50 -10 Q 20 10 0 0 M 0 10 Q 35 0 60 20 Q 25 25 0 10 M -10 20 Q 20 30 45 55 Q 10 40 -10 20" fill="currentColor" />
           </g>
-
-          {/* Dragon Flame Aura Elements (Floating B&W Flame Strokes) */}
-          <path d="M 250 350 Q 220 320 230 280 Q 260 310 270 340" fill="currentColor" opacity="0.75" />
-          <path d="M 750 380 Q 790 350 780 310 Q 750 340 740 370" fill="currentColor" opacity="0.75" />
-          <path d="M 310 240 Q 280 200 310 170 Q 320 200 330 230" fill="currentColor" opacity="0.75" />
-          <path d="M 680 620 Q 720 650 750 630 Q 720 610 690 600" fill="currentColor" opacity="0.75" />
-
-          {/* Dragon Tail Tip (Spear / Flame Tail) */}
-          <path d="M 460 390 Q 440 360 410 380 Q 390 410 420 430 Q 450 440 460 390 Z" fill="currentColor" />
-          <polygon points="410,380 370,360 385,400" fill="currentColor" />
-        </g>
-
-        {/* Corner Tribal Flourish Accents */}
-        <g stroke="currentColor" strokeWidth="2" opacity="0.6">
-          <path d="M 120 120 L 240 240 M 120 120 L 200 120 M 120 120 L 120 200" />
-          <path d="M 880 120 L 760 240 M 880 120 L 800 120 M 880 120 L 880 200" />
-          <path d="M 120 880 L 240 760 M 120 880 L 200 880 M 120 880 L 120 800" />
-          <path d="M 880 880 L 760 760 M 880 880 L 800 880 M 880 880 L 880 800" />
         </g>
       </svg>
     </div>
