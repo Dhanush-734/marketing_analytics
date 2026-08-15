@@ -582,7 +582,7 @@ export default function App() {
 
               {/* VIEW: ABOUT & TEAM */}
               {activeTab === 'about' && (
-                <div className="space-y-6 sm:space-y-8 select-none w-full max-w-full overflow-hidden">
+                <div className="space-y-6 sm:space-y-8 select-none w-full max-w-full overflow-hidden pb-12 sm:pb-0">
                   {/* About Section */}
                   <div className="bg-card p-4 sm:p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent relative overflow-hidden w-full max-w-full">
                     <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-3xl pointer-events-none" />
@@ -591,16 +591,16 @@ export default function App() {
                         <Info size={11} />
                         About Insight Innovators
                       </div>
-                      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-foreground leading-tight tracking-tight">
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-foreground leading-snug tracking-tight break-words">
                         Transforming Raw Business Data into Strategic Value
                       </h2>
-                      <p className="text-xs sm:text-sm text-muted leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted leading-relaxed break-words">
                         Insight Innovators is a student development team focused on building intelligent, data-driven software solutions using modern technologies. Our goal is to transform raw business data into meaningful insights through analytics, visualization, automation, and cloud technologies.
                       </p>
-                      <p className="text-xs sm:text-sm text-muted leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted leading-relaxed break-words">
                         This project demonstrates how marketing campaign data can be collected, processed, analyzed, and visualized to support better business decision-making. It combines data engineering, cloud warehousing, business intelligence, and web development into one integrated platform.
                       </p>
-                      <p className="text-xs sm:text-sm text-muted leading-relaxed">
+                      <p className="text-xs sm:text-sm text-muted leading-relaxed break-words">
                         Our mission is to create scalable, modern, and enterprise-ready analytics solutions that help organizations monitor campaign performance, measure ROI, understand customer behavior, and automate reporting processes.
                       </p>
                     </div>
@@ -617,15 +617,16 @@ export default function App() {
                     </div>
 
                     {/* Responsive Pipeline Flowchart */}
-                    <div className="flex flex-col xl:flex-row gap-3 items-center justify-between relative py-2 w-full max-w-full">
+                    <div className="flex flex-col xl:flex-row gap-2.5 sm:gap-3 items-center justify-between relative py-1 w-full max-w-full">
 
                       {/* Box 1 */}
-                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
-                        <div className="mx-auto w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-2">
-                          <Terminal size={16} />
+                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
+                        <div className="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-1.5">
+                          <Terminal size={15} />
                         </div>
+                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 01</span>
                         <h4 className="text-[10px] font-bold text-foreground">Marketing Source Data</h4>
-                        <span className="text-[8px] text-muted block mt-1">Google • Meta • Email CSVs</span>
+                        <span className="text-[8px] text-muted block mt-0.5">Google • Meta • Email CSVs</span>
                       </div>
 
                       {/* Arrow */}
@@ -635,12 +636,13 @@ export default function App() {
                       </div>
 
                       {/* Box 2 */}
-                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
-                        <div className="mx-auto w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-2">
-                          <Database size={16} />
+                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
+                        <div className="w-7 h-7 rounded-xl bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-1.5">
+                          <Database size={15} />
                         </div>
+                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 02</span>
                         <h4 className="text-[10px] font-bold text-foreground">MySQL Operational Database</h4>
-                        <span className="text-[8px] text-muted block mt-1">Structured data storage</span>
+                        <span className="text-[8px] text-muted block mt-0.5">Structured data storage</span>
                       </div>
 
                       {/* Arrow */}
@@ -650,12 +652,13 @@ export default function App() {
                       </div>
 
                       {/* Box 3 */}
-                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
-                        <div className="mx-auto w-8 h-8 rounded-xl bg-cyan-50 dark:bg-cyan-950/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-2">
-                          <Cpu size={16} />
+                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
+                        <div className="w-7 h-7 rounded-xl bg-cyan-50 dark:bg-cyan-950/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mb-1.5">
+                          <Cpu size={15} />
                         </div>
+                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 03</span>
                         <h4 className="text-[10px] font-bold text-foreground">Alteryx ETL Pipeline</h4>
-                        <span className="text-[8px] text-muted block mt-1">Clean • Transform • Validate</span>
+                        <span className="text-[8px] text-muted block mt-0.5">Clean • Transform • Validate</span>
                       </div>
 
                       {/* Arrow */}
@@ -665,12 +668,13 @@ export default function App() {
                       </div>
 
                       {/* Box 4 */}
-                      <div className="w-full xl:w-40 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
-                        <div className="mx-auto w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-2">
-                          <Layers size={16} />
+                      <div className="w-full xl:w-40 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
+                        <div className="w-7 h-7 rounded-xl bg-purple-50 dark:bg-purple-950/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-1.5">
+                          <Layers size={15} />
                         </div>
+                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 04</span>
                         <h4 className="text-[10px] font-bold text-foreground">Snowflake Data Warehouse</h4>
-                        <span className="text-[8px] text-muted block mt-1">Cloud analytics warehouse</span>
+                        <span className="text-[8px] text-muted block mt-0.5">Cloud analytics warehouse</span>
                       </div>
 
                       {/* Arrow */}
@@ -680,12 +684,13 @@ export default function App() {
                       </div>
 
                       {/* Box 5 */}
-                      <div className="w-full xl:w-44 min-h-[100px] sm:min-h-[140px] bg-background/50 border border-border p-3.5 rounded-2xl text-center shadow-xs flex flex-col items-center justify-center">
-                        <div className="mx-auto w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
-                          <Code size={16} />
+                      <div className="w-full xl:w-44 p-3.5 rounded-2xl bg-background/50 border border-border text-center shadow-xs flex flex-col items-center justify-center min-h-0 xl:min-h-[140px]">
+                        <div className="w-7 h-7 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-1.5">
+                          <Code size={15} />
                         </div>
+                        <span className="text-[8px] font-bold text-primary uppercase tracking-wider block mb-0.5 xl:hidden">STEP 05</span>
                         <h4 className="text-[10px] font-bold text-foreground">React + TypeScript Dashboard</h4>
-                        <span className="text-[8px] text-muted block mt-1">Interactive UI Portal</span>
+                        <span className="text-[8px] text-muted block mt-0.5">Interactive UI Portal</span>
                       </div>
 
                       {/* Arrow */}
@@ -790,7 +795,7 @@ export default function App() {
                         <Cpu size={14} className="text-primary" />
                         Project Technologies
                       </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
                         {[
                           { category: 'Frontend', tech: 'React, TypeScript, Tailwind CSS, Recharts' },
                           { category: 'Database', tech: 'MySQL Database' },
@@ -801,7 +806,7 @@ export default function App() {
                         ].map((t, idx) => (
                           <div key={idx} className="space-y-1 bg-background/40 p-3 rounded-2xl border border-border">
                             <span className="text-[9px] font-extrabold text-primary uppercase block">{t.category}</span>
-                            <p className="text-[10px] font-semibold text-foreground leading-relaxed">{t.tech}</p>
+                            <p className="text-[10px] font-semibold text-foreground leading-relaxed break-words">{t.tech}</p>
                           </div>
                         ))}
                       </div>
