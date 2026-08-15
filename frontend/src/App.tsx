@@ -854,7 +854,7 @@ export default function App() {
       </div>
 
       {/* Sticky Bottom Navigation for Mobile */}
-      <StickyBottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      <StickyBottomNav activeTab={activeTab} setActiveTab={setActiveTab} darkMode={darkMode} />
     </div>
   );
 }
