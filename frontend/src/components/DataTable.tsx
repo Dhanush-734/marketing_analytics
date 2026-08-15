@@ -205,7 +205,7 @@ export function DataTable({ campaigns }: DataTableProps) {
 
       {/* Sticky Header Data Grid with Separated Rounded Rows */}
       <div className="overflow-x-auto relative rounded-2xl max-h-[300px]">
-        <table className="w-full text-left text-[11px] border-separate border-spacing-y-2">
+        <table className="w-full text-left text-[11px] border-separate border-spacing-y-2 min-w-[650px]">
           <thead className="sticky top-0 bg-card/95 backdrop-blur-md z-10">
             <tr className="text-muted font-bold text-left">
               <th className="py-2.5 px-4 hover:text-foreground cursor-pointer select-none" onClick={() => handleSort('campaign')}>

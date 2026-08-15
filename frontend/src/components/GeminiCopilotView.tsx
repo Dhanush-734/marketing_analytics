@@ -214,7 +214,7 @@ export function GeminiCopilotView() {
                     <span className="text-[9px] font-bold text-primary uppercase tracking-wider block">
                       {msg.metrics.title}
                     </span>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {msg.metrics.items.map((item: any, idx: number) => (
                         <div key={idx} className="bg-background/50 p-2 rounded-xl border border-border/40">
                           <span className="text-[8px] text-muted block uppercase font-bold truncate">{item.label}</span>

@@ -888,10 +888,13 @@ from `leads`</DefaultAnnotationText>
         <Position x="1806" y="678" />
       </GuiSettings>
       <Properties>
-        <Configuration />
+        <Configuration>
+          <FormulaFields />
+        </Configuration>
         <Annotation DisplayMode="0">
           <Name />
-          <DefaultAnnotationText />
+          <DefaultAnnotationText><![CDATA[
+]]></DefaultAnnotationText>
           <Left value="False" />
         </Annotation>
       </Properties>

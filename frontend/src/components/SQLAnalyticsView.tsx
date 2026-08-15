@@ -255,7 +255,7 @@ export function SQLAnalyticsView() {
             </div>
 
             {displayedResults.length > 0 ? (
-              <table className="w-full text-left text-[11px]">
+              <table className="w-full text-left text-[11px] min-w-[550px]">
                 <thead>
                   <tr className="border-b border-border text-muted font-bold uppercase text-[9.5px]">
                     {Object.keys(displayedResults[0]).map((head, idx) => (

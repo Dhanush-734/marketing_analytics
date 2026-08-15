@@ -22,7 +22,8 @@ export function StickyBottomNav({ activeTab, setActiveTab }: StickyBottomNavProp
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
-            className={`flex flex-col items-center justify-center flex-1 h-full transition-all duration-150 ${isActive
+            aria-label={item.label}
+            className={`flex flex-col items-center justify-center flex-1 h-full min-h-[44px] transition-all duration-150 active:scale-95 cursor-pointer ${isActive
                 ? 'text-primary scale-105 font-semibold'
                 : 'text-muted hover:text-foreground'
               }`}

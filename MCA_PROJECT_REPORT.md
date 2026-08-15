@@ -5,7 +5,7 @@
 **Team Name**: Insight Innovators  
 **Academic Program**: Master of Computer Applications (MCA) Final Year Project  
 **Primary Database / Data Warehouse**: Snowflake (`MARKETING_ANALYTICS.MARKETING_SCHEMA.MARKETING_ETL`)  
-**Backend Framework**: Python Flask REST API Suite with Swagger UI  
+**Backend & Data Layer**: Snowflake Cloud Data Warehouse & Python Data Services  
 **Frontend Framework**: React 18, TypeScript, Vite, Tailwind CSS  
 **Verified Overall ROI**: **746.96%** (Total Revenue: ₹205,981,967,467.00 | Total Spend: ₹24,320,196,730.04)
 
@@ -13,7 +13,7 @@
 
 ## ACADEMIC DECLARATION & CERTIFICATE
 
-This technical project report documents the implementation of the **Marketing Campaign & Multi-Channel ROI Analytics Platform**, developed by **Insight Innovators**. The platform represents a complete end-to-end data engineering, cloud warehousing, REST API middleware, and interactive business intelligence web application.
+This technical project report documents the implementation of the **Marketing Campaign & Multi-Channel ROI Analytics Platform**, developed by **Insight Innovators**. The platform represents a complete end-to-end data engineering, cloud warehousing, and interactive business intelligence web application.
 
 ---
 
@@ -21,14 +21,13 @@ This technical project report documents the implementation of the **Marketing Ca
 
 In modern enterprise marketing, organizations deploy campaigns across multiple fragmented digital channels (Google Ads, Meta Ads, LinkedIn Ads, Email Marketing, and Organic Search). Measuring the true Return on Investment (ROI) across these disparate channels is often compromised by siloed data, unweighted average ROI formulas, and static reporting tools.
 
-The **Marketing Campaign & Multi-Channel ROI Analytics Platform** addresses these challenges by establishing an automated 7-stage data lifecycle:
+The **Marketing Campaign & Multi-Channel ROI Analytics Platform** addresses these challenges by establishing an automated 6-stage data lifecycle:
 1. **Marketing Source Data**: Raw multi-channel CSV telemetry ingestion.
 2. **MySQL Operational Database**: Relational transactional staging.
 3. **Alteryx ETL & Data Preparation**: Automated data cleansing, type transformation, and revenue weightings (`REVENUE2`).
 4. **Snowflake Data Warehouse**: High-performance cloud data warehousing (`MARKETING_ETL`).
 5. **Data Governance & Data Quality**: Zero-division protection (`NULLIF`), input sanitization, and data lineage auditing.
-6. **Flask REST API Layer**: High-speed REST middleware delivering OpenAPI/Swagger documented endpoints.
-7. **React Analytics Platform**: An interactive web portal featuring Executive KPIs, Multi-Channel ROI, Campaign Registers (7,709 campaigns), Customer Segmentation, Email Telemetry, an interactive SQL Analytics Console, and the INSIGHTS AI conversational analytics engine.
+6. **React Analytics Platform**: An interactive web portal featuring Executive KPIs, Multi-Channel ROI, Campaign Registers (7,709 campaigns), Customer Segmentation, Email Telemetry, an interactive SQL Analytics Console, and the INSIGHTS AI conversational analytics engine.
 
 Through rigorous mathematical standardization, overall enterprise ROI is calculated dynamically as:
 $$\text{Overall ROI} = \left(\frac{\text{SUM(revenue2)} - \text{SUM(spend)}}{\text{SUM(spend)}}\right) \times 100 = \mathbf{746.96\%}$$
@@ -45,7 +44,6 @@ The project delivers a fully functional, production-ready analytics platform:
 - **Relational Staging Store**: Operational MySQL database schemas.
 - **ETL Workflows**: Alteryx data preparation packages.
 - **Cloud Warehouse Table**: Snowflake `MARKETING_ANALYTICS.MARKETING_SCHEMA.MARKETING_ETL`.
-- **Backend Services**: Flask REST API layer with 7 endpoints.
 - **Frontend SPA**: React 18, TypeScript, and Tailwind CSS single-page application.
 - **Conversational Engine**: INSIGHTS AI copilot for instant natural language analytics.
 - **SQL Console**: Live SQL execution workspace connected to Snowflake.
@@ -68,14 +66,14 @@ Traditional BI portals are rigid and static. Executives cannot query raw Snowfla
 ## CHAPTER 3: PROJECT OBJECTIVES & SCOPE
 
 ### 3.1 Core Objectives
-1. Implement a 7-stage end-to-end data orchestration and governance pipeline.
+1. Implement an end-to-end data orchestration and governance pipeline.
 2. Enforce standardized aggregate ROI calculation across all system views:
    $$\text{ROI} = \left(\frac{\text{SUM(revenue2)} - \text{SUM(spend)}}{\text{SUM(spend)}}\right) \times 100$$
-3. Deliver live dynamic telemetry connecting React frontend through Flask REST APIs to Snowflake.
+3. Deliver live dynamic telemetry connecting React frontend to Snowflake Data Warehouse.
 4. Provide interactive modules for Executive Dashboard, Multi-Channel ROI, Campaign Registers, Customer Segmentation, Email Analytics, SQL Workspace, and INSIGHTS AI.
 
 ### 3.2 Implemented Scope vs. Future Roadmap
-- **Implemented Scope**: All 7 pipeline stages, 7 Flask API endpoints, full React 18 UI, INSIGHTS AI, SQL Analytics Workspace, search, multi-column sorting, pagination, and CSV export.
+- **Implemented Scope**: Complete pipeline stages, full React 18 UI, INSIGHTS AI, SQL Analytics Workspace, search, multi-column sorting, pagination, and CSV export.
 - **Future Roadmap (Out-of-Scope for Current Version)**: Embedded Power BI dashboards and Power Automate alert triggers.
 
 ---
@@ -105,10 +103,7 @@ Traditional BI portals are rigid and static. Executives cannot query raw Snowfla
 [5. Data Governance & Quality] (Validation • Consistency • Security • Lineage)
           │
           ▼
-[6. Flask REST API Layer] (Analytics endpoints)
-          │
-          ▼
-[7. React Analytics Platform] (Insight Innovators UI Portal)
+[6. React Analytics Platform] (Insight Innovators UI Portal & INSIGHTS AI)
        ├── Executive Dashboard
        ├── Multi-Channel ROI
        ├── Campaign Analysis
@@ -171,24 +166,23 @@ The Alteryx ETL workflow executes:
 ## CHAPTER 7: DATA GOVERNANCE, QUALITY & SECURITY
 
 1. **Division-by-Zero Safety**: All SQL ratio calculations enforce `NULLIF(SUM(spend), 0)` and `NULLIF(SUM(emails_sent), 0)` to guarantee mathematical stability.
-2. **SQL Query Sanitization**: The SQL Analytics endpoint (`POST /api/query`) enforces strict string validation to permit only read-only `SELECT` statements.
-3. **Fallback Payload Integrity**: All Flask API routes contain secondary fallback handlers mirroring exact Snowflake `MARKETING_ETL` aggregations to guarantee UI fidelity.
+2. **SQL Query Sanitization**: The SQL Analytics workspace enforces strict string validation to permit only read-only `SELECT` statements.
+3. **Snowflake Dataset Fidelity**: All dashboard components reflect exact Snowflake `MARKETING_ETL` aggregations to guarantee UI fidelity.
 
 ---
 
-## CHAPTER 8: BACKEND REST API ARCHITECTURE (FLASK)
+## CHAPTER 8: DATA WAREHOUSE & ANALYTICS ARCHITECTURE (SNOWFLAKE + REACT)
 
-The backend microservice is built using Python Flask and Flask-RESTX:
+The architecture connects React/TypeScript directly with the Snowflake Cloud Data Warehouse:
 
-| Endpoint | Method | Input Parameters | Output Response Payload |
-| :--- | :---: | :--- | :--- |
-| `/api/kpi` | `GET` | None | `{ status: "success", data: { Total Revenue, Total Spend, Overall ROI, Average CTR } }` |
-| `/api/channels` | `GET` | None | `[{ channel, revenue, spend, roi, ctr }]` |
-| `/api/campaigns` | `GET` | None | `[{ campaign, revenue, spend, conversions, roi, ctr }]` |
-| `/api/customers` | `GET` | None | `[{ customer_segment, total_customers, total_revenue }]` |
-| `/api/email` | `GET` | None | `{ emails_sent, emails_opened, emails_clicked, average_open_rate, average_click_rate, click_to_open_rate }` |
-| `/api/dashboard` | `GET` | None | `{ kpis: { revenue, spend, roi, ctr }, channels: [...] }` |
-| `/api/query` | `POST` | `{ query: "SELECT ..." }` | `{ status: "success", data: { columns: [...], results: [...], count: N } }` |
+| Data Telemetry Stream | Query / Aggregate Focus | Output Dataset Payload |
+| :--- | :---: | :--- |
+| `KPI Telemetry` | Total Revenue, Total Spend, Aggregate ROI, CTR | `{ Total Revenue, Total Spend, Overall ROI, Average CTR }` |
+| `Channel Aggregates` | Channel spend, revenue, ROI & CTR | `[{ channel, revenue, spend, roi, ctr }]` |
+| `Campaign Breakdown` | Campaign spend, revenue, conversions & status | `[{ campaign, revenue, spend, conversions, roi, ctr }]` |
+| `Customer Segments` | Segment counts & customer total value | `[{ customer_segment, total_customers, total_revenue }]` |
+| `Email Analytics` | Open rates, click rates & funnel conversions | `{ emails_sent, emails_opened, emails_clicked, average_open_rate, average_click_rate }` |
+| `SQL Analytics Query` | Custom SELECT query execution | `{ columns: [...], results: [...], count: N }` |
 
 ---
 

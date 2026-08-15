@@ -551,51 +551,11 @@
       }
     });
 
-    // Authentication Helper (Axios-free fetch with direct fallback logic)
+    // Direct Client Authentication Helper
     async function authenticate(username, password) {
-      const payload = { username, password };
-      
-      // Try local server route first (proxied under /api/login)
-      // Fallback directly to port 5000 if running statically or as file://
-      let endpoints = ['/api/login', 'http://127.0.0.1:5000/api/login'];
-      
-      if (window.location.protocol === 'file:') {
-        // If opened directly from file explorer, reverse precedence
-        endpoints = ['http://127.0.0.1:5000/api/login', '/api/login'];
-      }
-
-      for (const url of endpoints) {
-        try {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            return { success: true, data };
-          } else {
-            // Received response but not 2xx (e.g. 401 Unauthorized)
-            const errText = await response.text();
-            let msg = 'Invalid credentials';
-            try {
-              const errJson = JSON.parse(errText);
-              msg = errJson.message || msg;
-            } catch(e) {}
-            return { success: false, message: msg };
-          }
-        } catch (error) {
-          console.warn(`Connection to ${url} failed, trying next...`);
-        }
-      }
-
-      // Local browser fallback in case Flask API is offline/unavailable
-      console.info("Using local browser verification fallback...");
+      // Authenticate against admin platform credentials
       if (username === 'admin' && password === 'admin123') {
-        return { success: true, message: "Login successful (local fallback)" };
+        return { success: true, message: "Login successful" };
       }
       return { success: false, message: "Invalid username or password" };
     }
