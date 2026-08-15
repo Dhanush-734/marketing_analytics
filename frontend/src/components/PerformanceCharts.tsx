@@ -15,6 +15,7 @@ import {
   FunnelChart,
   Funnel,
   LabelList,
+  Treemap,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -385,94 +386,78 @@ export function EmailFunnelChart({ email }: { email: EmailPerformance }) {
   );
 }
 
-// 9. Attraction Channels Performance Chart (Box Tile Distribution)
-export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerformance[] }) {
-  const defaultChannels: ChannelPerformance[] = [
-    { channel: 'Google Ads', revenue: 52300000000, spend: 6180000000, roi: 746.28, ctr: 2.81 },
-    { channel: 'Meta Ads', revenue: 48150000000, spend: 5680000000, roi: 747.71, ctr: 2.94 },
-    { channel: 'LinkedIn Ads', revenue: 45210000000, spend: 5320000000, roi: 749.54, ctr: 3.12 },
-    { channel: 'YouTube Ads', revenue: 38400000000, spend: 4540000000, roi: 745.81, ctr: 2.68 },
-    { channel: 'Email Marketing', revenue: 21921967467, spend: 2600196730, roi: 743.09, ctr: 2.70 }
-  ];
+// Custom Recharts Treemap Node Renderer for zero-overflow text rendering
+const CustomTreemapNode = (props: any) => {
+  const { x, y, width, height, index, name } = props;
+  if (width <= 0 || height <= 0) return null;
 
-  const data = channels && channels.length > 0 ? channels : defaultChannels;
-  const totalRevenue = data.reduce((sum, c) => sum + c.revenue, 0);
+  const COLORS = ['#2563EB', '#F59E0B', '#8B5CF6', '#10B981', '#EC4899', '#06B6D4'];
+  const fill = COLORS[index % COLORS.length];
 
-  const formatShort = (val: number) => {
-    if (val >= 1e9) return `₹${(val / 1e9).toFixed(2)}B`;
-    if (val >= 1e6) return `₹${(val / 1e6).toFixed(1)}M`;
-    return `₹${val}`;
-  };
+  const maxChars = Math.floor(width / 8);
+  const displayName = name && name.length > maxChars && maxChars > 3 ? `${name.substring(0, maxChars - 2)}..` : name;
 
-  const tileColors = [
-    { bg: 'from-blue-600 to-blue-700', badge: 'bg-blue-900/40 text-blue-100', border: 'border-blue-400/30' },
-    { bg: 'from-amber-500 to-amber-600', badge: 'bg-amber-900/40 text-amber-100', border: 'border-amber-400/30' },
-    { bg: 'from-purple-600 to-purple-700', badge: 'bg-purple-900/40 text-purple-100', border: 'border-purple-400/30' },
-    { bg: 'from-emerald-600 to-emerald-700', badge: 'bg-emerald-900/40 text-emerald-100', border: 'border-emerald-400/30' },
-    { bg: 'from-pink-600 to-pink-700', badge: 'bg-pink-900/40 text-pink-100', border: 'border-pink-400/30' }
+  return (
+    <g>
+      <rect
+        x={x + 1}
+        y={y + 1}
+        width={width - 2}
+        height={height - 2}
+        style={{
+          fill,
+          rx: 6,
+          ry: 6,
+          stroke: '#ffffff',
+          strokeWidth: 1.5,
+        }}
+      />
+      {width > 35 && height > 18 && (
+        <text
+          x={x + width / 2}
+          y={y + height / 2}
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill="#FFFFFF"
+          fontSize={width < 75 ? 9 : 11}
+          fontWeight={800}
+          fontFamily="sans-serif"
+          className="select-none pointer-events-none"
+        >
+          {displayName}
+        </text>
+      )}
+    </g>
+  );
+};
+
+// 9. Authentic Recharts Attraction Treemap Chart (Exact 6-block layout with zero text overflow)
+export function TrafficSourcesTreemap() {
+  const treemapData = [
+    { name: 'Organic Search', size: 5200 },
+    { name: 'Social Media', size: 4500 },
+    { name: 'Email Marketing', size: 3800 },
+    { name: 'Direct Traffic', size: 3200 },
+    { name: 'Paid Ads', size: 2800 },
+    { name: 'Referrals', size: 1900 },
   ];
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] grid grid-cols-2 sm:grid-cols-6 gap-2 select-none overflow-hidden p-0.5">
-      {/* Box 1 (Google Ads): Spans 3 cols on sm, 2 on mobile */}
-      <div className={`col-span-2 sm:col-span-3 row-span-2 bg-gradient-to-br ${tileColors[0].bg} rounded-2xl p-3.5 flex flex-col justify-between border ${tileColors[0].border} shadow-sm hover:scale-[1.01] transition-transform duration-200 cursor-pointer`}>
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-xs sm:text-sm font-extrabold text-white tracking-tight leading-snug">{data[0]?.channel}</h4>
-          <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold ${tileColors[0].badge} uppercase shrink-0`}>
-            {totalRevenue > 0 ? `${((data[0]?.revenue / totalRevenue) * 100).toFixed(1)}%` : ''}
-          </span>
-        </div>
-        <div className="mt-2">
-          <span className="text-[8px] text-blue-100 uppercase tracking-wider block font-bold">Revenue Yield</span>
-          <span className="text-sm sm:text-base font-extrabold text-white font-mono">{formatShort(data[0]?.revenue || 0)}</span>
-        </div>
-      </div>
-
-      {/* Box 2 (Meta Ads): Spans 3 cols on sm */}
-      <div className={`col-span-2 sm:col-span-3 bg-gradient-to-br ${tileColors[1].bg} rounded-2xl p-3 flex flex-col justify-between border ${tileColors[1].border} shadow-sm hover:scale-[1.01] transition-transform duration-200 cursor-pointer`}>
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-xs font-bold text-white tracking-tight leading-none">{data[1]?.channel}</h4>
-          <span className={`px-1.5 py-0.5 rounded-full text-[8px] font-bold ${tileColors[1].badge} uppercase shrink-0`}>
-            {totalRevenue > 0 ? `${((data[1]?.revenue / totalRevenue) * 100).toFixed(1)}%` : ''}
-          </span>
-        </div>
-        <div>
-          <span className="text-xs font-extrabold text-white font-mono">{formatShort(data[1]?.revenue || 0)}</span>
-        </div>
-      </div>
-
-      {/* Box 3 (LinkedIn Ads): Spans 2 cols on sm */}
-      <div className={`col-span-1 sm:col-span-2 bg-gradient-to-br ${tileColors[2].bg} rounded-2xl p-3 flex flex-col justify-between border ${tileColors[2].border} shadow-sm hover:scale-[1.01] transition-transform duration-200 cursor-pointer`}>
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-[11px] sm:text-xs font-bold text-white tracking-tight leading-none truncate">{data[2]?.channel}</h4>
-        </div>
-        <div>
-          <span className="text-xs font-extrabold text-white font-mono">{formatShort(data[2]?.revenue || 0)}</span>
-        </div>
-      </div>
-
-      {/* Box 4 (YouTube Ads): Spans 2 cols on sm */}
-      <div className={`col-span-1 sm:col-span-2 bg-gradient-to-br ${tileColors[3].bg} rounded-2xl p-3 flex flex-col justify-between border ${tileColors[3].border} shadow-sm hover:scale-[1.01] transition-transform duration-200 cursor-pointer`}>
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-[11px] sm:text-xs font-bold text-white tracking-tight leading-none truncate">{data[3]?.channel}</h4>
-        </div>
-        <div>
-          <span className="text-xs font-extrabold text-white font-mono">{formatShort(data[3]?.revenue || 0)}</span>
-        </div>
-      </div>
-
-      {/* Box 5 (Email Marketing): Spans 2 cols on sm */}
-      <div className={`col-span-2 sm:col-span-2 bg-gradient-to-br ${tileColors[4].bg} rounded-2xl p-3 flex flex-col justify-between border ${tileColors[4].border} shadow-sm hover:scale-[1.01] transition-transform duration-200 cursor-pointer`}>
-        <div className="flex items-start justify-between gap-1">
-          <h4 className="text-[11px] sm:text-xs font-bold text-white tracking-tight leading-none truncate">{data[4]?.channel}</h4>
-          <span className={`px-1.5 py-0.5 rounded-full text-[8px] font-bold ${tileColors[4].badge} uppercase shrink-0`}>
-            {totalRevenue > 0 ? `${((data[4]?.revenue / totalRevenue) * 100).toFixed(1)}%` : ''}
-          </span>
-        </div>
-        <div>
-          <span className="text-xs font-extrabold text-white font-mono">{formatShort(data[4]?.revenue || 0)}</span>
-        </div>
-      </div>
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="99%" height="100%">
+        <Treemap
+          data={treemapData}
+          dataKey="size"
+          aspectRatio={4 / 3}
+          stroke="#ffffff"
+          content={<CustomTreemapNode />}
+        >
+          <Tooltip
+            wrapperClassName="custom-tooltip"
+            formatter={(val: any) => [`Visits : ${Number(val).toLocaleString()}`, 'Source']}
+          />
+        </Treemap>
+      </ResponsiveContainer>
     </div>
   );
 }
