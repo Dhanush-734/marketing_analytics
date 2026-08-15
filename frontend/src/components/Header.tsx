@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Database, RefreshCw, Bell, Search, Sun, Moon, Menu, X } from 'lucide-react';
+import { Database, RefreshCw, Bell, Search, Sun, Moon, Menu, X, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -8,6 +8,7 @@ interface HeaderProps {
   darkMode: boolean;
   setDarkMode: (dark: boolean) => void;
   setMobileOpen: (open: boolean) => void;
+  onLogout?: () => void;
 }
 
 export function Header({
@@ -17,6 +18,7 @@ export function Header({
   darkMode,
   setDarkMode,
   setMobileOpen,
+  onLogout,
 }: HeaderProps) {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
@@ -153,8 +155,8 @@ export function Header({
         {/* Separator */}
         <div className="h-5 w-px bg-border hidden sm:block" />
 
-        {/* User avatar profile */}
-        <div className="flex items-center gap-2 select-none group cursor-pointer pl-0.5">
+        {/* User avatar profile & Logout */}
+        <div className="flex items-center gap-2 select-none pl-0.5">
           <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary border border-primary/20 font-bold text-xs flex items-center justify-center shrink-0">
             A
           </div>
@@ -162,6 +164,18 @@ export function Header({
             <span className="text-[10px] font-bold text-foreground">Admin</span>
             <span className="text-[8px] font-semibold text-muted mt-0.5">Insight Innovators</span>
           </div>
+
+          {/* Logout Button */}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              aria-label="Sign Out of Platform"
+              title="Sign Out"
+              className="p-2 border border-border text-muted hover:text-red-400 bg-card rounded-xl hover:bg-red-500/10 hover:border-red-500/30 transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center ml-1"
+            >
+              <LogOut size={14} />
+            </button>
+          )}
         </div>
       </div>
     </header>

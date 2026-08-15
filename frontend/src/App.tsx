@@ -26,6 +26,7 @@ import { GeminiCopilotView } from './components/GeminiCopilotView';
 import { SQLAnalyticsView } from './components/SQLAnalyticsView';
 import { IndiaMap } from './components/IndiaMap';
 import { SettingsView } from './components/SettingsView';
+import { LoginView } from './components/LoginView';
 import type { Variants } from 'framer-motion';
 
 const pageVariants: Variants = {
@@ -51,6 +52,9 @@ const formatVolumeCount = (val: number) => {
 };
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('isAuthenticated') === 'true';
+  });
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -58,6 +62,16 @@ export default function App() {
     const saved = localStorage.getItem('theme');
     return saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
   });
+
+  const handleLoginSuccess = () => {
+    sessionStorage.setItem('isAuthenticated', 'true');
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('isAuthenticated');
+    setIsAuthenticated(false);
+  };
 
   const { kpis, channels, campaigns, customers, stateDistribution, email, monthlyData, loading, error, refetch } = useDashboardData();
 
@@ -86,6 +100,10 @@ export default function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  if (!isAuthenticated) {
+    return <LoginView onLoginSuccess={handleLoginSuccess} />;
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen bg-background text-foreground transition-colors duration-200">
@@ -98,7 +116,7 @@ export default function App() {
           setMobileOpen={setMobileOpen}
         />
         <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'md:pl-64' : 'md:pl-20'}`}>
-          <Header activeTab={activeTab} isLoading={loading} onRefresh={refetch} darkMode={darkMode} setDarkMode={setDarkMode} setMobileOpen={setMobileOpen} />
+          <Header activeTab={activeTab} isLoading={loading} onRefresh={refetch} darkMode={darkMode} setDarkMode={setDarkMode} setMobileOpen={setMobileOpen} onLogout={handleLogout} />
           <DashboardSkeleton />
         </div>
       </div>
