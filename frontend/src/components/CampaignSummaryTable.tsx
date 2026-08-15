@@ -13,7 +13,7 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
   const [sortField, setSortField] = useState<string>('revenue');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState<number>(10);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   // Currency formatter using Crores / Lakhs standard (₹X Cr / ₹X L)
   const formatCrores = (val: number) => {
@@ -233,6 +233,20 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
               ))}
             </select>
           </div>
+
+          {/* Rows Per Page Selector */}
+          <div className="relative">
+            <select
+              value={itemsPerPage}
+              onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+              className="px-3 py-1.5 bg-background border border-border/80 rounded-2xl text-xs font-bold text-foreground focus:outline-none focus:border-primary cursor-pointer"
+            >
+              <option value={10}>10 per page</option>
+              <option value={25}>25 per page</option>
+              <option value={50}>50 per page</option>
+              <option value={100}>All Campaigns</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -291,7 +305,7 @@ export function CampaignSummaryTable({ campaigns = [] }: CampaignSummaryTablePro
                 const calculatedRoi = row.roi !== undefined ? row.roi : calculateRoi(row.revenue, row.spend);
                 return (
                   <tr key={idx} className="hover:bg-accent/40 transition-colors">
-                    <td className="py-3 px-3 font-bold text-foreground max-w-[200px] truncate" title={row.campaign}>
+                    <td className="py-3 px-3 font-bold text-foreground max-w-[220px] truncate" title={row.campaign}>
                       {row.campaign}
                     </td>
                     <td className="py-3 px-3 text-muted">
