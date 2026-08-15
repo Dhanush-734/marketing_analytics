@@ -35,7 +35,7 @@ const formatCurrency = (val: number) => {
   return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
 };
 
-// 1. Revenue: Area Chart (Green)
+// 1. Revenue: Area Chart (Blue)
 export function RevenueAreaChart({ monthlyData }: { monthlyData: MonthlyData[] }) {
   const formatShort = (val: number) => {
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
@@ -44,9 +44,9 @@ export function RevenueAreaChart({ monthlyData }: { monthlyData: MonthlyData[] }
   };
 
   return (
-    <div className="w-full h-full min-h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <AreaChart data={monthlyData} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#2563EB" stopOpacity={0.25} />
@@ -55,7 +55,7 @@ export function RevenueAreaChart({ monthlyData }: { monthlyData: MonthlyData[] }
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis dataKey="month" stroke="var(--text-secondary)" fontSize={10} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={formatShort} />
+          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
           <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Revenue']} />
           <Area type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={3} fillOpacity={1} fill="url(#revenueGrad)" />
         </AreaChart>
@@ -73,12 +73,12 @@ export function SpendBarChart({ channels }: { channels: ChannelPerformance[] }) 
   };
 
   return (
-    <div className="w-full h-full min-h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={channels} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-          <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={10} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={formatShort} />
+          <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
           <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Spend']} />
           <Bar dataKey="spend" fill="#3B82F6" radius={[6, 6, 0, 0]} maxBarSize={20} />
         </BarChart>
@@ -90,19 +90,19 @@ export function SpendBarChart({ channels }: { channels: ChannelPerformance[] }) 
 // 3. ROI: Smooth Line Chart (Purple, strokeWidth = 4)
 export function RoiSmoothLineChart({ monthlyData }: { monthlyData: MonthlyData[] }) {
   return (
-    <div className="w-full h-full min-h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={monthlyData} margin={{ top: 10, right: 15, left: -10, bottom: 0 }}>
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <LineChart data={monthlyData} margin={{ top: 10, right: 15, left: 5, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis dataKey="month" stroke="var(--text-secondary)" fontSize={10} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} />
+          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} width={40} />
           <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [`${val}%`, 'ROI']} />
           <Line
             type="monotone"
             dataKey="roi"
-            stroke="#A855F7"
-            strokeWidth={4}
-            dot={{ stroke: '#A855F7', strokeWidth: 2.5, r: 4, fill: 'var(--card)' }}
+            stroke="#8B5CF6"
+            strokeWidth={3}
+            dot={{ stroke: '#8B5CF6', strokeWidth: 2.5, r: 4, fill: 'var(--card)' }}
             activeDot={{ r: 6 }}
           />
         </LineChart>
@@ -111,19 +111,19 @@ export function RoiSmoothLineChart({ monthlyData }: { monthlyData: MonthlyData[]
   );
 }
 
-// 4. CTR: Radial Progress Chart (Orange)
+// 4. CTR: Radial Progress Chart (Purple/Indigo)
 export function CtrRadialProgressChart({ ctr }: { ctr: number }) {
   const pct = ctr < 1 ? ctr * 100 : ctr;
-  const data = [{ name: 'CTR', value: pct, fill: '#7C3AED' }]; // Purple gauge
+  const data = [{ name: 'CTR', value: pct, fill: '#7C3AED' }];
 
   return (
-    <div className="w-full h-full min-h-[200px] flex items-center justify-center relative">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-full min-h-[180px] sm:min-h-[220px] flex items-center justify-center relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
         <RadialBarChart
           cx="50%"
           cy="50%"
-          innerRadius="75%"
-          outerRadius="100%"
+          innerRadius="70%"
+          outerRadius="95%"
           barSize={12}
           data={data}
           startAngle={90}
@@ -144,17 +144,16 @@ export function CtrRadialProgressChart({ ctr }: { ctr: number }) {
       </ResponsiveContainer>
       <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
         <span className="text-[9px] uppercase font-bold text-muted tracking-wider block">Average CTR</span>
-        <span className="text-lg font-extrabold text-foreground font-sans">{pct.toFixed(2)}%</span>
+        <span className="text-base sm:text-lg font-extrabold text-foreground font-sans">{pct.toFixed(2)}%</span>
       </div>
     </div>
   );
 }
 
-// 5. Customer Segments: Interactive Loyalty Share Chart
+// 5. Customer Segments: Interactive Loyalty Share Donut Chart
 export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerSegment[] }) {
   const [chartType, setChartType] = useState<'donut' | 'bar' | 'pie'>('donut');
 
-  // High contrast vibrant color palette (Vivid Blue, Emerald Green, Golden Amber, Deep Purple, Bright Pink, Cyan)
   const VIBRANT_PALETTE = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'];
 
   const totalCustomersCount = customers.reduce((sum, c) => sum + (c.total_customers || 0), 0);
@@ -172,7 +171,7 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between">
+    <div className="w-full h-full flex flex-col justify-between min-w-0">
       {/* Chart View Switcher Controls */}
       <div className="flex justify-end items-center gap-1 mb-1 z-10">
         <span className="text-[8px] font-bold text-muted uppercase tracking-wider mr-1">Type:</span>
@@ -208,17 +207,17 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         </button>
       </div>
 
-      <div className="flex-1 min-h-[220px] relative">
+      <div className="flex-1 min-h-[200px] sm:min-h-[240px] relative w-full overflow-hidden">
         {chartType === 'donut' && (
           <>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="99%" height="100%">
               <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                 <Pie
                   data={customers}
                   cx="50%"
-                  cy="42%"
-                  innerRadius={42}
-                  outerRadius={68}
+                  cy="40%"
+                  innerRadius="38%"
+                  outerRadius="62%"
                   paddingAngle={4}
                   dataKey="total_customers"
                   nameKey="customer_segment"
@@ -234,7 +233,7 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
                   iconType="circle"
                   iconSize={7}
                   layout="horizontal"
-                  wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', paddingTop: '4px' }}
+                  wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
                   formatter={(value, _, index) => {
                     const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
                     return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
@@ -242,7 +241,7 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="absolute top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+            <div className="absolute top-[36%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
               <span className="text-[7px] uppercase font-bold text-muted tracking-wider block">Total Customers</span>
               <span className="text-xs font-extrabold text-foreground font-sans">
                 {totalCustomersCount.toLocaleString()}
@@ -252,13 +251,13 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         )}
 
         {chartType === 'bar' && (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={customers} layout="vertical" margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+          <ResponsiveContainer width="99%" height="100%">
+            <BarChart data={customers} layout="vertical" margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-              <XAxis type="number" stroke="var(--text-secondary)" fontSize={10} tickLine={false} tickFormatter={formatCountShort} />
-              <YAxis dataKey="customer_segment" type="category" stroke="var(--text-secondary)" fontSize={10} tickLine={false} width={75} />
+              <XAxis type="number" stroke="var(--text-secondary)" fontSize={9} tickLine={false} tickFormatter={formatCountShort} />
+              <YAxis dataKey="customer_segment" type="category" stroke="var(--text-secondary)" fontSize={9} tickLine={false} width={80} />
               <Tooltip wrapperClassName="custom-tooltip" formatter={renderTooltip} />
-              <Bar dataKey="total_customers" name="Customer Count" radius={[0, 6, 6, 0]} maxBarSize={22}>
+              <Bar dataKey="total_customers" name="Customer Count" radius={[0, 6, 6, 0]} maxBarSize={20}>
                 {customers.map((_, index) => (
                   <Cell key={`bar-cell-${index}`} fill={VIBRANT_PALETTE[index % VIBRANT_PALETTE.length]} />
                 ))}
@@ -268,13 +267,13 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         )}
 
         {chartType === 'pie' && (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+          <ResponsiveContainer width="99%" height="100%">
+            <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <Pie
                 data={customers}
                 cx="50%"
-                cy="45%"
-                outerRadius={75}
+                cy="40%"
+                outerRadius="65%"
                 paddingAngle={4}
                 dataKey="total_customers"
                 nameKey="customer_segment"
@@ -288,11 +287,12 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
                 verticalAlign="bottom"
                 align="center"
                 iconType="circle"
-                iconSize={8}
+                iconSize={7}
                 layout="horizontal"
+                wrapperStyle={{ fontSize: '9px', lineHeight: '1.2', width: '100%', bottom: 0 }}
                 formatter={(value, _, index) => {
                   const color = VIBRANT_PALETTE[index % VIBRANT_PALETTE.length];
-                  return <span style={{ color, fontWeight: 700, fontSize: '11px', margin: '0 4px' }}>{value}</span>;
+                  return <span style={{ color, fontWeight: 700, fontSize: '9px', margin: '0 2px' }}>{value}</span>;
                 }}
               />
             </PieChart>
@@ -315,13 +315,18 @@ export function CampaignPerformanceHorizontalBarChart({ campaigns }: { campaigns
     return `₹${val}`;
   };
 
+  const formatYAxisLabel = (val: string) => {
+    if (!val) return '';
+    return val.length > 14 ? `${val.substring(0, 12)}..` : val;
+  };
+
   return (
-    <div className="w-full h-full min-h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={topCampaigns} layout="vertical" margin={{ top: 10, right: 20, left: 30, bottom: 5 }}>
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <BarChart data={topCampaigns} layout="vertical" margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-          <XAxis type="number" stroke="var(--text-secondary)" fontSize={10} tickLine={false} tickFormatter={formatShort} />
-          <YAxis dataKey="campaign" type="category" stroke="var(--text-secondary)" fontSize={9} tickLine={false} width={80} />
+          <XAxis type="number" stroke="var(--text-secondary)" fontSize={9} tickLine={false} tickFormatter={formatShort} />
+          <YAxis dataKey="campaign" type="category" stroke="var(--text-secondary)" fontSize={8.5} tickLine={false} tickFormatter={formatYAxisLabel} width={85} />
           <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Revenue']} />
           <Bar dataKey="revenue" name="Revenue Yield" fill="#7C3AED" radius={[0, 6, 6, 0]} maxBarSize={16} />
         </BarChart>
@@ -330,7 +335,7 @@ export function CampaignPerformanceHorizontalBarChart({ campaigns }: { campaigns
   );
 }
 
-// 7. Revenue Trend: Gradient Area Chart (Green)
+// 7. Revenue Trend: Gradient Area Chart (Purple)
 export function RevenueTrendGradientAreaChart({ monthlyData }: { monthlyData: MonthlyData[] }) {
   const formatShort = (val: number) => {
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
@@ -339,9 +344,9 @@ export function RevenueTrendGradientAreaChart({ monthlyData }: { monthlyData: Mo
   };
 
   return (
-    <div className="w-full h-full min-h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={monthlyData} margin={{ top: 10, right: 15, left: -10, bottom: 0 }}>
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <AreaChart data={monthlyData} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.3} />
@@ -350,7 +355,7 @@ export function RevenueTrendGradientAreaChart({ monthlyData }: { monthlyData: Mo
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis dataKey="month" stroke="var(--text-secondary)" fontSize={10} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={formatShort} />
+          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
           <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Revenue']} />
           <Area type="monotone" dataKey="revenue" stroke="#7C3AED" strokeWidth={3} fillOpacity={1} fill="url(#trendGrad)" />
         </AreaChart>
@@ -359,25 +364,21 @@ export function RevenueTrendGradientAreaChart({ monthlyData }: { monthlyData: Mo
   );
 }
 
-// 8. Email Funnel Chart (Pink)
+// 8. Email Funnel: Funnel Chart
 export function EmailFunnelChart({ email }: { email: EmailPerformance }) {
-  const data = [
-    { value: email.emails_sent, name: '1. Sent', fill: '#DBEAFE' },
-    { value: email.emails_opened, name: '2. Opened', fill: '#93C5FD' },
-    { value: email.emails_clicked, name: '3. Clicked', fill: '#2563EB' },
+  const funnelData = [
+    { value: email.emails_sent, name: 'Dispatched', fill: '#3B82F6' },
+    { value: email.emails_opened, name: 'Opened', fill: '#10B981' },
+    { value: email.emails_clicked, name: 'Clicked', fill: '#7C3AED' },
   ];
 
   return (
-    <div className="w-full h-full min-h-[240px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <FunnelChart>
-          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [new Intl.NumberFormat('en-IN').format(Number(val)), 'Count']} />
-          <Funnel
-            dataKey="value"
-            data={data}
-            isAnimationActive
-          >
-            <LabelList position="right" fill="var(--text)" stroke="none" dataKey="name" fontSize={10} />
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <FunnelChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Count']} />
+          <Funnel dataKey="value" data={funnelData} isAnimationActive>
+            <LabelList position="right" fill="var(--text)" stroke="none" dataKey="name" fontSize={10} fontWeight={700} />
           </Funnel>
         </FunnelChart>
       </ResponsiveContainer>
@@ -385,78 +386,35 @@ export function EmailFunnelChart({ email }: { email: EmailPerformance }) {
   );
 }
 
-const CustomizedTreemapContent = (props: any) => {
-  const { x, y, width, height, name } = props;
-  
-  if (width < 35 || height < 20) return null;
-  
-  const maxLetters = Math.floor(width / 6.5);
-  let displayName = name;
-  if (name.length > maxLetters && maxLetters > 5) {
-    displayName = name.slice(0, maxLetters - 3) + '...';
-  } else if (name.length > maxLetters) {
-    displayName = name.slice(0, Math.max(3, maxLetters));
-  }
-
-  return (
-    <g>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        style={{
-          fill: props.fill || '#3B82F6',
-          stroke: 'var(--card)',
-          strokeWidth: 2,
-          strokeOpacity: 1,
-        }}
-      />
-      <text
-        x={x + width / 2}
-        y={y + height / 2}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="#FFFFFF"
-        stroke="none"
-        fontSize={width > 85 ? 10 : 8}
-        fontWeight="700"
-        fontFamily="system-ui, sans-serif"
-        className="select-none pointer-events-none fill-white"
-        style={{ fill: '#FFFFFF', stroke: 'none' }}
-      >
-        {displayName}
-      </text>
-    </g>
-  );
-};
-
-// 9. Traffic Sources: Treemap (Multicolor/Cyan)
+// 9. Traffic Sources: Treemap Chart
 export function TrafficSourcesTreemap() {
   const data = [
-    { name: 'Google Search', size: 5500, fill: '#1E3A8A' },
-    { name: 'Meta Feed', size: 4200, fill: '#2563EB' },
-    { name: 'Newsletters', size: 3000, fill: '#3B82F6' },
-    { name: 'YouTube Video', size: 2200, fill: '#6366F1' },
-    { name: 'LinkedIn Posts', size: 1500, fill: '#7C3AED' },
+    { name: 'Organic Search', size: 4500, fill: '#3B82F6' },
+    { name: 'Direct Traffic', size: 3200, fill: '#10B981' },
+    { name: 'Social Media', size: 2800, fill: '#F59E0B' },
+    { name: 'Email Marketing', size: 1900, fill: '#8B5CF6' },
+    { name: 'Paid Ads', size: 2400, fill: '#EC4899' },
+    { name: 'Referrals', size: 1200, fill: '#06B6D4' },
   ];
 
   return (
-    <div className="w-full h-full min-h-[260px] text-[10px]">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
         <Treemap
           data={data}
           dataKey="size"
+          aspectRatio={4 / 3}
           stroke="var(--card)"
-          isAnimationActive
-          content={<CustomizedTreemapContent />}
-        />
+          fill="#3B82F6"
+        >
+          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Visits']} />
+        </Treemap>
       </ResponsiveContainer>
     </div>
   );
 }
 
-// 10. Marketing Channels: Stacked Bar Chart (Multicolor)
+// 10. Platform Stacked Bar Performance Chart
 export function MarketingChannelsStackedBarChart({ channels }: { channels: ChannelPerformance[] }) {
   const formatShort = (val: number) => {
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(1)}Cr`;
@@ -465,44 +423,18 @@ export function MarketingChannelsStackedBarChart({ channels }: { channels: Chann
   };
 
   return (
-    <div className="w-full h-full min-h-[260px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={channels} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
+      <ResponsiveContainer width="99%" height="100%">
+        <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-          <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={10} tickLine={false} />
-          <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={formatShort} />
-          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), '']} />
-          <Legend verticalAlign="top" height={36} iconType="circle" iconSize={6} fontSize={11} />
-          <Bar dataKey="spend" name="Spend" stackId="a" fill="#3B82F6" maxBarSize={20} />
-          <Bar dataKey="revenue" name="Revenue" stackId="a" fill="#7C3AED" radius={[6, 6, 0, 0]} maxBarSize={20} />
+          <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
+          <YAxis stroke="var(--text-secondary)" fontSize={9} tickLine={false} axisLine={false} tickFormatter={formatShort} width={55} />
+          <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [formatCurrency(Number(val)), 'Amount']} />
+          <Legend wrapperStyle={{ fontSize: '10px' }} />
+          <Bar dataKey="spend" name="Spend Cost" stackId="a" fill="#3B82F6" maxBarSize={22} />
+          <Bar dataKey="revenue" name="Revenue Earned" stackId="a" fill="#10B981" radius={[6, 6, 0, 0]} maxBarSize={22} />
         </BarChart>
       </ResponsiveContainer>
-    </div>
-  );
-}
-
-export function PerformanceCharts({ channels, customers }: { channels: ChannelPerformance[]; customers: CustomerSegment[] }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[350px]">
-        <div className="mb-3">
-          <h3 className="text-xs font-bold text-foreground">Spend Distribution</h3>
-          <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Advertising spend breakdown</span>
-        </div>
-        <div className="flex-1 min-h-0">
-          <SpendBarChart channels={channels} />
-        </div>
-      </div>
-
-      <div className="bg-card p-5 rounded-3xl shadow-[var(--card-shadow)] flex flex-col h-[350px]">
-        <div className="mb-3">
-          <h3 className="text-xs font-bold text-foreground">Customer loyalty segments</h3>
-          <span className="text-[9px] text-muted uppercase tracking-wide block mt-0.5">Sales contribution breakdown</span>
-        </div>
-        <div className="flex-1 min-h-0">
-          <CustomerSegmentsDonutChart customers={customers} />
-        </div>
-      </div>
     </div>
   );
 }
