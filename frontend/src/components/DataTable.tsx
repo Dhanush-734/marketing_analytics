@@ -142,7 +142,7 @@ export function DataTable({ campaigns }: DataTableProps) {
   };
 
   return (
-    <div className="bg-card rounded-3xl p-6 shadow-[var(--card-shadow)] animate-slide-up select-none space-y-5">
+    <div className="bg-card rounded-3xl p-4 sm:p-6 shadow-[var(--card-shadow)] animate-slide-up select-none space-y-4 sm:space-y-5 w-full max-w-full overflow-hidden">
       
       {/* Title & Actions Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -156,7 +156,7 @@ export function DataTable({ campaigns }: DataTableProps) {
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-border hover:bg-hover text-foreground font-semibold rounded-xl text-[10px] transition-colors duration-150 cursor-pointer active:scale-95 shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-border hover:bg-hover text-foreground font-semibold rounded-xl text-[10px] transition-colors duration-150 cursor-pointer active:scale-95 shadow-xs w-full sm:w-auto justify-center"
           >
             <Download size={11} />
             Export CSV ({filteredAndSortedData.length.toLocaleString()})
@@ -165,7 +165,7 @@ export function DataTable({ campaigns }: DataTableProps) {
       </div>
 
       {/* Filter, Search & Rows Per Page Controls Container */}
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
         {/* Search */}
         <div className="sm:col-span-5 relative flex items-center">
           <Search size={12} className="absolute left-3 text-muted pointer-events-none" />
@@ -227,16 +227,82 @@ export function DataTable({ campaigns }: DataTableProps) {
             }}
             className="w-full px-2 py-2 border border-border rounded-xl text-[10px] bg-card font-mono text-foreground focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
           >
-            <option value={10} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">10 per page</option>
-            <option value={25} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">25 per page</option>
-            <option value={50} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">50 per page</option>
-            <option value={100} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">100 per page</option>
+            <option value={10} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">10 / page</option>
+            <option value={25} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">25 / page</option>
+            <option value={50} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">50 / page</option>
+            <option value={100} className="bg-white text-slate-900 dark:bg-[#131A2E] dark:text-slate-100">100 / page</option>
           </select>
         </div>
       </div>
 
-      {/* Responsive Data Table Container */}
-      <div className="overflow-x-auto relative rounded-2xl max-h-[540px]">
+      {/* MOBILE RESPONSIVE CAMPAIGN CARDS (Shown on screens < 768px) */}
+      <div className="block md:hidden space-y-3">
+        {paginatedData.length > 0 ? (
+          paginatedData.map((row, i) => (
+            <div key={i} className="bg-background/70 border border-border/80 rounded-2xl p-3.5 shadow-xs space-y-2.5">
+              {/* Header row: Campaign Name & Actions */}
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <h4 className="text-xs font-extrabold text-foreground leading-snug">{row.campaign}</h4>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold border uppercase ${getChannelStyles(row.channel)}`}>
+                      {row.channel}
+                    </span>
+                    <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[8px] font-bold border uppercase ${
+                      row.status === 'Active' ? 'bg-green-500/10 text-primary border-green-500/20' :
+                      row.status === 'Completed' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
+                      'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                    }`}>
+                      {row.status === 'Active' && <Play size={8} />}
+                      {row.status === 'Completed' && <CheckCircle2 size={8} />}
+                      {row.status === 'Paused' && <Pause size={8} />}
+                      {row.status}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => alert(`Campaign Details: "${row.campaign}"\nChannel: ${row.channel}\nRevenue: ${formatRaw(row.revenue, true)}\nSpend: ${formatRaw(row.spend, true)}\nROI: ${formatPercent(row.roi)}`)}
+                  className="p-1.5 text-muted hover:text-foreground border border-border rounded-lg bg-card"
+                  title="View Details"
+                >
+                  <MoreHorizontal size={13} />
+                </button>
+              </div>
+
+              {/* 2x2 Metric Grid */}
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60 text-[10px]">
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Revenue</span>
+                  <span className="font-mono font-bold text-foreground">{formatCompact(row.revenue, true)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">Spend</span>
+                  <span className="font-mono text-muted">{formatCompact(row.spend, true)}</span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">ROI</span>
+                  <span className={`inline-block px-1.5 py-0.5 rounded text-[8px] font-bold ${
+                    row.roi >= 200 ? 'bg-green-500/10 text-primary border border-green-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                  }`}>
+                    {formatPercent(row.roi)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted block text-[8px] uppercase tracking-wider font-bold">CTR</span>
+                  <span className="font-mono text-muted">{formatPercent(row.ctr)}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="py-8 text-center text-xs text-muted font-medium bg-background/50 rounded-2xl border border-border">
+            No campaigns found matching filter criteria.
+          </div>
+        )}
+      </div>
+
+      {/* DESKTOP DATA TABLE (Shown on screens >= 768px) */}
+      <div className="hidden md:block overflow-x-auto relative rounded-2xl max-h-[540px]">
         <table className="w-full text-left text-[11px] border-separate border-spacing-y-2 min-w-[650px]">
           <thead className="sticky top-0 bg-card/95 backdrop-blur-md z-10">
             <tr className="text-muted font-bold text-left">

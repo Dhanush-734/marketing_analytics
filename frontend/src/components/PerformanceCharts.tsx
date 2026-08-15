@@ -44,8 +44,8 @@ export function RevenueAreaChart({ monthlyData }: { monthlyData: MonthlyData[] }
   };
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={monthlyData} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
@@ -73,8 +73,8 @@ export function SpendBarChart({ channels }: { channels: ChannelPerformance[] }) 
   };
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
@@ -90,8 +90,8 @@ export function SpendBarChart({ channels }: { channels: ChannelPerformance[] }) 
 // 3. ROI: Smooth Line Chart (Purple, strokeWidth = 4)
 export function RoiSmoothLineChart({ monthlyData }: { monthlyData: MonthlyData[] }) {
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart data={monthlyData} margin={{ top: 10, right: 15, left: 5, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis dataKey="month" stroke="var(--text-secondary)" fontSize={10} tickLine={false} />
@@ -117,8 +117,8 @@ export function CtrRadialProgressChart({ ctr }: { ctr: number }) {
   const data = [{ name: 'CTR', value: pct, fill: '#7C3AED' }];
 
   return (
-    <div className="w-full h-full min-h-[180px] sm:min-h-[220px] flex items-center justify-center relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[180px] sm:h-[220px] relative min-w-0 flex items-center justify-center overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <RadialBarChart
           cx="50%"
           cy="50%"
@@ -207,10 +207,10 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         </button>
       </div>
 
-      <div className="flex-1 min-h-[200px] sm:min-h-[240px] relative w-full overflow-hidden">
+      <div className="w-full h-[210px] sm:h-[250px] relative min-w-0 overflow-hidden">
         {chartType === 'donut' && (
           <>
-            <ResponsiveContainer width="99%" height="100%">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                 <Pie
                   data={customers}
@@ -251,7 +251,7 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         )}
 
         {chartType === 'bar' && (
-          <ResponsiveContainer width="99%" height="100%">
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={customers} layout="vertical" margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
               <XAxis type="number" stroke="var(--text-secondary)" fontSize={9} tickLine={false} tickFormatter={formatCountShort} />
@@ -267,7 +267,7 @@ export function CustomerSegmentsDonutChart({ customers }: { customers: CustomerS
         )}
 
         {chartType === 'pie' && (
-          <ResponsiveContainer width="99%" height="100%">
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
               <Pie
                 data={customers}
@@ -321,8 +321,8 @@ export function CampaignPerformanceHorizontalBarChart({ campaigns }: { campaigns
   };
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={topCampaigns} layout="vertical" margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
           <XAxis type="number" stroke="var(--text-secondary)" fontSize={9} tickLine={false} tickFormatter={formatShort} />
@@ -344,8 +344,8 @@ export function RevenueTrendGradientAreaChart({ monthlyData }: { monthlyData: Mo
   };
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={monthlyData} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
@@ -373,8 +373,8 @@ export function EmailFunnelChart({ email }: { email: EmailPerformance }) {
   ];
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <FunnelChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
           <Tooltip wrapperClassName="custom-tooltip" formatter={(val: any) => [Number(val).toLocaleString(), 'Count']} />
           <Funnel dataKey="value" data={funnelData} isAnimationActive>
@@ -398,8 +398,8 @@ export function TrafficSourcesTreemap() {
   ];
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <Treemap
           data={data}
           dataKey="size"
@@ -423,8 +423,8 @@ export function MarketingChannelsStackedBarChart({ channels }: { channels: Chann
   };
 
   return (
-    <div className="w-full h-full min-h-[220px] sm:min-h-[260px] relative min-w-0">
-      <ResponsiveContainer width="99%" height="100%">
+    <div className="w-full h-[210px] sm:h-[260px] relative min-w-0 overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart data={channels} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
           <XAxis dataKey="channel" stroke="var(--text-secondary)" fontSize={9} tickLine={false} />
