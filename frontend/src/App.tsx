@@ -33,6 +33,7 @@ import { IndiaMap } from './components/IndiaMap';
 import { SettingsView } from './components/SettingsView';
 import { LoginView } from './components/LoginView';
 import { CampaignPredictionView } from './components/CampaignPredictionView';
+import { CampaignSummaryTable } from './components/CampaignSummaryTable';
 import type { Variants } from 'framer-motion';
 
 const pageVariants: Variants = {
@@ -395,6 +396,9 @@ export default function App() {
 
                   {/* Section 3: Channel Performance Summary Master Data Table */}
                   <DataTable campaigns={campaigns} channels={channels} />
+
+                  {/* Section 9: Campaign Summary Table */}
+                  <CampaignSummaryTable campaigns={campaigns} />
 
                 </div>
               )}
