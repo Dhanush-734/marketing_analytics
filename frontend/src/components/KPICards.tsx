@@ -40,7 +40,11 @@ function AnimatedCounter({ value, isCurrency = false }: { value: number; isCurre
   }, [value]);
 
   const formatCompact = (val: number, isCurr: boolean) => {
-    if (val === 0) return isCurr ? '₹0' : '0';
+    if (val === 0) return isCurr ? '₹0 Cr' : '0';
+    if (isCurr) {
+      const crores = Math.round(val / 1e7);
+      return `₹${new Intl.NumberFormat('en-IN').format(crores)} Cr`;
+    }
     let formatted = '';
     if (val >= 1e12) {
       formatted = `${(val / 1e12).toFixed(2).replace(/\.00$/, '')}T`;
@@ -53,7 +57,7 @@ function AnimatedCounter({ value, isCurrency = false }: { value: number; isCurre
     } else {
       formatted = val.toString();
     }
-    return isCurr ? `₹${formatted}` : formatted;
+    return formatted;
   };
 
   return <span>{formatCompact(displayValue, isCurrency)}</span>;
@@ -89,9 +93,11 @@ export function KPICards({
 }: KPICardsProps) {
 
   const formatRaw = (val: number, isCurrency: boolean = false) => {
-    return isCurrency
-      ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val)
-      : new Intl.NumberFormat('en-IN').format(val);
+    if (isCurrency) {
+      const crores = Math.round(val / 1e7);
+      return `₹${new Intl.NumberFormat('en-IN').format(crores)} Cr`;
+    }
+    return new Intl.NumberFormat('en-IN').format(val);
   };
 
   // Sparkline curves data

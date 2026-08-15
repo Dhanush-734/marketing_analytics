@@ -16,7 +16,21 @@ export function DataTable({ campaigns }: DataTableProps) {
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   const formatCompact = (val: number, isCurrency: boolean = false) => {
-    if (val === 0) return isCurrency ? '₹0' : '0';
+    if (val === 0) return isCurrency ? '₹0 Cr' : '0';
+    if (isCurrency) {
+      if (val >= 1e7) {
+        const crores = val / 1e7;
+        const formatted = new Intl.NumberFormat('en-IN', {
+          maximumFractionDigits: crores >= 100 ? 0 : 2
+        }).format(crores);
+        return `₹${formatted} Cr`;
+      }
+      const lakhs = val / 1e5;
+      if (lakhs >= 1) {
+        return `₹${new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(lakhs)} L`;
+      }
+      return `₹${new Intl.NumberFormat('en-IN').format(val)}`;
+    }
     let formatted = '';
     if (val >= 1e12) {
       formatted = `${(val / 1e12).toFixed(2).replace(/\.00$/, '')}T`;
@@ -29,13 +43,15 @@ export function DataTable({ campaigns }: DataTableProps) {
     } else {
       formatted = val.toString();
     }
-    return isCurrency ? `₹${formatted}` : formatted;
+    return formatted;
   };
 
   const formatRaw = (val: number, isCurrency: boolean = false) => {
-    return isCurrency
-      ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val)
-      : new Intl.NumberFormat('en-IN').format(val);
+    if (isCurrency) {
+      const crores = Math.round(val / 1e7);
+      return `₹${new Intl.NumberFormat('en-IN').format(crores)} Cr`;
+    }
+    return new Intl.NumberFormat('en-IN').format(val);
   };
 
   const formatPercent = (val: number) => {
