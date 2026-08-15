@@ -95,7 +95,7 @@ export function IndiaMap({ stateData }: IndiaMapProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Authentic Interactive India Map (col-span-7) */}
-        <div className="lg:col-span-7 bg-background/40 border border-border rounded-3xl p-5 relative min-h-[480px] flex flex-col justify-between overflow-hidden">
+        <div className="lg:col-span-7 bg-background/40 border border-border rounded-3xl p-3 sm:p-5 relative min-h-[340px] sm:min-h-[480px] flex flex-col justify-between overflow-hidden">
           
           <div className="flex items-center justify-between text-xs text-muted mb-2">
             <span className="font-bold text-foreground">Interactive State Choropleth Map</span>

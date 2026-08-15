@@ -168,7 +168,7 @@ export default function App() {
           setMobileOpen={setMobileOpen}
         />
 
-        <main className="p-4 md:p-6 lg:p-8 w-full space-y-6 md:space-y-8 overflow-hidden flex-1">
+        <main className="p-3 sm:p-6 lg:p-8 w-full max-w-full min-w-0 space-y-6 md:space-y-8 overflow-x-hidden flex-1">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -493,7 +493,7 @@ export default function App() {
               {/* VIEW: DATA CONNECTION STATUS */}
               {activeTab === 'apistatus' && (
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                     <div className="bg-card p-5 rounded-2xl shadow-[var(--card-shadow)] flex items-center gap-4 border border-transparent">
                       <div className="p-2 bg-green-500/10 text-primary border border-green-500/20 rounded-xl shrink-0">
                         <CheckCircle size={20} />
