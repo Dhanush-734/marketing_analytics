@@ -36,11 +36,11 @@ export function SQLAnalyticsView() {
     
     // Core Snowflake campaigns
     const baseCampaigns = [
-      { name: 'Enterprise Cloud SaaS Surge', channel: 'LinkedIn Ads', segment: 'High-Value Premium Tier', spend: 5320000000, revenue: 45210000000, conversions: 22605, clicks: 820000, impressions: 26282000, ctr: 3.12, roi: 749.54 },
-      { name: 'Global Summer Promotion', channel: 'Meta Ads', segment: 'Returning Regular Buyers', spend: 5680000000, revenue: 48150000000, conversions: 24075, clicks: 950000, impressions: 32312000, ctr: 2.94, roi: 747.71 },
-      { name: 'Multi-Channel Q1 Growth Drive', channel: 'Google Ads', segment: 'High-Value Premium Tier', spend: 6180000000, revenue: 52300000000, conversions: 26150, clicks: 1120000, impressions: 39857000, ctr: 2.81, roi: 746.28 },
-      { name: 'AI Product Launch Blitz', channel: 'YouTube Ads', segment: 'New Customer Growth Segment', spend: 4540000000, revenue: 38400000000, conversions: 19200, clicks: 680000, impressions: 25373000, ctr: 2.68, roi: 745.81 },
-      { name: 'Holiday Special Retargeting', channel: 'Email Marketing', segment: 'Returning Regular Buyers', spend: 2600196730, revenue: 21921967467, conversions: 10960, clicks: 350000, impressions: 12962000, ctr: 2.70, roi: 743.09 }
+      { name: 'Enterprise Cloud SaaS Surge', channel: 'LinkedIn Ads', segment: 'High-Value Premium Tier', spend: 20339897, revenue: 65286439, conversions: 22605, clicks: 820000, impressions: 26282000, ctr: 3.12, roi: 220.98 },
+      { name: 'Global Summer Promotion', channel: 'Meta Ads', segment: 'Returning Regular Buyers', spend: 18997723, revenue: 60699833, conversions: 24075, clicks: 950000, impressions: 32312000, ctr: 2.94, roi: 219.51 },
+      { name: 'Multi-Channel Q1 Growth Drive', channel: 'Google Ads', segment: 'High-Value Premium Tier', spend: 20283902, revenue: 65031115, conversions: 26150, clicks: 1120000, impressions: 39857000, ctr: 2.81, roi: 220.60 },
+      { name: 'AI Product Launch Blitz', channel: 'YouTube Ads', segment: 'New Customer Growth Segment', spend: 20450898, revenue: 65319731, conversions: 19200, clicks: 680000, impressions: 25373000, ctr: 2.68, roi: 219.40 },
+      { name: 'Holiday Special Retargeting', channel: 'Email Marketing', segment: 'Returning Regular Buyers', spend: 19927583, revenue: 63662880, conversions: 10960, clicks: 350000, impressions: 12962000, ctr: 2.70, roi: 219.47 }
     ];
 
     baseCampaigns.forEach((c, idx) => {
@@ -63,10 +63,10 @@ export function SQLAnalyticsView() {
     for (let i = 5; i < 125; i++) {
       const ch = channelNames[i % channelNames.length];
       const seg = segments[i % segments.length];
-      const sp = Math.round(1000000000 + (i * 250000000));
-      const rev = Math.round(sp * 8.45);
+      const sp = Math.round(1000000 + (i * 250000));
+      const rev = Math.round(sp * 3.20);
       const r = Number((((rev - sp) / sp) * 100).toFixed(2));
-      const clk = Math.round(sp / 6500);
+      const clk = Math.round(sp / 25);
       const imp = Math.round(clk * 35);
       const ctrVal = Number(((clk / imp) * 100).toFixed(2));
 
@@ -77,7 +77,7 @@ export function SQLAnalyticsView() {
         CUSTOMER_SEGMENT: seg,
         SPEND: sp,
         REVENUE2: rev,
-        CONVERSIONS: Math.round(rev / 2000000),
+        CONVERSIONS: Math.round(rev / 20000),
         CLICKS: clk,
         IMPRESSIONS: imp,
         CTR: ctrVal,
@@ -118,49 +118,50 @@ export function SQLAnalyticsView() {
 
     const orderByMatch = cleanSql.match(/order\s+by\s+([a-zA-Z0-9_\.]+)(\s+desc|\s+asc)?/i);
     const groupByMatch = cleanSql.match(/group\s+by\s+([a-zA-Z0-9_\s,\.]+?)(order|limit|$)/i);
+    const whereMatch = cleanSql.match(/where\s+(.+?)(group|order|limit|$)/i);
 
-    const selectMatch = cleanSql.match(/select\s+(.*?)\s+from/i);
+    let filtered = dataset;
+    if (whereMatch) {
+      const cond = whereMatch[1];
+      const eqMatch = cond.match(/([a-zA-Z0-9_]+)\s*=\s*'([^']+)'/i);
+      if (eqMatch) {
+        const col = eqMatch[1].toUpperCase();
+        const val = eqMatch[2].toLowerCase();
+        filtered = dataset.filter(item => String(item[col] || '').toLowerCase() === val);
+      }
+    }
+
+    const selectMatch = cleanSql.match(/select\s+(.+?)\s+from/i);
     if (!selectMatch) {
       throw new Error('Invalid SQL syntax: missing SELECT or FROM clause.');
     }
 
     const selectClause = selectMatch[1].trim();
-
-    // SELECT COUNT(*) AS ... FROM MARKETING_ETL (No GROUP BY)
-    if (/^count\(\*\)(\s+as\s+[a-zA-Z0-9_]+)?$/i.test(selectClause) && !groupByMatch) {
-      const aliasMatch = selectClause.match(/as\s+([a-zA-Z0-9_]+)/i);
-      const colName = aliasMatch ? aliasMatch[1].toUpperCase() : 'COUNT(*)';
-      return [{ [colName]: dataset.length }];
-    }
+    const selectExprs = selectClause.split(',').map(e => e.trim());
 
     // GROUP BY Query
     if (groupByMatch) {
-      const groupCols = groupByMatch[1].split(',').map(c => c.trim().toLowerCase().replace(/^[a-z0-9_]+\./i, ''));
-      const groupKey = groupCols[0];
+      const groupCols = groupByMatch[1].split(',').map(c => c.trim().toUpperCase());
 
       const groups: { [key: string]: any[] } = {};
-      dataset.forEach(row => {
-        const rowKey = Object.keys(row).find(k => k.toLowerCase() === groupKey) || Object.keys(row)[0];
-        const keyVal = String(row[rowKey] || 'Other');
-        if (!groups[keyVal]) groups[keyVal] = [];
-        groups[keyVal].push(row);
+      filtered.forEach(item => {
+        const groupKeyVal = groupCols.map(col => item[col] || '').join('||');
+        if (!groups[groupKeyVal]) groups[groupKeyVal] = [];
+        groups[groupKeyVal].push(item);
       });
 
-      let results = Object.keys(groups).map(key => {
-        const items = groups[key];
+      const results = Object.values(groups).map(items => {
         const aggregatedRow: any = {};
+        selectExprs.forEach(expr => {
+          const aliasMatch = expr.match(/as\s+([a-zA-Z0-9_]+)/i);
+          const alias = aliasMatch ? aliasMatch[1].toUpperCase() : expr.toUpperCase();
 
-        const projections = selectClause.split(',').map(p => p.trim());
-        projections.forEach(proj => {
-          const asMatch = proj.match(/(.*?)\s+as\s+([a-zA-Z0-9_]+)/i);
-          const expr = asMatch ? asMatch[1].trim() : proj;
-          const alias = asMatch ? asMatch[2].toUpperCase() : proj.toUpperCase();
-
-          if (expr.toLowerCase().includes(groupKey)) {
-            aggregatedRow[alias] = key;
-          } else if (/^count\(\*\)$/i.test(expr) || /^count\(distinct.*?\)$/i.test(expr) || /^count\(/i.test(expr)) {
+          if (groupCols.some(col => expr.toUpperCase().includes(col))) {
+            const matchedCol = groupCols.find(col => expr.toUpperCase().includes(col))!;
+            aggregatedRow[alias] = items[0][matchedCol];
+          } else if (/count\(\*\)/i.test(expr)) {
             aggregatedRow[alias] = items.length;
-          } else if (/sum\(revenue2\)/i.test(expr) || /sum\(revenue\)/i.test(expr)) {
+          } else if (/sum\(revenue2\)|sum\(revenue\)/i.test(expr)) {
             const totalRev = items.reduce((sum, item) => sum + (item.REVENUE2 || item.revenue || 0), 0);
             aggregatedRow[alias] = Number(totalRev.toFixed(2));
           } else if (/sum\(spend\)/i.test(expr)) {
@@ -169,7 +170,7 @@ export function SQLAnalyticsView() {
           } else if (/roi/i.test(expr)) {
             const totalRev = items.reduce((sum, item) => sum + (item.REVENUE2 || item.revenue || 0), 0);
             const totalSp = items.reduce((sum, item) => sum + (item.SPEND || item.spend || 0), 0);
-            const calculatedRoi = totalSp > 0 ? ((totalRev - totalSp) / totalSp) * 100 : 746.28;
+            const calculatedRoi = totalSp > 0 ? ((totalRev - totalSp) / totalSp) * 100 : 220.00;
             aggregatedRow[alias] = Number(calculatedRoi.toFixed(2));
           } else if (/average_ctr|ctr/i.test(expr)) {
             const avgCtr = items.reduce((sum, item) => sum + (item.CTR || item.ctr || 2.8), 0) / (items.length || 1);
@@ -179,7 +180,7 @@ export function SQLAnalyticsView() {
             const avgVal = totalRev / (items.length || 1);
             aggregatedRow[alias] = Number(avgVal.toFixed(2));
           } else {
-            aggregatedRow[alias] = key;
+            aggregatedRow[alias] = items[0][Object.keys(items[0])[0]];
           }
         });
 

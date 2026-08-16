@@ -515,12 +515,12 @@ export function TrafficSourcesTreemap({ channels }: { channels?: ChannelPerforma
       }));
     }
     return [
-      { name: 'Google Ads', size: 52300000000 },
-      { name: 'Meta Ads', size: 48150000000 },
-      { name: 'LinkedIn Ads', size: 45210000000 },
-      { name: 'YouTube Ads', size: 38400000000 },
-      { name: 'Email Marketing', size: 21921967467 },
-      { name: 'Direct Traffic', size: 18500000000 },
+      { name: 'Google Ads', size: 65031115 },
+      { name: 'Meta Ads', size: 60699833 },
+      { name: 'LinkedIn Ads', size: 65286439 },
+      { name: 'YouTube Ads', size: 65319731 },
+      { name: 'Email Marketing', size: 63662880 },
+      { name: 'Direct Traffic', size: 25000000 },
     ];
   }, [channels]);
 
@@ -1038,7 +1038,7 @@ export function ChannelInsightsCards({ channels }: { channels: ChannelPerformanc
     {
       title: 'HIGHEST REVENUE CHANNEL',
       channel: highestRevenue?.channel || 'Google Ads',
-      metric: formatCurrency(highestRevenue?.revenue || 52300000000),
+      metric: formatCurrency(highestRevenue?.revenue || 65031115),
       badge: 'Top Revenue',
       color: 'border-blue-500/20 bg-blue-500/10 text-blue-500'
     },
