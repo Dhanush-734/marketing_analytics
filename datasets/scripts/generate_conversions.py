@@ -1,5 +1,10 @@
 import pandas as pd
 import random
+import numpy as np
+
+# Set random seeds for reproducibility
+random.seed(42)
+np.random.seed(42)
 
 # Load leads dataset
 leads = pd.read_csv("../generated/leads.csv")
@@ -18,25 +23,27 @@ if len(converted_leads) < 50000:
 
 # Ensure exactly 50,000 conversion rows
 converted_leads = converted_leads.sample(
-    n=50000,
-    random_state=42
+        n=50000,
+        random_state=42
 ).reset_index(drop=True)
 
 conversions = []
 
-for _, row in converted_leads.iterrows():
-
+for idx, row in converted_leads.iterrows():
     lead_date = pd.to_datetime(row["created_date"])
-
     conversion_date = lead_date + pd.Timedelta(
         days=random.randint(1, 30)
     )
 
+    # Realistic conversion revenue (average ₹300 - ₹1,500 with log-normal variation)
+    base_rev = float(np.random.lognormal(mean=6.2, sigma=0.5))
+    revenue = round(float(np.clip(base_rev, 150, 4500)), 2)
+
     conversions.append({
-        "conversion_id": len(conversions) + 1,
+        "conversion_id": idx + 1,
         "lead_id": int(row["lead_id"]),
         "campaign_id": int(row["campaign_id"]),
-        "revenue": round(random.uniform(500, 100000), 2),
+        "revenue": revenue,
         "conversion_date": conversion_date.strftime("%Y-%m-%d")
     })
 
@@ -50,5 +57,6 @@ df.to_csv(
 
 print("=" * 50)
 print("Conversions Dataset Generated Successfully")
-print(f"Total Converted Leads: {len(df)}")
+print(f"Total Converted Leads: {len(df):,}")
+print(f"Total Conversion Revenue: INR {df['revenue'].sum():,.2f}")
 print("=" * 50)

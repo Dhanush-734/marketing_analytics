@@ -2,6 +2,10 @@ import pandas as pd
 import random
 from faker import Faker
 
+# Set random seed for reproducibility
+random.seed(42)
+Faker.seed(42)
+
 fake = Faker()
 
 NUM_LEADS = 100000
@@ -29,7 +33,6 @@ status_weights = [30, 25, 20, 15, 10]
 leads = []
 
 for lead_id in range(1, NUM_LEADS + 1):
-
     leads.append({
         "lead_id": lead_id,
         "customer_id": random.randint(1, MAX_CUSTOMERS),
@@ -43,7 +46,7 @@ for lead_id in range(1, NUM_LEADS + 1):
         "created_date": fake.date_between(
             start_date="-2y",
             end_date="today"
-        ).isoformat()          # YYYY-MM-DD
+        ).isoformat()  # YYYY-MM-DD
     })
 
 df = pd.DataFrame(leads)

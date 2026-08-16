@@ -24,7 +24,7 @@ const cardHoverVariants: Variants = {
 export function SettingsView() {
   return (
     <div className="space-y-6 md:space-y-8 font-sans">
-      
+
       {/* Header Banner */}
       <div className="bg-card p-6 md:p-8 rounded-3xl shadow-[var(--card-shadow)] border border-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

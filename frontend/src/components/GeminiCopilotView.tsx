@@ -3,10 +3,24 @@ import { Sparkles, Send, Bot, User, Zap, RefreshCw, CheckCircle2 } from 'lucide-
 import { useDashboardData } from '../hooks/useDashboardData';
 
 export function GeminiCopilotView() {
-  const { kpis, channels, campaigns, customers, email, monthlyData } = useDashboardData();
+  const { kpis, channels, campaigns, customers, email } = useDashboardData();
 
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+  const formatIndianCurrency = (val: number): string => {
+    const absVal = Math.abs(val);
+    const isInteger = absVal % 1 === 0;
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: isInteger ? 0 : 2,
+      maximumFractionDigits: 2
+    }).format(val);
+  };
+
+  const formatIndianInteger = (val: number): string => {
+    return new Intl.NumberFormat('en-IN', {
+      maximumFractionDigits: 0
+    }).format(Math.round(val));
+  };
 
   const [messages, setMessages] = useState<Array<{ sender: 'ai' | 'user'; text: string; timestamp: string; metrics?: any }>>([
     {
@@ -45,78 +59,76 @@ export function GeminiCopilotView() {
       let metricsBadge: any = null;
       const qLower = queryText.toLowerCase();
 
-      // Dynamic sorting & computations from live data
+      // Dynamic sorting & computations from live Snowflake data layer
       const sortedChannelsByRoi = [...channels].sort((a, b) => b.roi - a.roi);
       const sortedCampaignsByRev = [...campaigns].sort((a, b) => b.revenue - a.revenue);
 
-      const topChannel = sortedChannelsByRoi[0] || { channel: 'Google Ads', roi: 300, revenue: 0 };
-      const lowestChannel = sortedChannelsByRoi[sortedChannelsByRoi.length - 1] || { channel: 'Display Ads', roi: 80, revenue: 0 };
-      const topCampaign = sortedCampaignsByRev[0] || { campaign: 'Diwali Festive Surge', revenue: 0, roi: 0 };
+      const topChannel = sortedChannelsByRoi[0] || { channel: 'Google Ads', roi: 220.6, revenue: kpis.revenue };
+      const lowestChannel = sortedChannelsByRoi[sortedChannelsByRoi.length - 1] || { channel: 'Meta Ads', roi: 219.5, revenue: kpis.revenue };
+      const topCampaign = sortedCampaignsByRev[0] || { campaign: 'Multi-Channel Q1 Growth Drive', revenue: 65031115, roi: 220.6, conversions: 26150 };
 
       if (qLower.includes('channel') || qLower.includes('roi')) {
-        aiResponseText = `Based on live Snowflake data, ${topChannel.channel} is your top-performing channel with an ROI of ${topChannel.roi}% and total revenue of ${formatCurrency(topChannel.revenue)}. Conversely, ${lowestChannel.channel} has the lowest ROI at ${lowestChannel.roi}%.`;
+        aiResponseText = `Based on live Snowflake data, ${topChannel.channel} is your top-performing channel with an ROI of ${topChannel.roi}% and total revenue of ${formatIndianCurrency(topChannel.revenue)}. Conversely, ${lowestChannel.channel} has the lowest ROI at ${lowestChannel.roi}%.`;
         metricsBadge = {
           title: 'Top Channel Attribution',
           items: [
             { label: 'Highest ROI Channel', val: topChannel.channel },
             { label: 'Return on Investment', val: `${topChannel.roi}%` },
-            { label: 'Revenue Yield', val: formatCurrency(topChannel.revenue) }
+            { label: 'Revenue Yield', val: formatIndianCurrency(topChannel.revenue) }
           ]
         };
       } else if (qLower.includes('campaign') || qLower.includes('top')) {
         const top3 = sortedCampaignsByRev.slice(0, 3);
-        const top3Text = top3.map((c, i) => `${i + 1}. ${c.campaign} (${c.channel}): ${formatCurrency(c.revenue)} revenue [${c.roi}% ROI]`).join('\n');
-        aiResponseText = `Here are your top 3 campaigns by revenue yield:\n\n${top3Text}\n\nTop campaign "${topCampaign.campaign}" accounts for highest conversion volume.`;
+        const top3Text = top3.map((c, i) => `${i + 1}. ${c.campaign} (${c.channel}): ${formatIndianCurrency(c.revenue)} revenue [${c.roi}% ROI]`).join('\n');
+        aiResponseText = `Here are your top 3 campaigns by revenue yield from Snowflake:\n\n${top3Text}\n\nTop campaign "${topCampaign.campaign}" accounts for highest conversion volume.`;
         metricsBadge = {
           title: 'Top Revenue Campaign',
           items: [
             { label: 'Campaign', val: topCampaign.campaign },
-            { label: 'Revenue', val: formatCurrency(topCampaign.revenue) },
-            { label: 'Conversions', val: `${topCampaign.conversions || 1820}` }
+            { label: 'Revenue', val: formatIndianCurrency(topCampaign.revenue) },
+            { label: 'Conversions', val: formatIndianInteger(topCampaign.conversions) }
           ]
         };
-      } else if (qLower.includes('customer') || qLower.includes('segment') || qLower.includes('purchaser')) {
+      } else if (qLower.includes('customer') || qLower.includes('segment') || qLower.includes('purchaser') || qLower.includes('acquisition')) {
         const totalCust = customers.reduce((sum, c) => sum + c.total_customers, 0);
-        const topSeg = [...customers].sort((a, b) => b.total_revenue - a.total_revenue)[0] || { customer_segment: 'High Value Purchasers', total_customers: 4250, total_revenue: 0 };
-        aiResponseText = `Total tracked purchasers across all segments: ${new Intl.NumberFormat('en-IN').format(totalCust)}. The "${topSeg.customer_segment}" segment generates the highest revenue at ${formatCurrency(topSeg.total_revenue)} from ${new Intl.NumberFormat('en-IN').format(topSeg.total_customers)} customers.`;
+        const topSeg = [...customers].sort((a, b) => b.total_revenue - a.total_revenue)[0] || { customer_segment: 'High-Value Premium Tier', total_customers: 16700, total_revenue: 130800000 };
+        aiResponseText = `Total tracked customers across all segments: ${formatIndianInteger(totalCust)}. The "${topSeg.customer_segment}" segment generates the highest revenue at ${formatIndianCurrency(topSeg.total_revenue)} from ${formatIndianInteger(topSeg.total_customers)} customers.`;
         metricsBadge = {
           title: 'Customer Segmentation',
           items: [
-            { label: 'Total Purchasers', val: new Intl.NumberFormat('en-IN').format(totalCust) },
+            { label: 'Total Purchasers', val: formatIndianInteger(totalCust) },
             { label: 'Top Tier', val: topSeg.customer_segment },
-            { label: 'Tier Revenue', val: formatCurrency(topSeg.total_revenue) }
+            { label: 'Tier Revenue', val: formatIndianCurrency(topSeg.total_revenue) }
           ]
         };
       } else if (qLower.includes('email') || qLower.includes('funnel') || qLower.includes('open rate')) {
-        const openPct = email.average_open_rate < 1 ? (email.average_open_rate * 100).toFixed(1) : email.average_open_rate.toFixed(1);
-        const clickPct = email.average_click_rate < 1 ? (email.average_click_rate * 100).toFixed(1) : email.average_click_rate.toFixed(1);
-        aiResponseText = `Email Marketing Performance Metrics:\n• Total Dispatched: ${new Intl.NumberFormat('en-IN').format(email.emails_sent)}\n• Emails Opened: ${new Intl.NumberFormat('en-IN').format(email.emails_opened)} (${openPct}% Open Rate)\n• Emails Clicked: ${new Intl.NumberFormat('en-IN').format(email.emails_clicked)} (${clickPct}% Click Rate)`;
+        const openPct = email.average_open_rate < 1 ? (email.average_open_rate * 100).toFixed(2) : email.average_open_rate.toFixed(2);
+        const clickPct = email.average_click_rate < 1 ? (email.average_click_rate * 100).toFixed(2) : email.average_click_rate.toFixed(2);
+        aiResponseText = `Email Marketing Performance Metrics:\n• Total Dispatched: ${formatIndianInteger(email.emails_sent)}\n• Emails Opened: ${formatIndianInteger(email.emails_opened)} (${openPct}% Open Rate)\n• Emails Clicked: ${formatIndianInteger(email.emails_clicked)} (${clickPct}% Click Rate)`;
         metricsBadge = {
           title: 'Email Telemetry',
           items: [
-            { label: 'Dispatched', val: new Intl.NumberFormat('en-IN', { notation: 'compact' }).format(email.emails_sent) },
+            { label: 'Dispatched', val: formatIndianInteger(email.emails_sent) },
             { label: 'Average Open Rate', val: `${openPct}%` },
             { label: 'Average CTR', val: `${clickPct}%` }
           ]
         };
-      } else if (qLower.includes('predict') || qLower.includes('revenue') || qLower.includes('trajectory') || qLower.includes('quarter')) {
-        const recentMonthly = monthlyData[monthlyData.length - 1] || { month: 'Jun', revenue: kpis.revenue / 6 };
-        const projectedQ3 = Math.round(kpis.revenue * 0.28);
-        aiResponseText = `Predictive Analytics Model Forecast:\nBased on current trend velocity, projected Q3 total revenue is ${formatCurrency(projectedQ3)} (+15.4% YoY growth). Monthly sales momentum reached ${formatCurrency(recentMonthly.revenue)} in ${recentMonthly.month}.`;
+      } else if (qLower.includes('predict') || qLower.includes('forecast') || qLower.includes('trajectory') || qLower.includes('quarter')) {
+        aiResponseText = `Forecasting is not currently enabled. INSIGHTS AI can analyze current Snowflake performance metrics.`;
         metricsBadge = {
           title: 'Predictive Trajectory',
           items: [
-            { label: 'Current Revenue', val: formatCurrency(kpis.revenue) },
-            { label: 'Projected Q3 Lift', val: '+15.4%' },
-            { label: 'Forecast Q3 Sales', val: formatCurrency(projectedQ3) }
+            { label: 'Status', val: 'Forecasting Disabled' },
+            { label: 'Current Revenue', val: formatIndianCurrency(kpis.revenue) },
+            { label: 'Overall ROI', val: `${kpis.roi.toFixed(2)}%` }
           ]
         };
       } else {
-        aiResponseText = `Live System Performance Summary:\n• Total Revenue: ${formatCurrency(kpis.revenue)}\n• Total Spend: ${formatCurrency(kpis.spend)}\n• Overall ROI: ${kpis.roi.toFixed(2)}%\n• Average CTR: ${kpis.ctr.toFixed(2)}%\n• Active Campaigns: ${campaigns.length}\n• Attributed Channels: ${channels.length}`;
+        aiResponseText = `Live Snowflake Performance Summary:\n• Total Revenue: ${formatIndianCurrency(kpis.revenue)}\n• Total Spend: ${formatIndianCurrency(kpis.spend)}\n• Overall ROI: ${kpis.roi.toFixed(2)}%\n• Average CTR: ${kpis.ctr.toFixed(2)}%\n• Active Campaigns: ${campaigns.length}\n• Attributed Channels: ${channels.length}`;
         metricsBadge = {
           title: 'Executive Summary',
           items: [
-            { label: 'Total Revenue', val: formatCurrency(kpis.revenue) },
+            { label: 'Total Revenue', val: formatIndianCurrency(kpis.revenue) },
             { label: 'Overall ROI', val: `${kpis.roi.toFixed(2)}%` },
             { label: 'Active Campaigns', val: `${campaigns.length}` }
           ]
@@ -132,7 +144,7 @@ export function GeminiCopilotView() {
 
       setMessages((prev) => [...prev, aiMsg]);
       setIsAnalyzing(false);
-    }, 800);
+    }, 400);
   };
 
   return (
@@ -152,7 +164,7 @@ export function GeminiCopilotView() {
             AI MARKETING ANALYTICS COPILOT
           </span>
           <p className="text-xs text-muted max-w-xl leading-relaxed">
-            Connected directly to Snowflake Data Warehouse ({campaigns.length} campaigns, {channels.length} channels, {formatCurrency(kpis.revenue)} sales).
+            Connected directly to Snowflake Data Warehouse ({campaigns.length} campaigns, {channels.length} channels, {formatIndianCurrency(kpis.revenue)} total revenue).
           </p>
         </div>
 
@@ -161,7 +173,7 @@ export function GeminiCopilotView() {
             <CheckCircle2 size={14} />
             Snowflake Verified Sync
           </div>
-          <span className="text-[9px] text-muted block font-mono">100% Accurate Telemetry</span>
+          <span className="text-[9px] text-muted block font-mono">Dynamic Snowflake Analytics</span>
         </div>
       </div>
 

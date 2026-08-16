@@ -81,14 +81,6 @@ export interface DashboardData {
   refetch: () => void;
 }
 
-// Live Snowflake MARKETING_ETL Default Dataset
-const SNOWFLAKE_DEFAULT_KPIS: KPI = {
-  revenue: 320000000,
-  spend: 100000000,
-  roi: 220.00,
-  ctr: 2.85
-};
-
 const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
   {
     channel: 'Google Ads',
@@ -196,6 +188,19 @@ const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
     performance: 'Completed'
   }
 ];
+
+// Live Snowflake MARKETING_ETL Dataset dynamic KPI defaults
+const defaultChannelRevenue = SNOWFLAKE_DEFAULT_CHANNELS.reduce((sum, c) => sum + c.revenue, 0);
+const defaultChannelSpend = SNOWFLAKE_DEFAULT_CHANNELS.reduce((sum, c) => sum + c.spend, 0);
+const defaultRoi = defaultChannelSpend > 0 ? Number((((defaultChannelRevenue - defaultChannelSpend) / defaultChannelSpend) * 100).toFixed(2)) : 220.00;
+const defaultCtr = Number((SNOWFLAKE_DEFAULT_CHANNELS.reduce((sum, c) => sum + c.ctr, 0) / SNOWFLAKE_DEFAULT_CHANNELS.length).toFixed(2));
+
+const SNOWFLAKE_DEFAULT_KPIS: KPI = {
+  revenue: defaultChannelRevenue,
+  spend: defaultChannelSpend,
+  roi: defaultRoi,
+  ctr: defaultCtr
+};
 
 // Complete Real Snowflake Campaigns Dataset
 const SNOWFLAKE_DEFAULT_CAMPAIGNS: Campaign[] = [

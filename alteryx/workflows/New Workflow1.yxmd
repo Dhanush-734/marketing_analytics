@@ -876,6 +876,73 @@ from `leads`</DefaultAnnotationText>
           </SelectConfiguration>
         </Configuration>
         <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="30">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="1806" y="678" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="IF [impressions] &gt; 0 THEN&#xA;([clicks] / [impressions]) * 100&#xA;ELSE&#xA;0&#xA;ENDIF" field="CTR" size="8" type="Double" enabled="true" />
+            <FormulaField expression="IF [clicks] &gt; 0 THEN&#xA;([conversions] / [clicks]) * 100&#xA;ELSE&#xA;0&#xA;ENDIF" field="Conversion_Rate" size="8" type="Double" enabled="true" />
+            <FormulaField expression="IF [spend] &gt; 0 THEN&#xA;(([Right_revenue] - [spend]) / [spend]) * 100&#xA;ELSE&#xA;0&#xA;ENDIF" field="ROI" size="8" type="Double" enabled="true" />
+            <FormulaField expression="IF [emails_sent] &gt; 0 THEN&#xA;([emails_opened] / [emails_sent]) * 100&#xA;ELSE&#xA;0&#xA;ENDIF" field="Open_Rate" size="8" type="Double" enabled="true" />
+            <FormulaField expression="IF [emails_sent] &gt; 0 THEN&#xA;([emails_clicked] / [emails_sent]) * 100&#xA;ELSE&#xA;0&#xA;ENDIF" field="Click_Rate" size="8" type="Double" enabled="true" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>CTR = IF [impressions] &gt; 0 THEN
+([clicks] / [impressions]) * 100
+ELSE
+0
+ENDIF
+Co...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="31">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="2190" y="678" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File MaxRecords="" FileFormat="0">C:\Users\snowpiercer\Desktop\marketing_analytics\alteryx\output\alteryx etl pipeline final.csv</File>
+          <Passwords />
+          <Disable>False</Disable>
+          <FormatSpecificOptions>
+            <LineEndStyle>CRLF</LineEndStyle>
+            <Delimeter>,</Delimeter>
+            <ForceQuotes>False</ForceQuotes>
+            <HeaderRow>True</HeaderRow>
+            <CodePage>28591</CodePage>
+            <WriteBOM>True</WriteBOM>
+            <SuppressBlankFile>False</SuppressBlankFile>
+          </FormatSpecificOptions>
+          <MultiFile value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>alteryx etl pipeline final.csv</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="8" Connection="Input2" />
     </Connection>
     <Connection>
       <Origin ToolID="2" Connection="Output" />
@@ -984,14 +1051,6 @@ from `leads`</DefaultAnnotationText>
     <Connection>
       <Origin ToolID="30" Connection="Output" />
       <Destination ToolID="31" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="30" Connection="Output" />
-      <Destination ToolID="32" Connection="Input" />
-    </Connection>
-    <Connection>
-      <Origin ToolID="32" Connection="Output" />
-      <Destination ToolID="33" Connection="Input" />
     </Connection>
   </Connections>
   <Properties>

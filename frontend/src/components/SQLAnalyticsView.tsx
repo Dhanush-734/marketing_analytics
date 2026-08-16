@@ -33,7 +33,7 @@ export function SQLAnalyticsView() {
     // Expanded campaign list matching Snowflake ETL records
     const channelNames = ['Google Ads', 'Meta Ads', 'LinkedIn Ads', 'YouTube Ads', 'Email Marketing'];
     const segments = ['Returning Regular Buyers', 'High-Value Premium Tier', 'New Customer Growth Segment'];
-    
+
     // Core Snowflake campaigns
     const baseCampaigns = [
       { name: 'Enterprise Cloud SaaS Surge', channel: 'LinkedIn Ads', segment: 'High-Value Premium Tier', spend: 20339897, revenue: 65286439, conversions: 22605, clicks: 820000, impressions: 26282000, ctr: 3.12, roi: 220.98 },
@@ -88,8 +88,135 @@ export function SQLAnalyticsView() {
     return list;
   }, []);
 
-  const formatCurrency = (val: number) =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+// Indian Number Formatting helpers
+const formatIndianCurrency = (val: number): string => {
+  const absVal = Math.abs(val);
+  const isInteger = absVal % 1 === 0;
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: isInteger ? 0 : 2,
+    maximumFractionDigits: 2
+  }).format(val);
+};
+
+const formatIndianInteger = (val: number): string => {
+  return new Intl.NumberFormat('en-IN', {
+    maximumFractionDigits: 0
+  }).format(Math.round(val));
+};
+
+const formatIndianDecimal = (val: number, maxDecimals = 2): string => {
+  const isInteger = Math.abs(val) % 1 === 0;
+  return new Intl.NumberFormat('en-IN', {
+    minimumFractionDigits: isInteger ? 0 : 2,
+    maximumFractionDigits: maxDecimals
+  }).format(val);
+};
+
+const formatColumnHeader = (key: string): string => {
+  if (!key) return '';
+  const kUpper = key.trim().toUpperCase();
+
+  const explicitMap: Record<string, string> = {
+    CAMPAIGN_ID: 'Campaign ID',
+    CAMPAIGN_NAME: 'Campaign Name',
+    CHANNEL_NAME: 'Channel Name',
+    CUSTOMER_SEGMENT: 'Customer Segment',
+    SPEND: 'Spend',
+    REVENUE: 'Revenue',
+    REVENUE2: 'Revenue',
+    TOTAL_REVENUE: 'Total Revenue',
+    TOTAL_SPEND: 'Total Spend',
+    AVG_REVENUE: 'Average Revenue',
+    AVG_ORDER_VALUE: 'Average Order Value',
+    AVERAGE_REVENUE: 'Average Revenue',
+    TOTAL_CUSTOMERS: 'Total Customers',
+    CUSTOMER_COUNT: 'Customer Count',
+    RECORD_COUNT: 'Record Count',
+    AVERAGE_CTR: 'Average CTR',
+    CTR: 'CTR',
+    ROI: 'ROI',
+    CONVERSIONS: 'Conversions',
+    CLICKS: 'Clicks',
+    IMPRESSIONS: 'Impressions',
+    STATUS: 'Status',
+  };
+
+  if (explicitMap[kUpper]) {
+    return explicitMap[kUpper];
+  }
+
+  if (/^[A-Z0-9_]+$/.test(kUpper)) {
+    return kUpper
+      .split('_')
+      .map(word => {
+        if (word === 'ID') return 'ID';
+        if (word === 'CTR') return 'CTR';
+        if (word === 'ROI') return 'ROI';
+        if (word === 'AVG') return 'Average';
+        if (word === 'SUM') return 'Sum';
+        return word.charAt(0) + word.slice(1).toLowerCase();
+      })
+      .join(' ');
+  }
+
+  return key;
+};
+
+// SQL Clause Splitter respecting parentheses & quotes
+function splitSqlExpressions(clauseStr: string): string[] {
+  const exprs: string[] = [];
+  let current = '';
+  let parenDepth = 0;
+  let inSingleQuote = false;
+  let inDoubleQuote = false;
+
+  for (let i = 0; i < clauseStr.length; i++) {
+    const char = clauseStr[i];
+    if (char === "'" && !inDoubleQuote) {
+      inSingleQuote = !inSingleQuote;
+      current += char;
+    } else if (char === '"' && !inSingleQuote) {
+      inDoubleQuote = !inDoubleQuote;
+      current += char;
+    } else if (!inSingleQuote && !inDoubleQuote) {
+      if (char === '(') parenDepth++;
+      else if (char === ')') parenDepth = Math.max(0, parenDepth - 1);
+
+      if (char === ',' && parenDepth === 0) {
+        if (current.trim()) exprs.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) exprs.push(current.trim());
+  return exprs;
+}
+
+interface ParsedSelectExpr {
+  raw: string;
+  exprStr: string;
+  alias: string;
+}
+
+function parseSelectExpr(rawExpr: string): ParsedSelectExpr {
+  const trimmed = rawExpr.trim();
+  const asMatch = trimmed.match(/\s+as\s+([a-zA-Z0-9_"]+)$/i);
+  if (asMatch) {
+    const alias = asMatch[1].replace(/^"|"$/g, '').toUpperCase();
+    const exprStr = trimmed.substring(0, asMatch.index).trim();
+    return { raw: trimmed, exprStr, alias };
+  }
+  const alias = trimmed.toUpperCase();
+  return { raw: trimmed, exprStr: trimmed, alias };
+}
+
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
   // Client-side Snowflake SQL Execution Parser
   const parseAndExecuteSQL = useCallback((sqlText: string, dataset: any[]) => {
@@ -137,11 +264,11 @@ export function SQLAnalyticsView() {
     }
 
     const selectClause = selectMatch[1].trim();
-    const selectExprs = selectClause.split(',').map(e => e.trim());
 
     // GROUP BY Query
     if (groupByMatch) {
       const groupCols = groupByMatch[1].split(',').map(c => c.trim().toUpperCase());
+      const selectExprs = splitSqlExpressions(selectClause).map(parseSelectExpr);
 
       const groups: { [key: string]: any[] } = {};
       filtered.forEach(item => {
@@ -152,36 +279,94 @@ export function SQLAnalyticsView() {
 
       const results = Object.values(groups).map(items => {
         const aggregatedRow: any = {};
-        selectExprs.forEach(expr => {
-          const aliasMatch = expr.match(/as\s+([a-zA-Z0-9_]+)/i);
-          const alias = aliasMatch ? aliasMatch[1].toUpperCase() : expr.toUpperCase();
+        selectExprs.forEach(({ exprStr, alias }) => {
+          const exprUpper = exprStr.toUpperCase();
+          const aliasUpper = alias.toUpperCase();
 
-          if (groupCols.some(col => expr.toUpperCase().includes(col))) {
-            const matchedCol = groupCols.find(col => expr.toUpperCase().includes(col))!;
-            aggregatedRow[alias] = items[0][matchedCol];
-          } else if (/count\(\*\)/i.test(expr)) {
+          // 1. Group column match
+          const matchedGroupCol = groupCols.find(col => col === exprUpper || col === aliasUpper || exprUpper.includes(col));
+          if (matchedGroupCol && items[0][matchedGroupCol] !== undefined) {
+            aggregatedRow[alias] = items[0][matchedGroupCol];
+            return;
+          }
+
+          // 2. Count aggregate
+          if (/count\s*\(/i.test(exprStr) || aliasUpper === 'TOTAL_CUSTOMERS' || aliasUpper === 'CUSTOMER_COUNT' || aliasUpper === 'RECORD_COUNT') {
             aggregatedRow[alias] = items.length;
-          } else if (/sum\(revenue2\)|sum\(revenue\)/i.test(expr)) {
-            const totalRev = items.reduce((sum, item) => sum + (item.REVENUE2 || item.revenue || 0), 0);
-            aggregatedRow[alias] = Number(totalRev.toFixed(2));
-          } else if (/sum\(spend\)/i.test(expr)) {
-            const totalSp = items.reduce((sum, item) => sum + (item.SPEND || item.spend || 0), 0);
-            aggregatedRow[alias] = Number(totalSp.toFixed(2));
-          } else if (/roi/i.test(expr)) {
-            const totalRev = items.reduce((sum, item) => sum + (item.REVENUE2 || item.revenue || 0), 0);
-            const totalSp = items.reduce((sum, item) => sum + (item.SPEND || item.spend || 0), 0);
-            const calculatedRoi = totalSp > 0 ? ((totalRev - totalSp) / totalSp) * 100 : 220.00;
-            aggregatedRow[alias] = Number(calculatedRoi.toFixed(2));
-          } else if (/average_ctr|ctr/i.test(expr)) {
-            const avgCtr = items.reduce((sum, item) => sum + (item.CTR || item.ctr || 2.8), 0) / (items.length || 1);
-            aggregatedRow[alias] = Number(avgCtr.toFixed(2));
-          } else if (/avg\(revenue2\)|avg\(order_value\)/i.test(expr)) {
-            const totalRev = items.reduce((sum, item) => sum + (item.REVENUE2 || item.revenue || 0), 0);
+            return;
+          }
+
+          // 3. ROI aggregate / calculation
+          if (/roi/i.test(exprStr) || /roi/i.test(aliasUpper) || exprUpper.includes('- SUM(SPEND)')) {
+            const totalRev = items.reduce((sum, item) => sum + Number(item.REVENUE2 || item.REVENUE || item.revenue || 0), 0);
+            const totalSp = items.reduce((sum, item) => sum + Number(item.SPEND || item.spend || 0), 0);
+            const roiVal = totalSp > 0 ? ((totalRev - totalSp) / totalSp) * 100 : 0;
+            aggregatedRow[alias] = Number(roiVal.toFixed(2));
+            return;
+          }
+
+          // 4. CTR aggregate / calculation
+          if (/average_ctr|ctr/i.test(exprStr) || /average_ctr|ctr/i.test(aliasUpper) || exprUpper.includes('CLICKS')) {
+            const totalClicks = items.reduce((sum, item) => sum + Number(item.CLICKS || item.clicks || 0), 0);
+            const totalImp = items.reduce((sum, item) => sum + Number(item.IMPRESSIONS || item.impressions || 0), 0);
+            if (totalImp > 0) {
+              aggregatedRow[alias] = Number(((totalClicks / totalImp) * 100).toFixed(2));
+            } else {
+              const avgCtr = items.reduce((sum, item) => sum + Number(item.CTR || item.ctr || 0), 0) / (items.length || 1);
+              aggregatedRow[alias] = Number(avgCtr.toFixed(2));
+            }
+            return;
+          }
+
+          // 5. AVG Revenue / AVG Order Value
+          if (/avg\s*\(\s*(revenue2|revenue)\s*\)/i.test(exprStr) || aliasUpper.includes('AVG_REVENUE') || aliasUpper.includes('AVG_ORDER_VALUE') || aliasUpper.includes('AVERAGE_REVENUE')) {
+            const totalRev = items.reduce((sum, item) => sum + Number(item.REVENUE2 || item.REVENUE || item.revenue || 0), 0);
             const avgVal = totalRev / (items.length || 1);
             aggregatedRow[alias] = Number(avgVal.toFixed(2));
-          } else {
-            aggregatedRow[alias] = items[0][Object.keys(items[0])[0]];
+            return;
           }
+
+          // 6. SUM Revenue / Total Revenue
+          if (/sum\s*\(\s*(revenue2|revenue)\s*\)/i.test(exprStr) || aliasUpper.includes('TOTAL_REVENUE') || aliasUpper === 'REVENUE') {
+            const totalRev = items.reduce((sum, item) => sum + Number(item.REVENUE2 || item.REVENUE || item.revenue || 0), 0);
+            aggregatedRow[alias] = Number(totalRev.toFixed(2));
+            return;
+          }
+
+          // 7. SUM Spend / Total Spend
+          if (/sum\s*\(\s*spend\s*\)/i.test(exprStr) || aliasUpper.includes('TOTAL_SPEND') || aliasUpper === 'SPEND') {
+            const totalSp = items.reduce((sum, item) => sum + Number(item.SPEND || item.spend || 0), 0);
+            aggregatedRow[alias] = Number(totalSp.toFixed(2));
+            return;
+          }
+
+          // 8. General AVG aggregate on any column
+          const genAvgMatch = exprStr.match(/avg\s*\(\s*([a-zA-Z0-9_]+)\s*\)/i);
+          if (genAvgMatch) {
+            const col = genAvgMatch[1].toUpperCase();
+            const sumVal = items.reduce((s, item) => s + Number(item[col] || 0), 0);
+            aggregatedRow[alias] = Number((sumVal / (items.length || 1)).toFixed(2));
+            return;
+          }
+
+          // 9. General SUM aggregate on any column
+          const genSumMatch = exprStr.match(/sum\s*\(\s*([a-zA-Z0-9_]+)\s*\)/i);
+          if (genSumMatch) {
+            const col = genSumMatch[1].toUpperCase();
+            const sumVal = items.reduce((s, item) => s + Number(item[col] || 0), 0);
+            aggregatedRow[alias] = Number(sumVal.toFixed(2));
+            return;
+          }
+
+          // 10. Match key on items[0]
+          const matchedKey = Object.keys(items[0]).find(k => k.toUpperCase() === exprUpper || k.toUpperCase() === aliasUpper);
+          if (matchedKey && items[0][matchedKey] !== undefined) {
+            aggregatedRow[alias] = items[0][matchedKey];
+            return;
+          }
+
+          // Fallback to null (never default to campaign_id)
+          aggregatedRow[alias] = null;
         });
 
         return aggregatedRow;
@@ -226,19 +411,16 @@ export function SQLAnalyticsView() {
       return rows;
     }
 
-    const projections = selectClause.split(',').map(p => p.trim());
+    const projections = splitSqlExpressions(selectClause).map(parseSelectExpr);
     return rows.map(row => {
       const projectedRow: any = {};
-      projections.forEach(proj => {
-        const asMatch = proj.match(/(.*?)\s+as\s+([a-zA-Z0-9_]+)/i);
-        const rawCol = asMatch ? asMatch[1].trim().toLowerCase() : proj.toLowerCase();
-        const alias = asMatch ? asMatch[2].toUpperCase() : proj.toUpperCase();
-
+      projections.forEach(({ exprStr, alias }) => {
+        const rawCol = exprStr.toLowerCase();
         const matchedKey = Object.keys(row).find(k => k.toLowerCase() === rawCol || k.toLowerCase().replace('_', '') === rawCol.replace('_', ''));
         if (matchedKey) {
           projectedRow[alias] = row[matchedKey];
         } else {
-          projectedRow[alias] = row[Object.keys(row)[0]] || null;
+          projectedRow[alias] = row[alias] !== undefined ? row[alias] : null;
         }
       });
       return projectedRow;
@@ -294,10 +476,42 @@ export function SQLAnalyticsView() {
 
   const displayedResults = queryResults || [];
 
+  const handleSort = (key: string) => {
+    setSortConfig(prev => {
+      if (prev?.key === key) {
+        return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'desc' };
+    });
+  };
+
+  const sortedResults = useMemo(() => {
+    if (!displayedResults || displayedResults.length === 0) return [];
+    if (!sortConfig) return displayedResults;
+
+    const { key, direction } = sortConfig;
+    return [...displayedResults].sort((a, b) => {
+      const valA = a[key];
+      const valB = b[key];
+
+      if (valA === valB) return 0;
+      if (valA === null || valA === undefined) return 1;
+      if (valB === null || valB === undefined) return -1;
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return direction === 'asc' ? valA - valB : valB - valA;
+      }
+
+      return direction === 'asc'
+        ? String(valA).localeCompare(String(valB))
+        : String(valB).localeCompare(String(valA));
+    });
+  }, [displayedResults, sortConfig]);
+
   const handleExportCSV = () => {
-    if (!displayedResults.length) return;
-    const headers = Object.keys(displayedResults[0]);
-    const rows = displayedResults.map((row: any) => headers.map((h) => row[h]));
+    if (!sortedResults.length) return;
+    const headers = Object.keys(sortedResults[0]);
+    const rows = sortedResults.map((row: any) => headers.map((h) => row[h]));
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -309,23 +523,82 @@ export function SQLAnalyticsView() {
   };
 
   const formatCellValue = (key: string, val: any) => {
-    if (val === null || val === undefined) return '';
-    const kUpper = key.toUpperCase();
-    if (typeof val === 'number') {
-      if (kUpper.includes('REVENUE') || kUpper.includes('SPEND') || kUpper.includes('VALUE') || kUpper.includes('PRICE')) {
-        return formatCurrency(val);
+    if (val === null || val === undefined) return '-';
+
+    if (typeof val === 'string') {
+      if (/^[A-Z0-9_]+-[0-9-]+$/i.test(val) || isNaN(Number(val))) {
+        return val;
       }
-      if (kUpper.includes('ROI') || kUpper.includes('CTR') || kUpper.includes('RATE')) {
-        return `${val}%`;
-      }
-      return val.toLocaleString();
     }
-    return String(val);
+
+    const numVal = Number(val);
+    const kUpper = key.toUpperCase();
+
+    // 1. Text Identifier Columns
+    if (
+      kUpper.includes('ID') ||
+      kUpper.includes('NAME') ||
+      kUpper.includes('SEGMENT') ||
+      kUpper.includes('STATUS') ||
+      kUpper.includes('CHANNEL') ||
+      kUpper === 'CAMPAIGN'
+    ) {
+      return String(val);
+    }
+
+    if (isNaN(numVal)) {
+      return String(val);
+    }
+
+    // 2. Percentage Columns (ROI, CTR, Rate)
+    if (
+      kUpper.includes('ROI') ||
+      kUpper.includes('CTR') ||
+      kUpper.includes('RATE') ||
+      kUpper.includes('PERCENT')
+    ) {
+      const isInt = numVal % 1 === 0;
+      return `${isInt ? numVal : numVal.toFixed(2)}%`;
+    }
+
+    // 3. Currency / Monetary Columns (Revenue, Spend, Order Value, Price)
+    if (
+      kUpper.includes('REVENUE') ||
+      kUpper.includes('SPEND') ||
+      kUpper.includes('VALUE') ||
+      kUpper.includes('PRICE') ||
+      kUpper.includes('COST') ||
+      kUpper.includes('PROFIT') ||
+      kUpper.includes('AMOUNT') ||
+      kUpper.includes('SALES')
+    ) {
+      return formatIndianCurrency(numVal);
+    }
+
+    // 4. Integer Count Columns
+    if (
+      kUpper.includes('COUNT') ||
+      kUpper.includes('CONVERSIONS') ||
+      kUpper.includes('CLICKS') ||
+      kUpper.includes('IMPRESSIONS') ||
+      kUpper.includes('CUSTOMERS') ||
+      kUpper.includes('LEADS') ||
+      kUpper.includes('UNITS') ||
+      kUpper === 'TOTAL'
+    ) {
+      return formatIndianInteger(numVal);
+    }
+
+    // 5. General Numeric Fallback
+    if (numVal % 1 === 0) {
+      return formatIndianInteger(numVal);
+    }
+    return formatIndianDecimal(numVal, 2);
   };
 
   return (
     <div className="space-y-6 select-none max-w-6xl mx-auto w-full max-w-full overflow-hidden">
-      
+
       {/* Header Banner */}
       <div className="bg-card p-4 sm:p-6 rounded-3xl shadow-[var(--card-shadow)] border border-transparent flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-5 w-full max-w-full overflow-hidden">
         <div className="space-y-1.5 text-left">
@@ -372,7 +645,7 @@ export function SQLAnalyticsView() {
 
       {/* Main SQL Console Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 w-full max-w-full">
-        
+
         {/* Left: Schema Explorer */}
         <div className="bg-card p-4 sm:p-5 rounded-3xl shadow-[var(--card-shadow)] border border-transparent space-y-4 w-full max-w-full overflow-hidden">
           <div className="flex items-center gap-2 border-b border-border/60 pb-3">
@@ -403,7 +676,7 @@ export function SQLAnalyticsView() {
 
         {/* Right: SQL Editor & Output Table */}
         <div className="lg:col-span-3 space-y-5 w-full max-w-full overflow-hidden">
-          
+
           {/* SQL Code Editor */}
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-3 text-slate-100 shadow-xl w-full max-w-full overflow-hidden">
             <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
@@ -411,7 +684,7 @@ export function SQLAnalyticsView() {
                 <Terminal size={14} className="text-emerald-400" />
                 <span className="text-xs font-bold font-mono text-slate-300">SNOWFLAKE_MARKETING_ETL.sql</span>
               </div>
-              
+
               <button
                 onClick={() => executeSql(activeQuery)}
                 disabled={isExecuting}
@@ -459,30 +732,45 @@ export function SQLAnalyticsView() {
           <div className="bg-card rounded-3xl p-4 sm:p-5 shadow-[var(--card-shadow)] border border-transparent overflow-x-auto w-full max-w-full">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Query Output Results</h4>
-              <span className="text-[9px] font-mono text-muted">{displayedResults.length} {displayedResults.length === 1 ? 'record' : 'records'}</span>
+              <span className="text-[9px] font-mono text-muted">{sortedResults.length} {sortedResults.length === 1 ? 'record' : 'records'}</span>
             </div>
 
-            {displayedResults.length > 0 ? (
-              <table className="w-full text-left text-[11px] min-w-[550px]">
-                <thead>
-                  <tr className="border-b border-border text-muted font-bold uppercase text-[9.5px]">
-                    {Object.keys(displayedResults[0]).map((head, idx) => (
-                      <th key={idx} className="pb-2 px-3">{head}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/40 font-mono">
-                  {displayedResults.map((row: any, rIdx: number) => (
-                    <tr key={rIdx} className="hover:bg-hover/50 transition-colors">
-                      {Object.keys(row).map((head, cIdx) => (
-                        <td key={cIdx} className="py-2.5 px-3 text-foreground font-medium">
-                          {formatCellValue(head, row[head])}
-                        </td>
+            {sortedResults.length > 0 ? (
+              <div className="overflow-x-auto w-full max-w-full [webkit-overflow-scrolling:touch]">
+                <table className="w-full text-left text-[11px] min-w-[650px] border-collapse">
+                  <thead>
+                    <tr className="border-b border-border text-muted font-bold uppercase text-[9.5px]">
+                      {Object.keys(sortedResults[0]).map((head, idx) => (
+                        <th
+                          key={idx}
+                          onClick={() => handleSort(head)}
+                          className="pb-2.5 px-3.5 cursor-pointer hover:text-foreground transition-colors select-none whitespace-nowrap"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span>{formatColumnHeader(head)}</span>
+                            {sortConfig?.key === head && (
+                              <span className="text-primary text-[10px]">
+                                {sortConfig.direction === 'asc' ? '▲' : '▼'}
+                              </span>
+                            )}
+                          </div>
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-border/40 font-mono">
+                    {sortedResults.map((row: any, rIdx: number) => (
+                      <tr key={rIdx} className="hover:bg-hover/50 transition-colors">
+                        {Object.keys(row).map((head, cIdx) => (
+                          <td key={cIdx} className="py-2.5 px-3.5 text-foreground font-medium whitespace-nowrap">
+                            {formatCellValue(head, row[head])}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
               <div className="py-12 text-center text-xs text-muted">
                 {errorMessage ? 'Query failed. Fix syntax error above and click Run Query.' : 'No records returned for current query execution.'}
