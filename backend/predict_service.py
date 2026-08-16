@@ -65,8 +65,8 @@ def predict_campaign_revenue(input_data: dict) -> dict:
     if model is not None:
         predicted_revenue = float(model.predict(df_input)[0])
     else:
-        roas_map = {'Google Ads': 8.46, 'Meta Ads': 8.48, 'LinkedIn Ads': 8.50, 'YouTube Ads': 8.46, 'Email Marketing': 8.43}
-        roas_base = roas_map.get(channel, 8.46)
+        roas_map = {'Google Ads': 3.21, 'Meta Ads': 3.20, 'LinkedIn Ads': 3.21, 'YouTube Ads': 3.19, 'Email Marketing': 3.19}
+        roas_base = roas_map.get(channel, 3.20)
         predicted_revenue = spend * roas_base * (0.85 + (ctr / 3.0) * 0.15) * (1 + (duration_days - 30) * 0.002)
 
     predicted_profit = predicted_revenue - spend

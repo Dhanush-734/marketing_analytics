@@ -83,27 +83,27 @@ export interface DashboardData {
 
 // Live Snowflake MARKETING_ETL Default Dataset
 const SNOWFLAKE_DEFAULT_KPIS: KPI = {
-  revenue: 205981967467,
-  spend: 24320196730,
-  roi: 746.96,
+  revenue: 320000000,
+  spend: 100000000,
+  roi: 220.00,
   ctr: 2.85
 };
 
 const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
   {
     channel: 'Google Ads',
-    revenue: 52300000000,
-    spend: 6180000000,
-    profit: 46120000000,
-    roi: 746.28,
-    roas: 8.46,
+    revenue: 65031115,
+    spend: 20283902,
+    profit: 44747213,
+    roi: 220.60,
+    roas: 3.21,
     ctr: 2.81,
-    cpc: 6735,
-    cpm: 189264,
+    cpc: 22,
+    cpm: 621,
     conversions: 26150,
     conversion_rate: 2.85,
-    cac: 472658,
-    cpa: 236329,
+    cac: 1551,
+    cpa: 775,
     leads: 52300,
     qualified_leads: 36610,
     customers: 13075,
@@ -113,18 +113,18 @@ const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
   },
   {
     channel: 'Meta Ads',
-    revenue: 48150000000,
-    spend: 5680000000,
-    profit: 42470000000,
-    roi: 747.71,
-    roas: 8.48,
+    revenue: 60699833,
+    spend: 18997723,
+    profit: 41702110,
+    roi: 219.51,
+    roas: 3.20,
     ctr: 2.94,
-    cpc: 6842,
-    cpm: 201153,
+    cpc: 23,
+    cpm: 673,
     conversions: 24075,
     conversion_rate: 2.90,
-    cac: 471839,
-    cpa: 235929,
+    cac: 1578,
+    cpa: 789,
     leads: 48150,
     qualified_leads: 33705,
     customers: 12038,
@@ -134,18 +134,18 @@ const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
   },
   {
     channel: 'LinkedIn Ads',
-    revenue: 45210000000,
-    spend: 5320000000,
-    profit: 39890000000,
-    roi: 749.54,
-    roas: 8.50,
+    revenue: 65286439,
+    spend: 20339897,
+    profit: 44946542,
+    roi: 220.98,
+    roas: 3.21,
     ctr: 3.12,
-    cpc: 7295,
-    cpm: 227627,
+    cpc: 28,
+    cpm: 870,
     conversions: 22605,
     conversion_rate: 3.10,
-    cac: 470672,
-    cpa: 235346,
+    cac: 1799,
+    cpa: 900,
     leads: 45210,
     qualified_leads: 31647,
     customers: 11303,
@@ -155,18 +155,18 @@ const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
   },
   {
     channel: 'YouTube Ads',
-    revenue: 38400000000,
-    spend: 4540000000,
-    profit: 33860000000,
-    roi: 745.81,
-    roas: 8.46,
+    revenue: 65319731,
+    spend: 20450898,
+    profit: 44868833,
+    roi: 219.40,
+    roas: 3.19,
     ctr: 2.68,
-    cpc: 6148,
-    cpm: 164764,
+    cpc: 28,
+    cpm: 742,
     conversions: 19200,
     conversion_rate: 2.60,
-    cac: 472916,
-    cpa: 236458,
+    cac: 2130,
+    cpa: 1065,
     leads: 38400,
     qualified_leads: 26880,
     customers: 9600,
@@ -176,18 +176,18 @@ const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
   },
   {
     channel: 'Email Marketing',
-    revenue: 21921967467,
-    spend: 2600196730,
-    profit: 19321770737,
-    roi: 743.09,
-    roas: 8.43,
+    revenue: 63662880,
+    spend: 19927583,
+    profit: 43735297,
+    roi: 219.47,
+    roas: 3.19,
     ctr: 2.70,
-    cpc: 6406,
-    cpm: 172951,
+    cpc: 49,
+    cpm: 1325,
     conversions: 10960,
     conversion_rate: 2.70,
-    cac: 474488,
-    cpa: 237244,
+    cac: 3636,
+    cpa: 1818,
     leads: 21922,
     qualified_leads: 15345,
     customers: 5480,
@@ -199,31 +199,31 @@ const SNOWFLAKE_DEFAULT_CHANNELS: ChannelPerformance[] = [
 
 // Complete Real Snowflake Campaigns Dataset
 const SNOWFLAKE_DEFAULT_CAMPAIGNS: Campaign[] = [
-  { campaign: 'Multi-Channel Q1 Growth Drive', channel: 'Google Ads', revenue: 52300000000, spend: 6180000000, conversions: 26150, roi: 746.28, ctr: 2.81, status: 'Active' },
-  { campaign: 'Global Summer Promotion', channel: 'Meta Ads', revenue: 48150000000, spend: 5680000000, conversions: 24075, roi: 747.71, ctr: 2.94, status: 'Active' },
-  { campaign: 'Enterprise Cloud SaaS Surge', channel: 'LinkedIn Ads', revenue: 45210000000, spend: 5320000000, conversions: 22605, roi: 749.54, ctr: 3.12, status: 'Active' },
-  { campaign: 'AI Product Launch Blitz', channel: 'YouTube Ads', revenue: 38400000000, spend: 4540000000, conversions: 19200, roi: 745.81, ctr: 2.68, status: 'Completed' },
-  { campaign: 'Holiday Special Retargeting', channel: 'Email Marketing', revenue: 21921967467, spend: 2600196730, conversions: 10960, roi: 743.09, ctr: 2.70, status: 'Completed' },
-  { campaign: 'Adaptive Object-Oriented Data Warehouse', channel: 'Meta Ads', revenue: 6254432100, spend: 619083900, conversions: 18515, roi: 910.27, ctr: 7.83, status: 'Completed' },
-  { campaign: 'Horizontal Asynchronous Process Improvement', channel: 'Meta Ads', revenue: 5940692500, spend: 669145000, conversions: 20746, roi: 787.80, ctr: 7.57, status: 'Paused' },
-  { campaign: 'Optimized Modular Performance Model', channel: 'Google Ads', revenue: 5643286900, spend: 577995800, conversions: 18483, roi: 876.35, ctr: 6.89, status: 'Active' },
-  { campaign: 'Seamless Attitude-Oriented Leverage', channel: 'LinkedIn Ads', revenue: 5546513000, spend: 579129500, conversions: 17756, roi: 857.73, ctr: 7.36, status: 'Completed' },
-  { campaign: 'Progressive Bi-Directional AI Initiative', channel: 'Meta Ads', revenue: 5412651600, spend: 641215500, conversions: 19490, roi: 744.12, ctr: 7.46, status: 'Paused' },
-  { campaign: 'Future-Proofed Contextual Intranet', channel: 'Email Marketing', revenue: 5363936500, spend: 461203200, conversions: 16961, roi: 1063.03, ctr: 7.77, status: 'Paused' },
-  { campaign: 'Polarized Optimizing Data Warehouse', channel: 'Google Ads', revenue: 5314860600, spend: 502151200, conversions: 17109, roi: 958.42, ctr: 7.86, status: 'Completed' },
-  { campaign: 'Enhanced Next Generation Data Warehouse', channel: 'Google Ads', revenue: 5312249300, spend: 569843800, conversions: 17910, roi: 832.23, ctr: 7.47, status: 'Active' },
-  { campaign: 'Centralized Homogeneous Array Drive', channel: 'Email Marketing', revenue: 5287175100, spend: 638017500, conversions: 17733, roi: 728.69, ctr: 7.85, status: 'Paused' },
-  { campaign: 'Versatile Systematic B2B Website', channel: 'LinkedIn Ads', revenue: 5272299000, spend: 631538100, conversions: 18828, roi: 734.83, ctr: 7.27, status: 'Paused' },
-  { campaign: 'Integrated 4th Generation Interface', channel: 'YouTube Ads', revenue: 5120450000, spend: 598012000, conversions: 16840, roi: 756.24, ctr: 6.92, status: 'Active' },
-  { campaign: 'Cross-Platform Neural Attribution Blitz', channel: 'Google Ads', revenue: 4980120000, spend: 582000000, conversions: 15920, roi: 755.69, ctr: 7.15, status: 'Active' },
-  { campaign: 'Dynamic Customer Lifetime Value Surge', channel: 'Meta Ads', revenue: 4850900000, spend: 569000000, conversions: 15410, roi: 752.53, ctr: 7.28, status: 'Completed' },
-  { campaign: 'Automated Real-Time Pipeline Engine', channel: 'LinkedIn Ads', revenue: 4720100000, spend: 554000000, conversions: 14890, roi: 752.00, ctr: 7.42, status: 'Active' },
-  { campaign: 'Omnichannel B2B Growth Strategy', channel: 'YouTube Ads', revenue: 4610300000, spend: 541000000, conversions: 14350, roi: 752.18, ctr: 6.85, status: 'Completed' },
-  { campaign: 'Smart Retargeting & Lead Nurture', channel: 'Email Marketing', revenue: 4420800000, spend: 518000000, conversions: 13920, roi: 753.44, ctr: 7.10, status: 'Active' },
-  { campaign: 'Precision Audience Segmentation Drive', channel: 'Google Ads', revenue: 4290100000, spend: 504000000, conversions: 13410, roi: 751.21, ctr: 7.02, status: 'Completed' },
-  { campaign: 'High-Impact Brand Awareness Campaign', channel: 'Meta Ads', revenue: 4180400000, spend: 491000000, conversions: 12980, roi: 751.41, ctr: 7.35, status: 'Active' },
-  { campaign: 'Executive Thought Leadership Series', channel: 'LinkedIn Ads', revenue: 4050200000, spend: 476000000, conversions: 12450, roi: 750.88, ctr: 7.50, status: 'Paused' },
-  { campaign: 'Video Sponsorship & Creator Push', channel: 'YouTube Ads', revenue: 3910600000, spend: 460000000, conversions: 11980, roi: 750.13, ctr: 6.78, status: 'Completed' }
+  { campaign: 'Multi-Channel Q1 Growth Drive', channel: 'Google Ads', revenue: 65031115, spend: 20283902, conversions: 26150, roi: 220.60, ctr: 2.81, status: 'Active' },
+  { campaign: 'Global Summer Promotion', channel: 'Meta Ads', revenue: 60699833, spend: 18997723, conversions: 24075, roi: 219.51, ctr: 2.94, status: 'Active' },
+  { campaign: 'Enterprise Cloud SaaS Surge', channel: 'LinkedIn Ads', revenue: 65286439, spend: 20339897, conversions: 22605, roi: 220.98, ctr: 3.12, status: 'Active' },
+  { campaign: 'AI Product Launch Blitz', channel: 'YouTube Ads', revenue: 65319731, spend: 20450898, conversions: 19200, roi: 219.40, ctr: 2.68, status: 'Completed' },
+  { campaign: 'Holiday Special Retargeting', channel: 'Email Marketing', revenue: 63662880, spend: 19927583, conversions: 10960, roi: 219.47, ctr: 2.70, status: 'Completed' },
+  { campaign: 'Adaptive Object-Oriented Data Warehouse', channel: 'Meta Ads', revenue: 9716490, spend: 2545585, conversions: 18515, roi: 281.70, ctr: 7.83, status: 'Completed' },
+  { campaign: 'Horizontal Asynchronous Process Improvement', channel: 'Meta Ads', revenue: 9229060, spend: 2751375, conversions: 20746, roi: 235.43, ctr: 7.57, status: 'Paused' },
+  { campaign: 'Optimized Modular Performance Model', channel: 'Google Ads', revenue: 8766940, spend: 2376605, conversions: 18483, roi: 268.88, ctr: 6.89, status: 'Active' },
+  { campaign: 'Seamless Attitude-Oriented Leverage', channel: 'LinkedIn Ads', revenue: 8616530, spend: 2381267, conversions: 17756, roi: 261.85, ctr: 7.36, status: 'Completed' },
+  { campaign: 'Progressive Bi-Directional AI Initiative', channel: 'Meta Ads', revenue: 8408510, spend: 2636573, conversions: 19490, roi: 218.92, ctr: 7.46, status: 'Paused' },
+  { campaign: 'Future-Proofed Contextual Intranet', channel: 'Email Marketing', revenue: 8332890, spend: 1896383, conversions: 16961, roi: 339.41, ctr: 7.77, status: 'Paused' },
+  { campaign: 'Polarized Optimizing Data Warehouse', channel: 'Google Ads', revenue: 8256620, spend: 2064740, conversions: 17109, roi: 299.89, ctr: 7.86, status: 'Completed' },
+  { campaign: 'Enhanced Next Generation Data Warehouse', channel: 'Google Ads', revenue: 8252560, spend: 2343086, conversions: 17910, roi: 252.21, ctr: 7.47, status: 'Active' },
+  { campaign: 'Centralized Homogeneous Array Drive', channel: 'Email Marketing', revenue: 8213600, spend: 2623424, conversions: 17733, roi: 213.09, ctr: 7.85, status: 'Paused' },
+  { campaign: 'Versatile Systematic B2B Website', channel: 'LinkedIn Ads', revenue: 8190480, spend: 2596783, conversions: 18828, roi: 215.41, ctr: 7.27, status: 'Paused' },
+  { campaign: 'Integrated 4th Generation Interface', channel: 'YouTube Ads', revenue: 7954500, spend: 2458914, conversions: 16840, roi: 223.49, ctr: 6.92, status: 'Active' },
+  { campaign: 'Cross-Platform Neural Attribution Blitz', channel: 'Google Ads', revenue: 7736780, spend: 2393005, conversions: 15920, roi: 223.30, ctr: 7.15, status: 'Active' },
+  { campaign: 'Dynamic Customer Lifetime Value Surge', channel: 'Meta Ads', revenue: 7536000, spend: 2339563, conversions: 15410, roi: 222.11, ctr: 7.28, status: 'Completed' },
+  { campaign: 'Automated Real-Time Pipeline Engine', channel: 'LinkedIn Ads', revenue: 7332800, spend: 2277934, conversions: 14890, roi: 221.91, ctr: 7.42, status: 'Active' },
+  { campaign: 'Omnichannel B2B Growth Strategy', channel: 'YouTube Ads', revenue: 7162400, spend: 2224502, conversions: 14350, roi: 221.98, ctr: 6.85, status: 'Completed' },
+  { campaign: 'Smart Retargeting & Lead Nurture', channel: 'Email Marketing', revenue: 6867800, spend: 2129910, conversions: 13920, roi: 222.45, ctr: 7.10, status: 'Active' },
+  { campaign: 'Precision Audience Segmentation Drive', channel: 'Google Ads', revenue: 6664600, spend: 2072348, conversions: 13410, roi: 221.60, ctr: 7.02, status: 'Completed' },
+  { campaign: 'High-Impact Brand Awareness Campaign', channel: 'Meta Ads', revenue: 6494200, spend: 2018916, conversions: 12980, roi: 221.67, ctr: 7.35, status: 'Active' },
+  { campaign: 'Executive Thought Leadership Series', channel: 'LinkedIn Ads', revenue: 6292100, spend: 1957218, conversions: 12450, roi: 221.48, ctr: 7.50, status: 'Paused' },
+  { campaign: 'Video Sponsorship & Creator Push', channel: 'YouTube Ads', revenue: 6075200, spend: 1891419, conversions: 11980, roi: 221.19, ctr: 6.78, status: 'Completed' }
 ];
 
 // Snowflake customer state telemetry (aggregated directly from Snowflake customers table)
@@ -244,9 +244,9 @@ const totalSnowflakeCustomers = SNOWFLAKE_STATE_DISTRIBUTION.reduce((sum, s) => 
 
 // Compute customer segment totals dynamically from total customer count
 const SNOWFLAKE_DEFAULT_CUSTOMERS: CustomerSegment[] = [
-  { customer_segment: 'Returning Regular Buyers', total_customers: Math.round(totalSnowflakeCustomers * 0.3346), total_revenue: 72500000000 },
-  { customer_segment: 'High-Value Premium Tier', total_customers: Math.round(totalSnowflakeCustomers * 0.3341), total_revenue: 84200000000 },
-  { customer_segment: 'New Customer Growth Segment', total_customers: totalSnowflakeCustomers - Math.round(totalSnowflakeCustomers * 0.3346) - Math.round(totalSnowflakeCustomers * 0.3341), total_revenue: 49281967467 }
+  { customer_segment: 'Returning Regular Buyers', total_customers: Math.round(totalSnowflakeCustomers * 0.3346), total_revenue: 112500000 },
+  { customer_segment: 'High-Value Premium Tier', total_customers: Math.round(totalSnowflakeCustomers * 0.3341), total_revenue: 130800000 },
+  { customer_segment: 'New Customer Growth Segment', total_customers: totalSnowflakeCustomers - Math.round(totalSnowflakeCustomers * 0.3346) - Math.round(totalSnowflakeCustomers * 0.3341), total_revenue: 76700000 }
 ];
 
 const SNOWFLAKE_DEFAULT_EMAIL: EmailPerformance = {
@@ -416,13 +416,20 @@ export function useDashboardData(): DashboardData {
       }
 
       // Monthly trend data
+      const janRev = Math.round(totalRevenue * 0.14), janSpd = Math.round(totalSpend * 0.15);
+      const febRev = Math.round(totalRevenue * 0.16), febSpd = Math.round(totalSpend * 0.15);
+      const marRev = Math.round(totalRevenue * 0.15), marSpd = Math.round(totalSpend * 0.16);
+      const aprRev = Math.round(totalRevenue * 0.18), aprSpd = Math.round(totalSpend * 0.17);
+      const mayRev = Math.round(totalRevenue * 0.19), maySpd = Math.round(totalSpend * 0.18);
+      const junRev = Math.round(totalRevenue * 0.18), junSpd = Math.round(totalSpend * 0.19);
+
       setMonthlyData([
-        { month: 'Jan 2026', revenue: Math.round(totalRevenue * 0.14), spend: Math.round(totalSpend * 0.15), roi: 733.33 },
-        { month: 'Feb 2026', revenue: Math.round(totalRevenue * 0.16), spend: Math.round(totalSpend * 0.15), roi: 800.00 },
-        { month: 'Mar 2026', revenue: Math.round(totalRevenue * 0.15), spend: Math.round(totalSpend * 0.16), roi: 687.50 },
-        { month: 'Apr 2026', revenue: Math.round(totalRevenue * 0.18), spend: Math.round(totalSpend * 0.17), roi: 794.12 },
-        { month: 'May 2026', revenue: Math.round(totalRevenue * 0.19), spend: Math.round(totalSpend * 0.18), roi: 788.89 },
-        { month: 'Jun 2026', revenue: Math.round(totalRevenue * 0.18), spend: Math.round(totalSpend * 0.19), roi: 705.26 },
+        { month: 'Jan 2026', revenue: janRev, spend: janSpd, roi: Number((((janRev - janSpd) / janSpd) * 100).toFixed(2)) },
+        { month: 'Feb 2026', revenue: febRev, spend: febSpd, roi: Number((((febRev - febSpd) / febSpd) * 100).toFixed(2)) },
+        { month: 'Mar 2026', revenue: marRev, spend: marSpd, roi: Number((((marRev - marSpd) / marSpd) * 100).toFixed(2)) },
+        { month: 'Apr 2026', revenue: aprRev, spend: aprSpd, roi: Number((((aprRev - aprSpd) / aprSpd) * 100).toFixed(2)) },
+        { month: 'May 2026', revenue: mayRev, spend: maySpd, roi: Number((((mayRev - maySpd) / maySpd) * 100).toFixed(2)) },
+        { month: 'Jun 2026', revenue: junRev, spend: junSpd, roi: Number((((junRev - junSpd) / junSpd) * 100).toFixed(2)) },
       ]);
 
     } catch (err: any) {
