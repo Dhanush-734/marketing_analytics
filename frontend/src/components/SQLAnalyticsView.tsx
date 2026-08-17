@@ -88,139 +88,140 @@ export function SQLAnalyticsView() {
     return list;
   }, []);
 
-// Indian Number Formatting helpers
-const formatIndianCurrency = (val: number): string => {
-  const absVal = Math.abs(val);
-  const isInteger = absVal % 1 === 0;
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: isInteger ? 0 : 2,
-    maximumFractionDigits: 2
-  }).format(val);
-};
-
-const formatIndianInteger = (val: number): string => {
-  return new Intl.NumberFormat('en-IN', {
-    maximumFractionDigits: 0
-  }).format(Math.round(val));
-};
-
-const formatIndianDecimal = (val: number, maxDecimals = 2): string => {
-  const isInteger = Math.abs(val) % 1 === 0;
-  return new Intl.NumberFormat('en-IN', {
-    minimumFractionDigits: isInteger ? 0 : 2,
-    maximumFractionDigits: maxDecimals
-  }).format(val);
-};
-
-const formatColumnHeader = (key: string): string => {
-  if (!key) return '';
-  const kUpper = key.trim().toUpperCase();
-
-  const explicitMap: Record<string, string> = {
-    CAMPAIGN_ID: 'Campaign ID',
-    CAMPAIGN_NAME: 'Campaign Name',
-    CHANNEL_NAME: 'Channel Name',
-    CUSTOMER_SEGMENT: 'Customer Segment',
-    SPEND: 'Spend',
-    REVENUE: 'Revenue',
-    REVENUE2: 'Revenue',
-    TOTAL_REVENUE: 'Total Revenue',
-    TOTAL_SPEND: 'Total Spend',
-    AVG_REVENUE: 'Average Revenue',
-    AVG_ORDER_VALUE: 'Average Order Value',
-    AVERAGE_REVENUE: 'Average Revenue',
-    TOTAL_CUSTOMERS: 'Total Customers',
-    CUSTOMER_COUNT: 'Customer Count',
-    RECORD_COUNT: 'Record Count',
-    AVERAGE_CTR: 'Average CTR',
-    CTR: 'CTR',
-    ROI: 'ROI',
-    CONVERSIONS: 'Conversions',
-    CLICKS: 'Clicks',
-    IMPRESSIONS: 'Impressions',
-    STATUS: 'Status',
+  // Indian Number Formatting helpers
+  const formatIndianCurrency = (val: number): string => {
+    const absVal = Math.abs(val);
+    const isInteger = absVal % 1 === 0;
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: isInteger ? 0 : 2,
+      maximumFractionDigits: 2
+    }).format(val);
   };
 
-  if (explicitMap[kUpper]) {
-    return explicitMap[kUpper];
-  }
+  const formatIndianInteger = (val: number): string => {
+    return new Intl.NumberFormat('en-IN', {
+      maximumFractionDigits: 0
+    }).format(Math.round(val));
+  };
 
-  if (/^[A-Z0-9_]+$/.test(kUpper)) {
-    return kUpper
-      .split('_')
-      .map(word => {
-        if (word === 'ID') return 'ID';
-        if (word === 'CTR') return 'CTR';
-        if (word === 'ROI') return 'ROI';
-        if (word === 'AVG') return 'Average';
-        if (word === 'SUM') return 'Sum';
-        return word.charAt(0) + word.slice(1).toLowerCase();
-      })
-      .join(' ');
-  }
+  const formatIndianDecimal = (val: number, maxDecimals = 2): string => {
+    const isInteger = Math.abs(val) % 1 === 0;
+    return new Intl.NumberFormat('en-IN', {
+      minimumFractionDigits: isInteger ? 0 : 2,
+      maximumFractionDigits: maxDecimals
+    }).format(val);
+  };
 
-  return key;
-};
+  const formatColumnHeader = (key: string): string => {
+    if (!key) return '';
+    const kUpper = key.trim().toUpperCase();
 
-// SQL Clause Splitter respecting parentheses & quotes
-function splitSqlExpressions(clauseStr: string): string[] {
-  const exprs: string[] = [];
-  let current = '';
-  let parenDepth = 0;
-  let inSingleQuote = false;
-  let inDoubleQuote = false;
+    const explicitMap: Record<string, string> = {
+      CAMPAIGN_ID: 'Campaign ID',
+      CAMPAIGN_NAME: 'Campaign Name',
+      CHANNEL_NAME: 'Channel Name',
+      CUSTOMER_SEGMENT: 'Customer Segment',
+      SPEND: 'Spend',
+      REVENUE: 'Revenue',
+      REVENUE2: 'Revenue',
+      TOTAL_REVENUE: 'Total Revenue',
+      TOTAL_SPEND: 'Total Spend',
+      AVG_REVENUE: 'Average Revenue',
+      AVG_ORDER_VALUE: 'Average Order Value',
+      AVERAGE_REVENUE: 'Average Revenue',
+      TOTAL_CUSTOMERS: 'Total Customers',
+      CUSTOMER_COUNT: 'Customer Count',
+      RECORD_COUNT: 'Record Count',
+      AVERAGE_CTR: 'Average CTR',
+      CTR: 'CTR',
+      ROI: 'ROI',
+      CONVERSIONS: 'Conversions',
+      CLICKS: 'Clicks',
+      IMPRESSIONS: 'Impressions',
+      STATUS: 'Status',
+    };
 
-  for (let i = 0; i < clauseStr.length; i++) {
-    const char = clauseStr[i];
-    if (char === "'" && !inDoubleQuote) {
-      inSingleQuote = !inSingleQuote;
-      current += char;
-    } else if (char === '"' && !inSingleQuote) {
-      inDoubleQuote = !inDoubleQuote;
-      current += char;
-    } else if (!inSingleQuote && !inDoubleQuote) {
-      if (char === '(') parenDepth++;
-      else if (char === ')') parenDepth = Math.max(0, parenDepth - 1);
+    if (explicitMap[kUpper]) {
+      return explicitMap[kUpper];
+    }
 
-      if (char === ',' && parenDepth === 0) {
-        if (current.trim()) exprs.push(current.trim());
-        current = '';
+    if (/^[A-Z0-9_]+$/.test(kUpper)) {
+      return kUpper
+        .split('_')
+        .map(word => {
+          if (word === 'ID') return 'ID';
+          if (word === 'CTR') return 'CTR';
+          if (word === 'ROI') return 'ROI';
+          if (word === 'AVG') return 'Average';
+          if (word === 'SUM') return 'Sum';
+          return word.charAt(0) + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+    }
+
+    return key;
+  };
+
+  // SQL Clause Splitter respecting parentheses & quotes
+  function splitSqlExpressions(clauseStr: string): string[] {
+    const exprs: string[] = [];
+    let current = '';
+    let parenDepth = 0;
+    let inSingleQuote = false;
+    let inDoubleQuote = false;
+
+    for (let i = 0; i < clauseStr.length; i++) {
+      const char = clauseStr[i];
+      if (char === "'" && !inDoubleQuote) {
+        inSingleQuote = !inSingleQuote;
+        current += char;
+      } else if (char === '"' && !inSingleQuote) {
+        inDoubleQuote = !inDoubleQuote;
+        current += char;
+      } else if (!inSingleQuote && !inDoubleQuote) {
+        if (char === '(') parenDepth++;
+        else if (char === ')') parenDepth = Math.max(0, parenDepth - 1);
+
+        if (char === ',' && parenDepth === 0) {
+          if (current.trim()) exprs.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
       } else {
         current += char;
       }
-    } else {
-      current += char;
     }
+    if (current.trim()) exprs.push(current.trim());
+    return exprs;
   }
-  if (current.trim()) exprs.push(current.trim());
-  return exprs;
-}
 
-interface ParsedSelectExpr {
-  raw: string;
-  exprStr: string;
-  alias: string;
-}
-
-function parseSelectExpr(rawExpr: string): ParsedSelectExpr {
-  const trimmed = rawExpr.trim();
-  const asMatch = trimmed.match(/\s+as\s+([a-zA-Z0-9_"]+)$/i);
-  if (asMatch) {
-    const alias = asMatch[1].replace(/^"|"$/g, '').toUpperCase();
-    const exprStr = trimmed.substring(0, asMatch.index).trim();
-    return { raw: trimmed, exprStr, alias };
+  interface ParsedSelectExpr {
+    raw: string;
+    exprStr: string;
+    alias: string;
   }
-  const alias = trimmed.toUpperCase();
-  return { raw: trimmed, exprStr: trimmed, alias };
-}
+
+  function parseSelectExpr(rawExpr: string): ParsedSelectExpr {
+    const trimmed = rawExpr.trim();
+    const asMatch = trimmed.match(/\s+as\s+([a-zA-Z0-9_"]+)$/i);
+    if (asMatch) {
+      const alias = asMatch[1].replace(/^"|"$/g, '').toUpperCase();
+      const exprStr = trimmed.substring(0, asMatch.index).trim();
+      return { raw: trimmed, exprStr, alias };
+    }
+    const alias = trimmed.toUpperCase();
+    return { raw: trimmed, exprStr: trimmed, alias };
+  }
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
-  // Client-side Snowflake SQL Execution Parser
+  // Client-side Snowflake SQL Execution Engine (supports multiline, WHERE/AND/OR/LIKE/BETWEEN/IN, DISTINCT, HAVING, GROUP BY, aggregates)
   const parseAndExecuteSQL = useCallback((sqlText: string, dataset: any[]) => {
-    const cleanSql = sqlText.trim().replace(/;$/, '');
+    // Normalize: collapse newlines + tabs into spaces so all regexes work on single-line SQL
+    const cleanSql = sqlText.trim().replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').replace(/;\s*$/, '');
     if (!cleanSql) {
       throw new Error('Please enter a SQL query to execute.');
     }
